@@ -57,16 +57,7 @@
 			<artifactId>jackson-dataformat-cbor</artifactId>
 			<version>2.9.8</version>
 		</dependency>
-		<dependency>
-			<groupId>net.java.dev.jna</groupId>
-			<artifactId>jna</artifactId>
-			<version>5.2.0</version>
-		</dependency>
-		<dependency>
-			<groupId>org.mongodb</groupId>
-			<artifactId>mongodb-driver-sync</artifactId>
-			<version>3.9.1</version>
-		</dependency>
+		
 		<!-- Logging: SL4J -> Log4j -->
 		<dependency>
 			<groupId>org.slf4j</groupId>
