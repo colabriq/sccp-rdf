@@ -9,10 +9,12 @@ import java.util.Set;
 import org.apache.jena.graph.Triple;
 
 import com.goodforgoodbusiness.model.SubmittedClaim;
+import com.google.inject.Singleton;
 
 /**
  * Stores the claims associated with the Triples while they're stored locally.
  */
+@Singleton
 public class ClaimContextMap {
 	private final Map<Triple, Set<SubmittedClaim>> map = new HashMap<>();
 	

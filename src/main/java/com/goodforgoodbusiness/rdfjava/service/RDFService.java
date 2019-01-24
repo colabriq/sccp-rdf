@@ -2,13 +2,15 @@ package com.goodforgoodbusiness.rdfjava.service;
 
 import java.io.IOException;
 
-import com.goodforgoodbusiness.rdfjava.RDFRunner;
+import com.goodforgoodbusiness.rdfjava.rdf.RDFRunner;
 import com.goodforgoodbusiness.rdfjava.service.route.SparqlRoute;
 import com.goodforgoodbusiness.shared.web.cors.CorsFilter;
 import com.goodforgoodbusiness.shared.web.cors.CorsRoute;
 import com.goodforgoodbusiness.shared.web.error.BadRequestException;
 import com.goodforgoodbusiness.shared.web.error.BadRequestExceptionHandler;
 import com.goodforgoodbusiness.shared.web.error.IOExceptionHandler;
+import com.google.inject.Inject;
+import com.google.inject.name.Named;
 
 import spark.Service;
 
@@ -18,7 +20,8 @@ public class RDFService {
 	
 	protected Service service = null;
 	
-	public RDFService(int port, RDFRunner runner) {
+	@Inject
+	public RDFService(@Named("port") int port, RDFRunner runner) {
 		this.port = port;
 		this.runner = runner;
 	}

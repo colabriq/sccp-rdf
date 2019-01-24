@@ -22,36 +22,31 @@ import com.goodforgoodbusiness.shared.encode.JSON;
 import com.goodforgoodbusiness.shared.treesort.TreeSort;
 import com.goodforgoodbusiness.shared.web.ContentType;
 import com.goodforgoodbusiness.shared.web.URIModifier;
+import com.google.inject.Inject;
+import com.google.inject.Singleton;
+import com.google.inject.name.Named;
 
+@Singleton
 public class DHTClient {
 	private static final Logger log = Logger.getLogger(DHTClient.class);
 	
-	private static final URI DHT_ENDPOINT;
-	
-	static {
-		try {
-			DHT_ENDPOINT = new URI("http://localhost:8090");
-		}
-		catch (URISyntaxException e) {
-			throw new RuntimeException(e);
-		}
-	}
+	private static final HttpClient HTTP_CLIENT = HttpClient.newBuilder().build();
 	
 	private static final String MATCHES_PATH = "/matches";
 	private static final String CLAIMS_PATH = "/claims";
 	
+	private final URI dhtURI;
 	
+	@Inject
+	public DHTClient(@Named("dht.uri") String dhtURI) throws URISyntaxException {
+		this.dhtURI = new URI(dhtURI);
+	}
 	
-	private static final HttpClient HTTP_CLIENT = 
-		HttpClient.newBuilder().build();
-	
-	
-	
-	public static List<StoredClaim> matches(Triple trup) throws URISyntaxException, IOException, InterruptedException {
+	public List<StoredClaim> matches(Triple trup) throws URISyntaxException, IOException, InterruptedException {
 		log.info("Finding matches for: " + trup);
 		
 		var uri = URIModifier
-			.from(DHT_ENDPOINT)
+			.from(dhtURI)
 			.appendPath(MATCHES_PATH)
 			.addParam("pattern", JSON.encode(trup).toString())
 			.build();
@@ -72,11 +67,11 @@ public class DHTClient {
 		}
 	}
 	
-	public static List<SubmittedClaim> submit(SubmittableClaim claim) throws URISyntaxException, IOException, InterruptedException {
+	public List<SubmittedClaim> submit(SubmittableClaim claim) throws URISyntaxException, IOException, InterruptedException {
 		log.info("Submitting claim: " + claim);
 		
 		var uri = URIModifier
-			.from(DHT_ENDPOINT)
+			.from(dhtURI)
 			.appendPath(CLAIMS_PATH)
 			.build();
 

@@ -4,26 +4,27 @@ import org.apache.jena.query.Dataset;
 
 import com.goodforgoodbusiness.model.SubmittableClaim;
 import com.goodforgoodbusiness.model.SubmittedClaim;
-import com.goodforgoodbusiness.rdfjava.RDFException;
-import com.goodforgoodbusiness.rdfjava.RDFRunner;
+import com.goodforgoodbusiness.rdfjava.rdf.RDFException;
+import com.goodforgoodbusiness.rdfjava.rdf.RDFRunner;
+import com.google.inject.Inject;
 
 public class DHTRDFRunner extends RDFRunner {
-	private ClaimContextMap claimContextMap;
-	private ClaimCollector claimCollector;
+	private DHTClient client;
+	private ClaimContextMap contextMap;
+	private ClaimCollector collector;
 	
-	public DHTRDFRunner(String logName, DHTDatasetFactory dhtDF) {
-		this(logName, dhtDF.create(), dhtDF.getClaimContextMap(), dhtDF.getClaimCollector());
-	}
-	
-	public DHTRDFRunner(String logName, Dataset dataset, ClaimContextMap claimContextMap, ClaimCollector claimCollector) {
-		super(logName, dataset);
-		this.claimContextMap = claimContextMap;
-		this.claimCollector = claimCollector;
+	@Inject
+	public DHTRDFRunner(Dataset dataset, DHTClient client, ClaimContextMap contextMap, ClaimCollector collector) {
+		super(dataset);
+		
+		this.client = client;
+		this.contextMap = contextMap;
+		this.collector = collector;
 	}
 	
 	@Override
 	public void update(String updateStmt) throws RDFException {
-		SubmittableClaim claim = claimCollector.begin();
+		SubmittableClaim claim = collector.begin();
 		
 		super.update(updateStmt);
 		
@@ -31,10 +32,10 @@ public class DHTRDFRunner extends RDFRunner {
 			// now see if a claim has been created
 			// if so, post it to the DHT
 			if (!claim.isEmpty()) {
-				var results = DHTClient.submit(claim);
+				var results = client.submit(claim);
 
 				for (SubmittedClaim sc : results) {
-					claim.getTriples().forEach(t -> claimContextMap.add(t, sc));
+					claim.getTriples().forEach(t -> contextMap.add(t, sc));
 				}
 			}
 		}

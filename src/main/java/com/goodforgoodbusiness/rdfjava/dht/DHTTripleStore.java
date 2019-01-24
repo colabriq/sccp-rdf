@@ -16,10 +16,11 @@ import com.goodforgoodbusiness.model.StoredClaim;
 public class DHTTripleStore extends GraphTripleStoreBase implements TripleStore {
 	private static final Logger log = Logger.getLogger(DHTTripleStore.class);
 	
-	private final ClaimContextMap claimContextMap;
-	private final ClaimCollector claimCollector;
+	private final DHTClient client;
+	private final ClaimContextMap contextMap;
+	private final ClaimCollector collector;
 	
-	public DHTTripleStore(Graph parent, ClaimContextMap claimContextMap, ClaimCollector claimCollector) {
+	public DHTTripleStore(Graph parent, DHTClient client, ClaimContextMap contextMap, ClaimCollector collector) {
 		super(
 			parent,
             new NodeToTriplesMapMem( Field.fieldSubject, Field.fieldPredicate, Field.fieldObject ),
@@ -27,17 +28,18 @@ public class DHTTripleStore extends GraphTripleStoreBase implements TripleStore 
             new NodeToTriplesMapMem( Field.fieldObject, Field.fieldSubject, Field.fieldPredicate )
 	    ); 
 		
-		this.claimContextMap = claimContextMap;
-		this.claimCollector = claimCollector;
+		this.client = client;
+		this.contextMap = contextMap;
+		this.collector = collector;
 	}
 
 	public void add ( Triple trup ) {
-		claimCollector.added(trup);
+		collector.added(trup);
 		super.add(trup) ;
 	}
 
 	public void delete ( Triple trup ) {
-		claimCollector.removed(trup);
+		collector.removed(trup);
 		super.delete(trup);
 	}
 
@@ -46,11 +48,9 @@ public class DHTTripleStore extends GraphTripleStoreBase implements TripleStore 
 	}
 
 	public ExtendedIterator<Triple> find ( Triple trup ) {
-		// caching ??
-		
 		try {
 			// hit up the DHT
-			for (StoredClaim claim : DHTClient.matches(trup)) {
+			for (StoredClaim claim : client.matches(trup)) {
 				// call super delete/add rather than delete/add to avoid
 				// these received claims getting added to the claim we're building
 				// via the claimCollector. also, they are already wrapped.
@@ -60,12 +60,12 @@ public class DHTTripleStore extends GraphTripleStoreBase implements TripleStore 
 			}
 		}
 		catch (Exception e) {
-			log.error("Could not reach the DHT", e);
+			log.error("Could not reach the DHT", e); // XXX how to handle better?
 		}
 		
 		return super.find(trup).mapWith(t -> {
-			for (var claim : claimContextMap.get(t)) {
-				claimCollector.linked(new Link(claim.getId(), RelType.CAUSED_BY));
+			for (var claim : contextMap.get(t)) {
+				collector.linked(new Link(claim.getId(), RelType.CAUSED_BY));
 			}
 			
 			return t;

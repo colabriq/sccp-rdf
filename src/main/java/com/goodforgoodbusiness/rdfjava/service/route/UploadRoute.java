@@ -4,7 +4,7 @@ import static org.apache.commons.io.FilenameUtils.getExtension;
 
 import javax.servlet.MultipartConfigElement;
 
-import com.goodforgoodbusiness.rdfjava.RDFRunner;
+import com.goodforgoodbusiness.rdfjava.rdf.RDFRunner;
 import com.goodforgoodbusiness.shared.web.MIMEMappings;
 import com.goodforgoodbusiness.shared.web.error.BadRequestException;
 

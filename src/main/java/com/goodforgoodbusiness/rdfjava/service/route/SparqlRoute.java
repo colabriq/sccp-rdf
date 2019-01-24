@@ -5,8 +5,8 @@ import java.io.OutputStream;
 
 import org.apache.log4j.Logger;
 
-import com.goodforgoodbusiness.rdfjava.RDFException;
-import com.goodforgoodbusiness.rdfjava.RDFRunner;
+import com.goodforgoodbusiness.rdfjava.rdf.RDFException;
+import com.goodforgoodbusiness.rdfjava.rdf.RDFRunner;
 import com.goodforgoodbusiness.shared.web.ContentType;
 import com.goodforgoodbusiness.shared.web.MIMEMappings;
 import com.goodforgoodbusiness.shared.web.error.BadRequestException;

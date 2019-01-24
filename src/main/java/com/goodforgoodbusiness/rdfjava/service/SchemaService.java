@@ -1,9 +1,12 @@
 package com.goodforgoodbusiness.rdfjava.service;
 
-import com.goodforgoodbusiness.rdfjava.RDFRunner;
+import com.goodforgoodbusiness.rdfjava.rdf.RDFRunner;
+import com.google.inject.Inject;
+import com.google.inject.name.Named;
 
 public class SchemaService extends RDFService {
-	public SchemaService(int port, RDFRunner runner) {
+	@Inject
+	public SchemaService(@Named("port") int port, RDFRunner runner) {
 		super(port, runner);
 	}
 }

@@ -1,4 +1,4 @@
-package com.goodforgoodbusiness.rdfjava;
+package com.goodforgoodbusiness.rdfjava.rdf;
 
 import java.io.ByteArrayInputStream;
 import java.io.File;
@@ -26,18 +26,12 @@ import com.goodforgoodbusiness.shared.web.MIMEMappings;
 public class RDFRunner {
 	private static Logger log = Logger.getLogger(RDFRunner.class);
 	
-	private final String logName;
 	private final Dataset dataset;
 	private final Model model;
 	
-	public RDFRunner(String logName, Dataset dataset, Model model) {
-		this.logName = logName;
+	public RDFRunner(Dataset dataset) {
 		this.dataset = dataset;
-		this.model = model;
-	}
-	
-	public RDFRunner(String logName, Dataset dataset) {
-		this(logName, dataset, dataset.getDefaultModel());
+		this.model = dataset.getDefaultModel();
 	}
 	
 	public Model getModel() {
@@ -57,7 +51,7 @@ public class RDFRunner {
 	}
 	
 	public void query(String queryStmt, String contentType, OutputStream outputStream) throws RDFException {
-		log.info("Querying " + logName +": \n" + queryStmt);
+		log.info("Querying: \n" + queryStmt);
 		
 		var query = QueryFactory.create(queryStmt);
 		var exe = QueryExecutionFactory.create(query, model);
@@ -97,7 +91,7 @@ public class RDFRunner {
 	}
 	
 	public void update(String updateStmt) throws RDFException {
-		log.info("Updating " + logName + ": \n" + updateStmt);
+		log.info("Updating: \n" + updateStmt);
 		
 		var update = UpdateFactory.create(updateStmt);
 		var processor = UpdateExecutionFactory.create(update, dataset);
@@ -107,7 +101,7 @@ public class RDFRunner {
 	public void importFile(File file, String lang) throws RDFException {
 		try (InputStream stream = new FileInputStream(file)) {
 			doImport(stream, lang);
-			log.info("Loaded file " + file + " in to " + this.logName + " (now " + model.size() + ")");
+			log.info("Loaded file " + file + " (now " + model.size() + ")");
 		}
 		catch (IOException e) {
 			throw new RDFException("Error reading string", e);
@@ -121,7 +115,7 @@ public class RDFRunner {
 	public void importData(CharSequence data, String lang) throws RDFException {
 		try (InputStream stream = new ByteArrayInputStream(data.toString().getBytes("UTF-8"))) {
 			doImport(stream, lang);
-			log.info("Loaded data in to " + this.logName + " (now " + model.size() + ")");
+			log.info("Loaded data (now " + model.size() + ")");
 		}
 		catch (IOException e) {
 			throw new RDFException("Error reading string", e);
@@ -130,7 +124,7 @@ public class RDFRunner {
 	
 	public void importStream(InputStream stream, String lang) throws RDFException {
 		doImport(stream, lang);
-		log.info("Loaded data in to " + this.logName + " (now " + model.size() + ")");
+		log.info("Loaded data (now " + model.size() + ")");
 	}
 	
 	private void doImport(InputStream stream, String lang) throws RDFException {
@@ -140,7 +134,7 @@ public class RDFRunner {
 		var newModel = newDataset.getDefaultModel();
 		newModel.read(stream, null, lang);
 		
-		log.info("Adding " + newModel.size() + " stmts to " + this.logName);
+		log.info("Adding " + newModel.size() + " stmts");
 		
 		this.model.add(newModel);
 	}

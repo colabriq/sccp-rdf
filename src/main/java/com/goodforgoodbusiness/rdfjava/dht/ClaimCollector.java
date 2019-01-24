@@ -4,7 +4,9 @@ import org.apache.jena.graph.Triple;
 
 import com.goodforgoodbusiness.model.Link;
 import com.goodforgoodbusiness.model.SubmittableClaim;
+import com.google.inject.Singleton;
 
+@Singleton
 public class ClaimCollector {
 	private final ThreadLocal<SubmittableClaim> claimLocal = new ThreadLocal<>();
 	
