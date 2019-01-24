@@ -14,14 +14,14 @@ import java.util.List;
 import org.apache.jena.graph.Triple;
 import org.apache.log4j.Logger;
 
-import com.goodforgoodbusiness.shared.ContentType;
-import com.goodforgoodbusiness.shared.JSON;
-import com.goodforgoodbusiness.shared.URIModifier;
-import com.goodforgoodbusiness.shared.model.StoredClaim;
-import com.goodforgoodbusiness.shared.model.SubmitResult;
-import com.goodforgoodbusiness.shared.model.SubmittableClaim;
-import com.goodforgoodbusiness.shared.model.SubmittedClaim;
+import com.goodforgoodbusiness.model.StoredClaim;
+import com.goodforgoodbusiness.model.SubmitResult;
+import com.goodforgoodbusiness.model.SubmittableClaim;
+import com.goodforgoodbusiness.model.SubmittedClaim;
+import com.goodforgoodbusiness.shared.encode.JSON;
 import com.goodforgoodbusiness.shared.treesort.TreeSort;
+import com.goodforgoodbusiness.shared.web.ContentType;
+import com.goodforgoodbusiness.shared.web.URIModifier;
 
 public class DHTClient {
 	private static final Logger log = Logger.getLogger(DHTClient.class);

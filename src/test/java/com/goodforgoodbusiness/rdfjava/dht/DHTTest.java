@@ -6,7 +6,7 @@ import org.apache.jena.graph.Node;
 import org.apache.jena.graph.NodeFactory;
 import org.apache.jena.graph.Triple;
 
-import com.goodforgoodbusiness.shared.model.StoredClaim;
+import com.goodforgoodbusiness.model.StoredClaim;
 
 public class DHTTest {
 	public static void main(String[] args) throws Exception {

@@ -9,9 +9,9 @@ import org.apache.jena.mem.NodeToTriplesMapMem;
 import org.apache.jena.util.iterator.ExtendedIterator;
 import org.apache.log4j.Logger;
 
-import com.goodforgoodbusiness.shared.model.Link;
-import com.goodforgoodbusiness.shared.model.StoredClaim;
-import com.goodforgoodbusiness.shared.model.Link.RelType;
+import com.goodforgoodbusiness.model.Link;
+import com.goodforgoodbusiness.model.Link.RelType;
+import com.goodforgoodbusiness.model.StoredClaim;
 
 public class DHTTripleStore extends GraphTripleStoreBase implements TripleStore {
 	private static final Logger log = Logger.getLogger(DHTTripleStore.class);

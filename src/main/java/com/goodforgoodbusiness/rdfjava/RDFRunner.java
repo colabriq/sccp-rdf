@@ -20,8 +20,8 @@ import org.apache.jena.update.UpdateExecutionFactory;
 import org.apache.jena.update.UpdateFactory;
 import org.apache.log4j.Logger;
 
-import com.goodforgoodbusiness.rdfjava.util.Skolemizer;
-import com.goodforgoodbusiness.shared.MIMEMappings;
+import com.goodforgoodbusiness.shared.Skolemizer;
+import com.goodforgoodbusiness.shared.web.MIMEMappings;
 
 public class RDFRunner {
 	private static Logger log = Logger.getLogger(RDFRunner.class);

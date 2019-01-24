@@ -7,8 +7,8 @@ import org.apache.log4j.Logger;
 
 import com.goodforgoodbusiness.rdfjava.RDFException;
 import com.goodforgoodbusiness.rdfjava.RDFRunner;
-import com.goodforgoodbusiness.shared.ContentType;
-import com.goodforgoodbusiness.shared.MIMEMappings;
+import com.goodforgoodbusiness.shared.web.ContentType;
+import com.goodforgoodbusiness.shared.web.MIMEMappings;
 import com.goodforgoodbusiness.shared.web.error.BadRequestException;
 
 import spark.Request;

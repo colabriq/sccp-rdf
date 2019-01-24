@@ -8,7 +8,7 @@ import java.util.Set;
 
 import org.apache.jena.graph.Triple;
 
-import com.goodforgoodbusiness.shared.model.SubmittedClaim;
+import com.goodforgoodbusiness.model.SubmittedClaim;
 
 /**
  * Stores the claims associated with the Triples while they're stored locally.

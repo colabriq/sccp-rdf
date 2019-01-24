@@ -2,10 +2,10 @@ package com.goodforgoodbusiness.rdfjava.dht;
 
 import org.apache.jena.query.Dataset;
 
+import com.goodforgoodbusiness.model.SubmittableClaim;
+import com.goodforgoodbusiness.model.SubmittedClaim;
 import com.goodforgoodbusiness.rdfjava.RDFException;
 import com.goodforgoodbusiness.rdfjava.RDFRunner;
-import com.goodforgoodbusiness.shared.model.SubmittableClaim;
-import com.goodforgoodbusiness.shared.model.SubmittedClaim;
 
 public class DHTRDFRunner extends RDFRunner {
 	private ClaimContextMap claimContextMap;

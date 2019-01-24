@@ -6,7 +6,7 @@ import org.apache.jena.query.DatasetFactory;
 import org.apache.jena.sparql.core.DatasetGraphFactory;
 
 import com.goodforgoodbusiness.rdfjava.RDFRunner;
-import com.goodforgoodbusiness.rdfjava.util.FileLoader;
+import com.goodforgoodbusiness.shared.FileLoader;
 
 public class Beef {
 	private static final String BEEF_CLAIM_PATH = "/Users/ijmad/Desktop/sccp/tb_example/generated_claims";

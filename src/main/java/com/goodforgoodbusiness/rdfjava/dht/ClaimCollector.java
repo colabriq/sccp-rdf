@@ -2,8 +2,8 @@ package com.goodforgoodbusiness.rdfjava.dht;
 
 import org.apache.jena.graph.Triple;
 
-import com.goodforgoodbusiness.shared.model.Link;
-import com.goodforgoodbusiness.shared.model.SubmittableClaim;
+import com.goodforgoodbusiness.model.Link;
+import com.goodforgoodbusiness.model.SubmittableClaim;
 
 public class ClaimCollector {
 	private final ThreadLocal<SubmittableClaim> claimLocal = new ThreadLocal<>();

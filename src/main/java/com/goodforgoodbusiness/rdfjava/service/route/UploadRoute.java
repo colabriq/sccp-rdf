@@ -5,7 +5,7 @@ import static org.apache.commons.io.FilenameUtils.getExtension;
 import javax.servlet.MultipartConfigElement;
 
 import com.goodforgoodbusiness.rdfjava.RDFRunner;
-import com.goodforgoodbusiness.shared.MIMEMappings;
+import com.goodforgoodbusiness.shared.web.MIMEMappings;
 import com.goodforgoodbusiness.shared.web.error.BadRequestException;
 
 import spark.Request;
@@ -13,16 +13,6 @@ import spark.Response;
 import spark.Route;
 
 public class UploadRoute implements Route {
-//	  claim = dhtstore.new_claim()
-//	  
-//	  # possibility open that multiple claims could be returned
-//	  if claim.has_captured():
-//	    submit_result = submit(claim)
-//	    update_result = [ submit_result ]
-//	  else:
-//	    update_result = []
-//
-
 	private final RDFRunner runner;
 	
 	public UploadRoute(RDFRunner runner) {

@@ -11,7 +11,7 @@ import org.apache.jena.sparql.core.DatasetGraphFactory;
 import com.goodforgoodbusiness.rdfjava.dht.DHTDatasetFactory;
 import com.goodforgoodbusiness.rdfjava.service.DataService;
 import com.goodforgoodbusiness.rdfjava.service.SchemaService;
-import com.goodforgoodbusiness.rdfjava.util.FileLoader;
+import com.goodforgoodbusiness.shared.FileLoader;
 
 public class RDFApp {
 	private static final int SCHEMA_PORT = toInt(getenv("SCHEMA_PORT"), 8080);
