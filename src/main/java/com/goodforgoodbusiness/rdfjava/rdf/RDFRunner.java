@@ -22,6 +22,7 @@ import org.apache.log4j.Logger;
 
 import com.goodforgoodbusiness.shared.Skolemizer;
 import com.goodforgoodbusiness.shared.web.MIMEMappings;
+import com.google.inject.Inject;
 
 public class RDFRunner {
 	private static Logger log = Logger.getLogger(RDFRunner.class);
@@ -29,13 +30,10 @@ public class RDFRunner {
 	private final Dataset dataset;
 	private final Model model;
 	
-	public RDFRunner(Dataset dataset) {
+	@Inject
+	public RDFRunner(Dataset dataset, Model model) {
 		this.dataset = dataset;
-		this.model = dataset.getDefaultModel();
-	}
-	
-	public Model getModel() {
-		return this.model;
+		this.model = model;
 	}
 	
 	public String query(String queryStmt, String contentType) throws RDFException {

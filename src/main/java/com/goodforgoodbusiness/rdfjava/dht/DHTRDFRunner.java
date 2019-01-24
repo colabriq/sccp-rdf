@@ -1,6 +1,7 @@
 package com.goodforgoodbusiness.rdfjava.dht;
 
 import org.apache.jena.query.Dataset;
+import org.apache.jena.rdf.model.Model;
 
 import com.goodforgoodbusiness.model.SubmittableClaim;
 import com.goodforgoodbusiness.model.SubmittedClaim;
@@ -14,8 +15,8 @@ public class DHTRDFRunner extends RDFRunner {
 	private ClaimCollector collector;
 	
 	@Inject
-	public DHTRDFRunner(Dataset dataset, DHTClient client, ClaimContextMap contextMap, ClaimCollector collector) {
-		super(dataset);
+	public DHTRDFRunner(Dataset dataset, Model model, DHTClient client, ClaimContextMap contextMap, ClaimCollector collector) {
+		super(dataset, model);
 		
 		this.client = client;
 		this.contextMap = contextMap;
