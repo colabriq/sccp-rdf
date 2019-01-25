@@ -1,12 +1,12 @@
-package com.goodforgoodbusiness.rdfjava.dht;
+package com.goodforgoodbusiness.endpoint.dht;
 
 import org.apache.jena.query.Dataset;
 import org.apache.jena.rdf.model.Model;
 
+import com.goodforgoodbusiness.endpoint.rdf.RDFException;
+import com.goodforgoodbusiness.endpoint.rdf.RDFRunner;
 import com.goodforgoodbusiness.model.SubmittableClaim;
 import com.goodforgoodbusiness.model.SubmittedClaim;
-import com.goodforgoodbusiness.rdfjava.rdf.RDFException;
-import com.goodforgoodbusiness.rdfjava.rdf.RDFRunner;
 import com.google.inject.Inject;
 
 public class DHTRDFRunner extends RDFRunner {

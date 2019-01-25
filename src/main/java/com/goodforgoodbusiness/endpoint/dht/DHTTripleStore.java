@@ -1,4 +1,4 @@
-package com.goodforgoodbusiness.rdfjava.dht;
+package com.goodforgoodbusiness.endpoint.dht;
 
 import org.apache.jena.graph.Graph;
 import org.apache.jena.graph.Triple;

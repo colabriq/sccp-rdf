@@ -1,4 +1,4 @@
-package com.goodforgoodbusiness.rdfjava.dht;
+package com.goodforgoodbusiness.endpoint.dht;
 
 import static java.util.Collections.singletonList;
 
@@ -18,10 +18,10 @@ import com.goodforgoodbusiness.model.StoredClaim;
 import com.goodforgoodbusiness.model.SubmitResult;
 import com.goodforgoodbusiness.model.SubmittableClaim;
 import com.goodforgoodbusiness.model.SubmittedClaim;
+import com.goodforgoodbusiness.shared.URIModifier;
 import com.goodforgoodbusiness.shared.encode.JSON;
 import com.goodforgoodbusiness.shared.treesort.TreeSort;
-import com.goodforgoodbusiness.shared.web.ContentType;
-import com.goodforgoodbusiness.shared.web.URIModifier;
+import com.goodforgoodbusiness.webapp.ContentType;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import com.google.inject.name.Named;

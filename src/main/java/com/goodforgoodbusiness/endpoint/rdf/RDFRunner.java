@@ -1,4 +1,7 @@
-package com.goodforgoodbusiness.rdfjava.rdf;
+package com.goodforgoodbusiness.endpoint.rdf;
+
+import static com.goodforgoodbusiness.endpoint.MIMEMappings.FILE_TYPES;
+import static org.apache.commons.io.FilenameUtils.getExtension;
 
 import java.io.ByteArrayInputStream;
 import java.io.File;
@@ -20,8 +23,8 @@ import org.apache.jena.update.UpdateExecutionFactory;
 import org.apache.jena.update.UpdateFactory;
 import org.apache.log4j.Logger;
 
+import com.goodforgoodbusiness.endpoint.MIMEMappings;
 import com.goodforgoodbusiness.shared.Skolemizer;
-import com.goodforgoodbusiness.shared.web.MIMEMappings;
 import com.google.inject.Inject;
 
 public class RDFRunner {
@@ -106,8 +109,16 @@ public class RDFRunner {
 		}
 	}
 	
-	public Consumer<File> fileConsumer(String lang) throws RDFException {
-		return file -> importFile(file, lang);
+	public Consumer<File> fileConsumer() throws RDFException {
+		return file -> {
+			var lang = FILE_TYPES.get(getExtension(file.getName().toLowerCase()));
+			if (lang != null) {
+				importFile(file, lang);
+			}
+			else {
+				log.info("Skipped file " + file);
+			}
+		};
 	}
 	
 	public void importData(CharSequence data, String lang) throws RDFException {

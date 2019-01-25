@@ -1,20 +1,24 @@
-package com.goodforgoodbusiness.rdfjava.service.route;
+package com.goodforgoodbusiness.endpoint.route;
 
 import static org.apache.commons.io.FilenameUtils.getExtension;
 
 import javax.servlet.MultipartConfigElement;
 
-import com.goodforgoodbusiness.rdfjava.rdf.RDFRunner;
-import com.goodforgoodbusiness.shared.web.MIMEMappings;
-import com.goodforgoodbusiness.shared.web.error.BadRequestException;
+import com.goodforgoodbusiness.endpoint.MIMEMappings;
+import com.goodforgoodbusiness.endpoint.rdf.RDFRunner;
+import com.goodforgoodbusiness.webapp.error.BadRequestException;
+import com.google.inject.Inject;
+import com.google.inject.Singleton;
 
 import spark.Request;
 import spark.Response;
 import spark.Route;
 
+@Singleton
 public class UploadRoute implements Route {
 	private final RDFRunner runner;
 	
+	@Inject
 	public UploadRoute(RDFRunner runner) {
 		this.runner = runner;
 	}

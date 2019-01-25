@@ -1,4 +1,4 @@
-package com.goodforgoodbusiness.rdfjava.rdf;
+package com.goodforgoodbusiness.endpoint.rdf;
 
 public class RDFException extends RuntimeException {
 	public RDFException(String message) {

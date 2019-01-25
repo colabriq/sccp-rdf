@@ -1,4 +1,4 @@
-package com.goodforgoodbusiness.rdfjava.dht;
+package com.goodforgoodbusiness.endpoint.dht;
 
 import java.util.Collections;
 import java.util.HashMap;

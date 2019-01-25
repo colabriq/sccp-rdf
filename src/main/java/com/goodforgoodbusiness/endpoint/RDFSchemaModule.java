@@ -1,9 +1,13 @@
-package com.goodforgoodbusiness.rdfjava;
+package com.goodforgoodbusiness.endpoint;
 
 import static com.goodforgoodbusiness.shared.ConfigLoader.loadConfig;
+import static com.goodforgoodbusiness.webapp.Resource.get;
+import static com.goodforgoodbusiness.webapp.Resource.post;
 import static com.google.inject.Guice.createInjector;
+import static com.google.inject.multibindings.MapBinder.newMapBinder;
 import static org.apache.commons.configuration2.ConfigurationConverter.getProperties;
 
+import java.io.File;
 import java.util.Properties;
 
 import org.apache.commons.configuration2.Configuration;
@@ -13,12 +17,17 @@ import org.apache.jena.query.DatasetFactory;
 import org.apache.jena.rdf.model.Model;
 import org.apache.jena.sparql.core.DatasetGraphMaker;
 
-import com.goodforgoodbusiness.rdfjava.rdf.RDFRunner;
-import com.goodforgoodbusiness.rdfjava.service.SchemaService;
+import com.goodforgoodbusiness.endpoint.rdf.RDFRunner;
+import com.goodforgoodbusiness.endpoint.route.SparqlRoute;
+import com.goodforgoodbusiness.shared.FileLoader;
+import com.goodforgoodbusiness.webapp.Resource;
+import com.goodforgoodbusiness.webapp.Webapp;
 import com.google.inject.AbstractModule;
 import com.google.inject.Provides;
 import com.google.inject.Singleton;
 import com.google.inject.name.Names;
+
+import spark.Route;
 
 public class RDFSchemaModule extends AbstractModule {
 	private final Configuration config;
@@ -34,8 +43,13 @@ public class RDFSchemaModule extends AbstractModule {
 		Properties props = getProperties(config);
 		Names.bindProperties(binder(), props);
 		
-		bind(SchemaService.class);
 		bind(RDFRunner.class);
+		bind(Webapp.class);
+		
+		var routes = newMapBinder(binder(), Resource.class, Route.class);
+		
+		routes.addBinding(get("/sparql")).to(SparqlRoute.class);
+		routes.addBinding(post("/sparql")).to(SparqlRoute.class);
 	}
 	
 	@Provides @Singleton
@@ -51,37 +65,22 @@ public class RDFSchemaModule extends AbstractModule {
 	}
 	
 	public static void main(String[] args) throws Exception {
-		createInjector(new RDFSchemaModule(loadConfig(RDFDataModule.class, "schema.properties")))
-			.getInstance(SchemaService.class)
-			.start()
-		;
+		var config = loadConfig(RDFDataModule.class, "schema.properties");
+		var injector = createInjector(new RDFSchemaModule(config));
+		var preload = config.getString("preload.path");
+		
+		// preload of any specified turtle files
+		if (preload != null) {
+			File preloadDir = new File(preload);
+			if (preloadDir.exists()) {
+				FileLoader.scan(preloadDir, injector.getInstance(RDFRunner.class).fileConsumer());
+			}
+			else {
+				throw new Exception(preloadDir + " specified but not found");
+			}
+		}
+		
+		// now start webapp
+		injector.getInstance(Webapp.class).start();
 	}
 }
-
-
-////return new DHTTripleStore( this, claimContextMap, claimCollector );
-//
-//public class SchemaModule extends AbstractModule {
-//	private static final int SCHEMA_PORT = toInt(getenv("SCHEMA_PORT"), 8080);
-//	private static final String SCHEMA_PRELOAD_PATH = getenv("SCHEMA_PRELOAD_PATH");
-//	
-//	
-//	
-//	public static void main(String[] args) throws Exception {
-//		// set up schema endpoint (in-memory)
-//		var schemaDataset = DatasetFactory.create(DatasetGraphFactory.createMem());
-//		var schemaRunner = new RDFRunner("schema", schemaDataset);
-//		if (SCHEMA_PRELOAD_PATH != null) {
-//			File schemaPreloadPath = new File(SCHEMA_PRELOAD_PATH);
-//			if (schemaPreloadPath.exists()) {
-//				FileLoader.scan(schemaPreloadPath, schemaRunner.fileConsumer("TURTLE"));
-//			}
-//			else {
-//				throw new Exception(SCHEMA_PRELOAD_PATH + " specified but not found");
-//			}
-//		}
-//		
-//		var schemaService = new SchemaService(SCHEMA_PORT, schemaRunner);
-//		schemaService.start();
-//	}
-//}
