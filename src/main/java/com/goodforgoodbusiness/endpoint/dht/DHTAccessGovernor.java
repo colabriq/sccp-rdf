@@ -11,7 +11,9 @@ import org.apache.jena.graph.Triple;
 
 import com.google.common.cache.Cache;
 import com.google.common.cache.CacheBuilder;
+import com.google.inject.Inject;
 import com.google.inject.Singleton;
+import com.google.inject.name.Named;
 
 /** 
  * This doesn't actually cache triples, but prevents the system going to the DHT too often
@@ -30,10 +32,11 @@ public class DHTAccessGovernor {
 	
 	private Cache<Triple, Object> tracker;
 
-	public DHTAccessGovernor() {
+	@Inject
+	public DHTAccessGovernor(@Named("dht.cache.duration") String cacheDuration) {
 		this.tracker = CacheBuilder
 			.newBuilder()
-			.expireAfterWrite(Duration.ofSeconds(30))
+			.expireAfterWrite(Duration.parse(cacheDuration))
 			.build()
 		;
 	}
