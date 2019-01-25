@@ -1,5 +1,6 @@
 package com.goodforgoodbusiness.endpoint.dht;
 
+import static java.util.Collections.emptyList;
 import static java.util.Collections.singletonList;
 
 import java.io.IOException;
@@ -36,39 +37,49 @@ public class DHTClient {
 	private static final String CLAIMS_PATH = "/claims";
 	
 	private final URI dhtURI;
+	private final DHTAccessGovernor governor;
 	
 	@Inject
-	public DHTClient(@Named("dht.uri") String dhtURI) throws URISyntaxException {
+	public DHTClient(@Named("dht.uri") String dhtURI, DHTAccessGovernor governor) throws URISyntaxException {
 		this.dhtURI = new URI(dhtURI);
+		this.governor = governor;
 	}
 	
 	public List<StoredClaim> matches(Triple trup) throws URISyntaxException, IOException, InterruptedException {
-		log.info("Finding matches for: " + trup);
-		
-		var uri = URIModifier
-			.from(dhtURI)
-			.appendPath(MATCHES_PATH)
-			.addParam("pattern", JSON.encode(trup).toString())
-			.build();
-		
-		var request = HttpRequest
-			.newBuilder(uri)
-			.GET()
-			.build();
-		
-		var response = HTTP_CLIENT.send(request, BodyHandlers.ofString());
-		
-		if (response.statusCode() == 200) {
-			List<StoredClaim> claims = StoredClaim.fromJson(response.body());
-			return TreeSort.sort(claims, true);
+		if (governor.allow(trup)) {
+			log.info("Finding matches for: " + trup);
+			
+			var uri = URIModifier
+				.from(dhtURI)
+				.appendPath(MATCHES_PATH)
+				.addParam("pattern", JSON.encode(trup).toString())
+				.build();
+			
+			var request = HttpRequest
+				.newBuilder(uri)
+				.GET()
+				.build();
+			
+			var response = HTTP_CLIENT.send(request, BodyHandlers.ofString());
+			
+			if (response.statusCode() == 200) {
+				List<StoredClaim> claims = StoredClaim.fromJson(response.body());
+				return TreeSort.sort(claims, true);
+			}
+			else {
+				throw new IOException("DHT response was " + response.statusCode());
+			}
 		}
 		else {
-			throw new IOException("DHT response was " + response.statusCode());
+			return emptyList();
 		}
 	}
 	
 	public List<SubmittedClaim> submit(SubmittableClaim claim) throws URISyntaxException, IOException, InterruptedException {
 		log.info("Submitting claim: " + claim);
+		
+		// invalidate any cached results for triples in claim
+		claim.getTriples().forEach(governor::invalidate);
 		
 		var uri = URIModifier
 			.from(dhtURI)

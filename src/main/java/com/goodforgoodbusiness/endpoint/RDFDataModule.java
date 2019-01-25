@@ -19,6 +19,7 @@ import org.apache.jena.sparql.core.DatasetGraphMaker;
 
 import com.goodforgoodbusiness.endpoint.dht.ClaimCollector;
 import com.goodforgoodbusiness.endpoint.dht.ClaimContextMap;
+import com.goodforgoodbusiness.endpoint.dht.DHTAccessGovernor;
 import com.goodforgoodbusiness.endpoint.dht.DHTClient;
 import com.goodforgoodbusiness.endpoint.dht.DHTRDFRunner;
 import com.goodforgoodbusiness.endpoint.dht.DHTTripleStore;
@@ -49,6 +50,7 @@ public class RDFDataModule extends AbstractModule {
 		Names.bindProperties(binder(), props);
 		
 		bind(DHTClient.class);
+		bind(DHTAccessGovernor.class);
 		
 		bind(RDFRunner.class).to(DHTRDFRunner.class);
 		
