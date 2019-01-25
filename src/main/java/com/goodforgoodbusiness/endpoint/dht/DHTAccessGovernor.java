@@ -34,9 +34,13 @@ public class DHTAccessGovernor {
 
 	@Inject
 	public DHTAccessGovernor(@Named("dht.cache.duration") String cacheDuration) {
+		this(Duration.parse(cacheDuration).getSeconds());
+	}
+	
+	public DHTAccessGovernor(long cacheDurationSeconds) {
 		this.tracker = CacheBuilder
 			.newBuilder()
-			.expireAfterWrite(Duration.parse(cacheDuration))
+			.expireAfterWrite(Duration.ofSeconds(cacheDurationSeconds))
 			.build()
 		;
 	}
