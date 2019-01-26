@@ -8,7 +8,7 @@ import java.util.Set;
 
 import org.apache.jena.graph.Triple;
 
-import com.goodforgoodbusiness.model.SubmittedClaim;
+import com.goodforgoodbusiness.model.Claim;
 import com.google.inject.Singleton;
 
 /**
@@ -16,18 +16,18 @@ import com.google.inject.Singleton;
  */
 @Singleton
 public class ClaimContextMap {
-	private final Map<Triple, Set<SubmittedClaim>> map = new HashMap<>();
+	private final Map<Triple, Set<Claim>> map = new HashMap<>();
 	
-	public Set<SubmittedClaim> get(Triple trup) {
+	public Set<Claim> get(Triple trup) {
 		return map.getOrDefault(trup, Collections.emptySet());
 	}
 
-	public void add(Triple trup, SubmittedClaim claim) {
+	public void add(Triple trup, Claim claim) {
 		if (map.containsKey(trup)) {
 			map.get(trup).add(claim);
 		}
 		else {
-			var set = new HashSet<SubmittedClaim>();
+			var set = new HashSet<Claim>();
 			set.add(claim);
 			map.put(trup, set);
 		}

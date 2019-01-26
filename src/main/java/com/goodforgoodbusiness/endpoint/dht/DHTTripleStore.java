@@ -55,8 +55,17 @@ public class DHTTripleStore extends GraphTripleStoreBase implements TripleStore 
 				// these received claims getting added to the claim we're building
 				// via the claimCollector. also, they are already wrapped.
 				
-				claim.getRemoved().forEach( t -> super.delete(t) );
-				claim.getAdded().forEach(t -> super.add(t) );
+				claim.getRemoved()
+					.forEach(t -> {
+						contextMap.add(t, claim);
+						super.delete(t);
+					});
+				
+				claim.getAdded()
+					.forEach(t -> {
+						contextMap.add(t, claim);
+						super.add(t);
+					});
 			}
 		}
 		catch (Exception e) {
