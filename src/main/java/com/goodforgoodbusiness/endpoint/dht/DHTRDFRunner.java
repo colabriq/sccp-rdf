@@ -10,12 +10,12 @@ import com.goodforgoodbusiness.model.SubmittedClaim;
 import com.google.inject.Inject;
 
 public class DHTRDFRunner extends RDFRunner {
-	private DHTClient client;
+	private DHTEngineClient client;
 	private ClaimContextMap contextMap;
 	private ClaimCollector collector;
 	
 	@Inject
-	public DHTRDFRunner(Dataset dataset, Model model, DHTClient client, ClaimContextMap contextMap, ClaimCollector collector) {
+	public DHTRDFRunner(Dataset dataset, Model model, DHTEngineClient client, ClaimContextMap contextMap, ClaimCollector collector) {
 		super(dataset, model);
 		
 		this.client = client;

@@ -28,8 +28,8 @@ import com.google.inject.Singleton;
 import com.google.inject.name.Named;
 
 @Singleton
-public class DHTClient {
-	private static final Logger log = Logger.getLogger(DHTClient.class);
+public class DHTEngineClient {
+	private static final Logger log = Logger.getLogger(DHTEngineClient.class);
 	
 	private static final HttpClient HTTP_CLIENT = HttpClient.newBuilder().build();
 	
@@ -40,7 +40,7 @@ public class DHTClient {
 	private final DHTAccessGovernor governor;
 	
 	@Inject
-	public DHTClient(@Named("dht.uri") String dhtURI, DHTAccessGovernor governor) throws URISyntaxException {
+	public DHTEngineClient(@Named("dht.uri") String dhtURI, DHTAccessGovernor governor) throws URISyntaxException {
 		this.dhtURI = new URI(dhtURI);
 		this.governor = governor;
 	}
