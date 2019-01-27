@@ -16,19 +16,24 @@ public class RDFPreloader {
 	private Optional<File> preloadDir = Optional.empty();
 	
 	@Inject
-	public RDFPreloader(RDFRunner runner) {
-		this.runner = runner;
-	}
-	
-	@Inject(optional=true)
-	public void setPreloadPath(@Named("preload.path") String preloadPath) throws FileNotFoundException {
-		File preloadDir = new File(preloadPath);
+	public RDFPreloader(
+		RDFRunner runner, 
+		@Named("preload.enabled") boolean preloadEnabled, 
+		@Named("preload.path") String preloadPath) throws FileNotFoundException {
 		
-		if (preloadDir.exists()) {
-			this.preloadDir = Optional.of(preloadDir);
+		this.runner = runner;
+		
+		if (preloadEnabled) {
+			var preloadFile = new File(preloadPath);
+			if (preloadFile.exists()) {
+				this.preloadDir = Optional.of(preloadFile);
+			}
+			else {
+				throw new FileNotFoundException("Preload path " + preloadPath + " specified but not found");
+			}
 		}
 		else {
-			throw new FileNotFoundException("Preload path " + preloadPath + " specified but not found");
+			this.preloadDir = Optional.empty();
 		}
 	}
 	

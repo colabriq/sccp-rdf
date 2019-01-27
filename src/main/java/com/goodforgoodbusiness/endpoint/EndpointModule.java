@@ -16,6 +16,7 @@ import org.apache.jena.query.Dataset;
 import org.apache.jena.query.DatasetFactory;
 import org.apache.jena.rdf.model.Model;
 import org.apache.jena.sparql.core.DatasetGraphMaker;
+import org.apache.log4j.Logger;
 
 import com.goodforgoodbusiness.endpoint.dht.ClaimCollector;
 import com.goodforgoodbusiness.endpoint.dht.ClaimContextMap;
@@ -37,6 +38,8 @@ import com.google.inject.name.Names;
 import spark.Route;
 
 public class EndpointModule extends AbstractModule {
+	private static final Logger log = Logger.getLogger(EndpointModule.class);
+	
 	private final Configuration config;
 	
 	public EndpointModule(Configuration config) {
@@ -51,6 +54,8 @@ public class EndpointModule extends AbstractModule {
 		Names.bindProperties(binder(), props);
 		
 		if (config.getBoolean("dht.enabled")) {
+			log.info("Configuring DHT-backed endpoint");
+			
 			bind(RDFRunner.class).to(DHTRDFRunner.class);
 			
 			bind(DHTEngineClient.class);
@@ -61,6 +66,8 @@ public class EndpointModule extends AbstractModule {
 			bind(Graph.class).to(DHTGraph.class);
 		}
 		else {
+			log.info("Configuring standalone endpoint");
+			
 			bind(RDFRunner.class);
 			bind(Graph.class).to(GraphMem.class);
 		}
@@ -93,6 +100,7 @@ public class EndpointModule extends AbstractModule {
 		var configFile = args.length > 0 ? args[0] : "env.properties";
 		var injector = createInjector(new EndpointModule(loadConfig(EndpointModule.class, configFile)));
 		
+		log.info("Checking for preload...");
 		injector.getInstance(RDFPreloader.class).preload();
 		injector.getInstance(Webapp.class).start();
 	}
