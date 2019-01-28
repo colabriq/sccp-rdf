@@ -92,10 +92,6 @@ public class EndpointModule extends AbstractModule {
 		return dataset.getDefaultModel();
 	}
 	
-	public void preload() {
-		
-	}
-	
 	public static void main(String[] args) throws Exception {
 		var configFile = args.length > 0 ? args[0] : "env.properties";
 		var injector = createInjector(new EndpointModule(loadConfig(EndpointModule.class, configFile)));
