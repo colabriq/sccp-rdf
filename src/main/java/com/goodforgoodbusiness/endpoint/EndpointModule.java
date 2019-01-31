@@ -22,7 +22,7 @@ import com.goodforgoodbusiness.endpoint.dht.ClaimCollector;
 import com.goodforgoodbusiness.endpoint.dht.ClaimContextMap;
 import com.goodforgoodbusiness.endpoint.dht.DHTAccessGovernor;
 import com.goodforgoodbusiness.endpoint.dht.DHTEngineClient;
-import com.goodforgoodbusiness.endpoint.dht.DHTGraph;
+import com.goodforgoodbusiness.endpoint.dht.DHTGraphProvider;
 import com.goodforgoodbusiness.endpoint.dht.DHTRDFRunner;
 import com.goodforgoodbusiness.endpoint.rdf.RDFPreloader;
 import com.goodforgoodbusiness.endpoint.rdf.RDFRunner;
@@ -63,7 +63,7 @@ public class EndpointModule extends AbstractModule {
 			bind(ClaimCollector.class);
 			bind(ClaimContextMap.class);
 			
-			bind(Graph.class).to(DHTGraph.class);
+			bind(Graph.class).toProvider(DHTGraphProvider.class);
 		}
 		else {
 			log.info("Configuring standalone endpoint");

@@ -1,27 +1,33 @@
 package com.goodforgoodbusiness.endpoint.dht;
 
+import org.apache.jena.graph.Graph;
 import org.apache.jena.graph.impl.TripleStore;
 import org.apache.jena.mem.GraphMem;
 
 import com.google.inject.Inject;
+import com.google.inject.Provider;
 import com.google.inject.Singleton;
 
 @Singleton
-public class DHTGraph extends GraphMem {
+public class DHTGraphProvider implements Provider<Graph> {
 	private final DHTEngineClient client;
 	private final ClaimContextMap contextMap;
 	private final ClaimCollector collector;
 	
 	@Inject
-	public DHTGraph(DHTEngineClient client, ClaimContextMap contextMap, ClaimCollector collector) {
+	public DHTGraphProvider(DHTEngineClient client, ClaimContextMap contextMap, ClaimCollector collector) {
 		this.client = client;
 		this.contextMap = contextMap;
 		this.collector = collector;
-		
 	}
 	
 	@Override
-	protected TripleStore createTripleStore() {
-		return new DHTTripleStore(this, client, contextMap, collector);
+	public Graph get() {
+		return new GraphMem() {
+			@Override
+			protected TripleStore createTripleStore() {
+				return new DHTTripleStore(this, client, contextMap, collector);
+			}
+		};
 	}
 }
