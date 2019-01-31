@@ -2,6 +2,7 @@ package com.goodforgoodbusiness.endpoint;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 import org.apache.jena.sparql.resultset.ResultsFormat;
 
@@ -44,19 +45,19 @@ public class MIMEMappings {
 	
 	private static final String DEFAULT_RESULT_MIME_TYPE = "application/sparql-results+xml";
 	
-	public static String getContentType(String acceptHeader) {
-		if (acceptHeader != null) {
-			String contentType = MIMEParse.bestMatch(RESULT_MIME_TYPES, acceptHeader);
+	public static Optional<String> getContentType(Optional<String> acceptHeader) {
+		if (acceptHeader.isPresent()) {
+			String contentType = MIMEParse.bestMatch(RESULT_MIME_TYPES, acceptHeader.get());
 			
 			if (contentType == null || contentType.length() == 0) {
-				return null;
+				return Optional.empty();
 			}
 			else {
-				return contentType;
+				return Optional.of(contentType);
 			}
 		}
 		else {
-			return DEFAULT_RESULT_MIME_TYPE;
+			return Optional.of(DEFAULT_RESULT_MIME_TYPE);
 		}
 	}
 	

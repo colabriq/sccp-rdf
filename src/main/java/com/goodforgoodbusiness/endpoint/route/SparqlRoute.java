@@ -2,6 +2,7 @@ package com.goodforgoodbusiness.endpoint.route;
 
 import java.io.IOException;
 import java.io.OutputStream;
+import java.util.Optional;
 
 import org.apache.log4j.Logger;
 
@@ -60,20 +61,20 @@ public class SparqlRoute implements Route {
 	public Object doQuery(Request req, Response res, String sparqlStmt) throws BadRequestException, IOException {
 		log.info("Query with accept=" + req.headers("accept"));
 		
-		var contentType = MIMEMappings.getContentType(req.headers("accept"));
+		var contentType = MIMEMappings.getContentType(Optional.ofNullable(req.headers("accept")));
 		
-		if (contentType == null) {
+		if (!contentType.isPresent()) {
 			throw new BadRequestException("Must specify a valid accept header");
 		}
 		
 		log.info("Replying with contentType=" + contentType);
 		
 		res.status(200);
-		res.type(contentType);
-		res.raw().setContentType(contentType);
+		res.type(contentType.get());
+		res.raw().setContentType(contentType.get());
 
 		try (OutputStream stream = res.raw().getOutputStream()) {
-			runner.query(sparqlStmt, contentType, stream);
+			runner.query(sparqlStmt, contentType.get(), stream);
 			return 200;
 		}
 		catch (RDFException e) {
