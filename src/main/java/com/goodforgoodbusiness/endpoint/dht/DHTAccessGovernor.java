@@ -54,7 +54,7 @@ public class DHTAccessGovernor {
 		if (tracker != null) {
 			// calculate 'wider' combinations that would have netted this triple
 			var any = combinations(triple)
-				.stream()
+				.parallelStream()
 				.filter(c -> (tracker.getIfPresent(c) != null))
 				.findFirst()
 				.map(c -> true)
@@ -96,6 +96,7 @@ public class DHTAccessGovernor {
 				new Triple(sub, ANY, ANY),
 				new Triple(ANY, ANY, obj)
 			)
+			.parallel()
 			// remove (ANY, ANY, ANY) and (ANY, pre, ANY)
 			// these can crop up if you specified an incomplete Triple
 			.filter(t -> !(t.getSubject().equals(ANY) && t.getObject().equals(ANY)))

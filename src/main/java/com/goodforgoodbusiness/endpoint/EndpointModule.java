@@ -30,6 +30,7 @@ import com.goodforgoodbusiness.endpoint.route.SparqlRoute;
 import com.goodforgoodbusiness.endpoint.route.UploadRoute;
 import com.goodforgoodbusiness.endpoint.route.dht.DHTSparqlRoute;
 import com.goodforgoodbusiness.endpoint.route.dht.DHTUploadRoute;
+import com.goodforgoodbusiness.shared.LogConfigurer;
 import com.goodforgoodbusiness.webapp.Resource;
 import com.goodforgoodbusiness.webapp.Webapp;
 import com.google.inject.AbstractModule;
@@ -97,8 +98,10 @@ public class EndpointModule extends AbstractModule {
 	}
 	
 	public static void main(String[] args) throws Exception {
-		var configFile = args.length > 0 ? args[0] : "env.properties";
-		var injector = createInjector(new EndpointModule(loadConfig(EndpointModule.class, configFile)));
+		var config = loadConfig(EndpointModule.class,  args.length > 0 ? args[0] : "env.properties");
+		LogConfigurer.init(EndpointModule.class, config.getString("log.properties", "log4j.properties"));
+		
+		var injector = createInjector(new EndpointModule(config));
 		
 		log.info("Checking for preload...");
 		injector.getInstance(RDFPreloader.class).preload();

@@ -6,6 +6,7 @@ import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.http.HttpClient;
+import java.net.http.HttpClient.Version;
 import java.net.http.HttpRequest;
 import java.net.http.HttpRequest.BodyPublishers;
 import java.net.http.HttpResponse.BodyHandlers;
@@ -30,7 +31,12 @@ import com.google.inject.name.Named;
 public class DHTEngineClient {
 	private static final Logger log = Logger.getLogger(DHTEngineClient.class);
 	
-	private static final HttpClient HTTP_CLIENT = HttpClient.newBuilder().build();
+	private static final HttpClient HTTP_CLIENT = 
+		HttpClient
+			.newBuilder()
+			.version(Version.HTTP_1_1)
+			.build()
+		;
 	
 	private static final String MATCHES_PATH = "/matches";
 	private static final String CLAIMS_PATH = "/claims";
