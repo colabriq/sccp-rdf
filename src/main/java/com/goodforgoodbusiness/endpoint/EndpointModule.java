@@ -19,15 +19,17 @@ import org.apache.jena.sparql.core.DatasetGraphMaker;
 import org.apache.log4j.Logger;
 
 import com.goodforgoodbusiness.endpoint.dht.ClaimCollector;
-import com.goodforgoodbusiness.endpoint.dht.ClaimContextMap;
+import com.goodforgoodbusiness.endpoint.dht.ClaimContext;
 import com.goodforgoodbusiness.endpoint.dht.DHTAccessGovernor;
 import com.goodforgoodbusiness.endpoint.dht.DHTEngineClient;
 import com.goodforgoodbusiness.endpoint.dht.DHTGraphProvider;
-import com.goodforgoodbusiness.endpoint.dht.DHTRDFRunner;
+import com.goodforgoodbusiness.endpoint.dht.DHTSubmitter;
 import com.goodforgoodbusiness.endpoint.rdf.RDFPreloader;
 import com.goodforgoodbusiness.endpoint.rdf.RDFRunner;
 import com.goodforgoodbusiness.endpoint.route.SparqlRoute;
 import com.goodforgoodbusiness.endpoint.route.UploadRoute;
+import com.goodforgoodbusiness.endpoint.route.dht.DHTSparqlRoute;
+import com.goodforgoodbusiness.endpoint.route.dht.DHTUploadRoute;
 import com.goodforgoodbusiness.webapp.Resource;
 import com.goodforgoodbusiness.webapp.Webapp;
 import com.google.inject.AbstractModule;
@@ -53,33 +55,35 @@ public class EndpointModule extends AbstractModule {
 		Properties props = getProperties(config);
 		Names.bindProperties(binder(), props);
 		
-		if (config.getBoolean("dht.enabled")) {
-			log.info("Configuring DHT-backed endpoint");
-			
-			bind(RDFRunner.class).to(DHTRDFRunner.class);
-			
-			bind(DHTEngineClient.class);
-			bind(DHTAccessGovernor.class);
-			bind(ClaimCollector.class);
-			bind(ClaimContextMap.class);
-			
-			bind(Graph.class).toProvider(DHTGraphProvider.class);
-		}
-		else {
-			log.info("Configuring standalone endpoint");
-			
-			bind(RDFRunner.class);
-			bind(Graph.class).to(GraphMem.class);
-		}
-		
-		bind(Webapp.class);
+		bind(RDFRunner.class);
 		bind(RDFPreloader.class);
+		bind(Webapp.class);
 		
 		var routes = newMapBinder(binder(), Resource.class, Route.class);
 		
-		routes.addBinding(post("/sparql")).to(SparqlRoute.class);
-		routes.addBinding(get("/sparql")).to(SparqlRoute.class);
-		routes.addBinding(post("/upload")).to(UploadRoute.class);
+		if (config.getBoolean("dht.enabled")) {
+			log.info("Configuring DHT-backed endpoint");
+			bind(Graph.class).toProvider(DHTGraphProvider.class);
+			
+			bind(DHTEngineClient.class);
+			bind(DHTSubmitter.class);
+			bind(DHTAccessGovernor.class);
+			
+			bind(ClaimContext.class);
+			bind(ClaimCollector.class);
+			
+			routes.addBinding(post("/sparql")).to(DHTSparqlRoute.class);
+			routes.addBinding(get("/sparql")).to(DHTSparqlRoute.class);
+			routes.addBinding(post("/upload")).to(DHTUploadRoute.class);
+		}
+		else {
+			log.info("Configuring standalone endpoint");
+			bind(Graph.class).to(GraphMem.class);
+			
+			routes.addBinding(post("/sparql")).to(SparqlRoute.class);
+			routes.addBinding(get("/sparql")).to(SparqlRoute.class);
+			routes.addBinding(post("/upload")).to(UploadRoute.class);
+		}
 	}
 	
 	@Provides @Singleton

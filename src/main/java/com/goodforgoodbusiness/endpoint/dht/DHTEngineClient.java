@@ -1,7 +1,6 @@
 package com.goodforgoodbusiness.endpoint.dht;
 
 import static java.util.Collections.emptyList;
-import static java.util.Collections.singletonList;
 
 import java.io.IOException;
 import java.net.URI;
@@ -75,7 +74,7 @@ public class DHTEngineClient {
 		}
 	}
 	
-	public List<SubmittedClaim> submit(SubmittableClaim claim) throws URISyntaxException, IOException, InterruptedException {
+	public SubmittedClaim submit(SubmittableClaim claim) throws URISyntaxException, IOException, InterruptedException {
 		log.info("Submitting claim: " + claim);
 		
 		// invalidate any cached results for triples in claim
@@ -95,11 +94,10 @@ public class DHTEngineClient {
 		var response = HTTP_CLIENT.send(request, BodyHandlers.ofString());
 		
 		if (response.statusCode() == 200) {
-			// leave the door open for multiple claims?
-			return singletonList(new SubmittedClaim(
+			return new SubmittedClaim(
 				claim,
 				JSON.decode(response.body(), SubmitResult.class)
-			));
+			);
 		}
 		else {
 			throw new IOException("DHT response was " + response.statusCode());

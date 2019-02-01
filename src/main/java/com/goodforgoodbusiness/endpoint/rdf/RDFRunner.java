@@ -136,7 +136,7 @@ public class RDFRunner {
 		log.info("Loaded data (now " + model.size() + ")");
 	}
 	
-	private void doImport(InputStream stream, String lang) throws RDFException {
+	protected void doImport(InputStream stream, String lang) throws RDFException {
 		// read in to a separate model so we can control the triples
 		var newDataset = Skolemizer.autoSkolemizingDataset();
 		

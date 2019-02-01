@@ -11,11 +11,11 @@ import com.google.inject.Singleton;
 @Singleton
 public class DHTGraphProvider implements Provider<Graph> {
 	private final DHTEngineClient client;
-	private final ClaimContextMap contextMap;
+	private final ClaimContext contextMap;
 	private final ClaimCollector collector;
 	
 	@Inject
-	public DHTGraphProvider(DHTEngineClient client, ClaimContextMap contextMap, ClaimCollector collector) {
+	public DHTGraphProvider(DHTEngineClient client, ClaimContext contextMap, ClaimCollector collector) {
 		this.client = client;
 		this.contextMap = contextMap;
 		this.collector = collector;

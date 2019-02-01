@@ -43,6 +43,14 @@ public class MIMEMappings {
 			.put("rdf", "RDF/XML")
 			.build();
 	
+	public static Map<String, String> CONTENT_TYPES = 
+		ImmutableMap.<String, String>builder()
+			.put("ttl", "text/turtle")
+			.put("xml", "application/rdf+xml")
+			.put("n3", "text/n3")
+			.put("rdf", "application/rdf+xml")
+			.build();
+	
 	private static final String DEFAULT_RESULT_MIME_TYPE = "application/sparql-results+xml";
 	
 	public static Optional<String> getContentType(Optional<String> acceptHeader) {

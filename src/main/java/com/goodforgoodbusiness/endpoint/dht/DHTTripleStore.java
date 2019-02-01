@@ -17,10 +17,10 @@ public class DHTTripleStore extends GraphTripleStoreBase implements TripleStore 
 	private static final Logger log = Logger.getLogger(DHTTripleStore.class);
 	
 	private final DHTEngineClient client;
-	private final ClaimContextMap contextMap;
+	private final ClaimContext contextMap;
 	private final ClaimCollector collector;
 	
-	public DHTTripleStore(Graph parent, DHTEngineClient client, ClaimContextMap contextMap, ClaimCollector collector) {
+	public DHTTripleStore(Graph parent, DHTEngineClient client, ClaimContext contextMap, ClaimCollector collector) {
 		super(
 			parent,
             new NodeToTriplesMapMem( Field.fieldSubject, Field.fieldPredicate, Field.fieldObject ),

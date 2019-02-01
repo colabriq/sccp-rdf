@@ -83,37 +83,11 @@ public class SparqlRoute implements Route {
 	}
 
 	public Object doUpdate(Request req, Response res, String sparqlStmt) throws BadRequestException {
-//		  if dhtgraph is not None:
-//		    context = dhtstore.new_context()
-//		    dhtgraph.update(stmt)
-//		    
-//		    # any novel claim made?
-//		    claim = context.get_claim()
-//		    if claim:
-//		      submission = claim.submit()
-//		    
-//		      # save claim in to localstore
-//		      submission.record(localstore)
-//		    
-//		      # return claim id
-//		      result = { 'id': submission.claim_id }
-//		    else:
-//		      result = { 'id': None }
-//
-//		    return Response(
-//		      json.dumps(result, indent=2) + '\n\n',
-//		      mimetype='application/json'
-//		    )
-//		  else:
-//		    localgraph.update(stmt)
-//		    return Response(
-//		      json.dumps({ 'id': None }, indent=2) + '\n\n',
-//		      mimetype='application/json'
-//		    )
+		res.type(ContentType.json.getContentTypeString());
 		
 		try {
 			runner.update(sparqlStmt);
-			return "OK";
+			return "{}";
 		}
 		catch (RDFException e) {
 			throw new BadRequestException(e.getMessage(), e);
