@@ -11,7 +11,6 @@ import java.util.Properties;
 
 import org.apache.commons.configuration2.Configuration;
 import org.apache.jena.graph.Graph;
-import org.apache.jena.mem.GraphMem;
 import org.apache.jena.query.Dataset;
 import org.apache.jena.query.DatasetFactory;
 import org.apache.jena.rdf.model.Model;
@@ -26,6 +25,7 @@ import com.goodforgoodbusiness.endpoint.dht.DHTGraphProvider;
 import com.goodforgoodbusiness.endpoint.dht.DHTSubmitter;
 import com.goodforgoodbusiness.endpoint.rdf.RDFPreloader;
 import com.goodforgoodbusiness.endpoint.rdf.RDFRunner;
+import com.goodforgoodbusiness.endpoint.rdf.StandaloneGraphProvider;
 import com.goodforgoodbusiness.endpoint.route.SparqlRoute;
 import com.goodforgoodbusiness.endpoint.route.UploadRoute;
 import com.goodforgoodbusiness.endpoint.route.dht.DHTSparqlRoute;
@@ -79,7 +79,7 @@ public class EndpointModule extends AbstractModule {
 		}
 		else {
 			log.info("Configuring standalone endpoint");
-			bind(Graph.class).to(GraphMem.class);
+			bind(Graph.class).toProvider(StandaloneGraphProvider.class);
 			
 			routes.addBinding(post("/sparql")).to(SparqlRoute.class);
 			routes.addBinding(get("/sparql")).to(SparqlRoute.class);

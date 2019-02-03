@@ -4,6 +4,7 @@ import org.apache.jena.graph.Graph;
 import org.apache.jena.graph.impl.TripleStore;
 import org.apache.jena.mem.GraphMem;
 
+import com.goodforgoodbusiness.endpoint.dht.store.DHTTripleStore;
 import com.google.inject.Inject;
 import com.google.inject.Provider;
 import com.google.inject.Singleton;

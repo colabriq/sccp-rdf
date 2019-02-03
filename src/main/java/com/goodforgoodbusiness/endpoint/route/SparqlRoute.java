@@ -67,7 +67,7 @@ public class SparqlRoute implements Route {
 			throw new BadRequestException("Must specify a valid accept header");
 		}
 		
-		log.info("Replying with contentType=" + contentType);
+		log.info("Replying with contentType=" + contentType.get());
 		
 		res.status(200);
 		res.type(contentType.get());

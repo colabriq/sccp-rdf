@@ -16,14 +16,21 @@ import com.google.inject.Singleton;
  */
 @Singleton
 public class ClaimContext {
-	private final ConcurrentHashMap<Triple, Set<Claim>> map = new ConcurrentHashMap<>();
+	private final Set<Claim> claimSet = newSetFromMap(new ConcurrentHashMap<Claim, Boolean>());
+	private final ConcurrentHashMap<Triple, Set<Claim>> tripleMap = new ConcurrentHashMap<>();
+	
+	public boolean contains(Claim claim) {
+		return claimSet.contains(claim);
+	}
 	
 	public Set<Claim> get(Triple trup) {
-		return map.getOrDefault(trup, Collections.emptySet());
+		return tripleMap.getOrDefault(trup, Collections.emptySet());
 	}
 
 	public void add(Triple trup, Claim claim) {
-		map.computeIfAbsent(trup, t -> newSetFromMap(new ConcurrentHashMap<>()));
-		map.get(trup).add(claim);
+		claimSet.add(claim);
+		
+		tripleMap.computeIfAbsent(trup, t -> newSetFromMap(new ConcurrentHashMap<>()));
+		tripleMap.get(trup).add(claim);
 	}
 }
