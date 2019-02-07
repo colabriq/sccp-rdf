@@ -66,8 +66,6 @@ public class AdvanceMappingStoreTest {
 		
 		store.delete(t3);
 		
-		System.runFinalization();
-		
 		var pattern3 = new Triple(Node.ANY, Node.ANY, Node.ANY);
 		System.out.println("size = " + store.size());
 		System.out.println("pattern = " + pattern3);

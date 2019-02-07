@@ -19,6 +19,7 @@ import com.goodforgoodbusiness.model.StoredClaim;
 import com.goodforgoodbusiness.model.SubmitResult;
 import com.goodforgoodbusiness.model.SubmittableClaim;
 import com.goodforgoodbusiness.model.SubmittedClaim;
+import com.goodforgoodbusiness.model.TriTuple;
 import com.goodforgoodbusiness.shared.URIModifier;
 import com.goodforgoodbusiness.shared.encode.JSON;
 import com.goodforgoodbusiness.shared.treesort.TreeSort;
@@ -57,7 +58,7 @@ public class DHTEngineClient {
 			var uri = URIModifier
 				.from(dhtURI)
 				.appendPath(MATCHES_PATH)
-				.addParam("pattern", JSON.encode(trup).toString())
+				.addParam("pattern", JSON.encode(TriTuple.from(trup)).toString())
 				.build();
 			
 			var request = HttpRequest

@@ -8,6 +8,7 @@ import java.util.Set;
 import java.util.stream.Stream;
 
 import org.apache.jena.graph.Triple;
+import org.apache.log4j.Logger;
 
 import com.google.common.cache.Cache;
 import com.google.common.cache.CacheBuilder;
@@ -26,6 +27,8 @@ import com.google.inject.name.Named;
  */
 @Singleton
 public class DHTAccessGovernor {
+	private static final Logger log = Logger.getLogger(DHTAccessGovernor.class);
+	
 	// may eventually want to store something as the cache value
 	// but for the moment, only need to see if it's present at all
 	private static final Object PRESENT = new Object();
@@ -57,11 +60,10 @@ public class DHTAccessGovernor {
 				.parallelStream()
 				.filter(c -> (tracker.getIfPresent(c) != null))
 				.findFirst()
-				.map(c -> true)
-				.orElse(false)
 			;
 			
-			if (any) {
+			if (any.isPresent()) {
+				if (log.isDebugEnabled()) log.debug("Deny search for " + triple + " as recent search for " + any.get());
 				return false; // present
 			}
 			else {

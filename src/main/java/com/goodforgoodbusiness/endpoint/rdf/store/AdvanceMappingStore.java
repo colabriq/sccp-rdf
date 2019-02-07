@@ -1,11 +1,12 @@
 package com.goodforgoodbusiness.endpoint.rdf.store;
 
 import static com.goodforgoodbusiness.shared.TripleUtil.ANYANYANY;
-import static com.goodforgoodbusiness.shared.TripleUtil.makePatterns;
+import static org.apache.jena.graph.Node.ANY;
 
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
+import java.util.stream.Stream;
 
 import org.apache.jena.graph.Node;
 import org.apache.jena.graph.Triple;
@@ -25,6 +26,34 @@ import com.goodforgoodbusiness.shared.ObservableSet;
  * Takes more memory but likely a bit faster than the s/p/o-style store.
  */
 public class AdvanceMappingStore implements TripleStore {
+	private static Stream<Triple> mappings(Triple triple) {
+		var sub = triple.getSubject();
+		var pre = triple.getPredicate();
+		var obj = triple.getObject();
+		
+		if (sub == null || sub.equals(ANY) || pre == null || pre.equals(ANY) || obj == null || obj.equals(ANY)) {
+			throw new IllegalArgumentException("Triples in store must be concrete (no ANY)");
+		}
+		
+		return Stream.of(
+			// pick 3
+			new Triple(sub, pre, obj),
+			
+			// pick 2
+			new Triple(sub, pre, ANY),
+			new Triple(sub, ANY, obj),
+			new Triple(ANY, pre, obj),
+			
+			// pick 1
+			new Triple(sub, ANY, ANY),
+			new Triple(ANY, pre, ANY),
+			new Triple(ANY, ANY, obj),
+			
+			// pick 0
+			new Triple(ANY, ANY, ANY)
+		);
+	}
+	
 	private Map<Triple, ObservableSet<Triple>> patternMap = new HashMap<>();
 	
 	public AdvanceMappingStore() {
@@ -47,16 +76,12 @@ public class AdvanceMappingStore implements TripleStore {
 
 	@Override
 	public void add(Triple t) {
-		for (var pattern : makePatterns(t)) {
-			getPatternSet(pattern).add(t);
-		}
+		mappings(t).forEach(p -> getPatternSet(p).add(t));
 	}
 
 	@Override
 	public void delete(Triple t) {
-		for (var pattern : makePatterns(t)) {
-			getPatternSet(pattern).remove(t);
-		}
+		mappings(t).forEach(p -> getPatternSet(p).remove(t));
 	}
 
 	@Override

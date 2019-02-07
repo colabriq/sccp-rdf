@@ -31,8 +31,6 @@ public class SparqlRoute implements Route {
 	
 	@Override
 	public Object handle(Request req, Response res) throws Exception {
-		req.requestMethod();
-		
 		// post data
 		if (req.contentType() != null) {
 			if (req.contentType().toLowerCase().equals(ContentType.sparql_query.getContentTypeString())) {

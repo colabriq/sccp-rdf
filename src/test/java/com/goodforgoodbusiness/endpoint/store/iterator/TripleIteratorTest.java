@@ -74,6 +74,8 @@ public class TripleIteratorTest {
 
 		var iter2 = store2.find(new Triple(Node.ANY, NodeFactory.createURI("urn:predicate"), Node.ANY));
 		
+		System.out.println(iter2.hasNext() + " -> " + iter2.next());
+		
 		store2.delete(
 			new Triple(
 				NodeFactory.createURI("urn:s2"),
@@ -82,7 +84,6 @@ public class TripleIteratorTest {
 			)
 		);
 		
-		System.out.println(iter2.hasNext() + " -> " + iter2.next());
 		System.out.println(iter2.hasNext() + " -> " + iter2.next());
 		System.out.println(iter2.hasNext());
 	}
