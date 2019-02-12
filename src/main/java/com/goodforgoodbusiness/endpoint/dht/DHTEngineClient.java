@@ -70,6 +70,8 @@ public class DHTEngineClient {
 			
 			if (response.statusCode() == 200) {
 				List<StoredClaim> claims = StoredClaim.fromJson(response.body());
+				log.info("Results=" + claims.size());
+				
 				return TreeSort.sort(claims, true);
 			}
 			else {

@@ -12,6 +12,7 @@ import org.apache.jena.graph.Node;
 import org.apache.jena.graph.Triple;
 import org.apache.jena.graph.impl.TripleStore;
 import org.apache.jena.util.iterator.ExtendedIterator;
+import org.apache.log4j.Logger;
 
 import com.goodforgoodbusiness.endpoint.rdf.store.iterator.NodeIterator;
 import com.goodforgoodbusiness.endpoint.rdf.store.iterator.TripleIterator;
@@ -26,6 +27,8 @@ import com.goodforgoodbusiness.shared.ObservableSet;
  * Takes more memory but likely a bit faster than the s/p/o-style store.
  */
 public class AdvanceMappingStore implements TripleStore {
+	private static final Logger log = Logger.getLogger(AdvanceMappingStore.class);
+	
 	private static Stream<Triple> mappings(Triple triple) {
 		var sub = triple.getSubject();
 		var pre = triple.getPredicate();
@@ -101,7 +104,11 @@ public class AdvanceMappingStore implements TripleStore {
 	
 	@Override
 	public ExtendedIterator<Triple> find(Triple pattern) {
-		return new TripleIterator(getPatternSet(pattern));
+		if (log.isDebugEnabled()) log.debug("Pattern: " + pattern);
+		var patternSet = getPatternSet(pattern);
+		
+		if (log.isDebugEnabled()) log.debug("Results= " + patternSet.size());
+		return new TripleIterator(patternSet);
 	}
 
 	@Override

@@ -29,7 +29,7 @@ public class DHTTripleStore extends AdvanceMappingStore implements TripleStore {
 
 	public void add ( Triple trup ) {
 		collector.added(trup);
-		super.add(trup) ;
+		super.add(trup);
 	}
 
 	public void delete ( Triple trup ) {
