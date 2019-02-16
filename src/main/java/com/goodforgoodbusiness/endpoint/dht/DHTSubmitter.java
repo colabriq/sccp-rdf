@@ -3,39 +3,39 @@ package com.goodforgoodbusiness.endpoint.dht;
 import java.util.Optional;
 
 import com.goodforgoodbusiness.endpoint.rdf.RDFException;
-import com.goodforgoodbusiness.model.SubmittableClaim;
-import com.goodforgoodbusiness.model.SubmittedClaim;
+import com.goodforgoodbusiness.model.SubmittableContainer;
+import com.goodforgoodbusiness.model.SubmittedContainer;
 import com.google.inject.Inject;
 
 /**
- * Provides the logic level above raw submission of claims to the DHT
+ * Provides the logic level above raw submission of containers to the DHT
  */
 public class DHTSubmitter {
-	private final ClaimContext context;
+	private final ContainerContexts context;
 	private final DHTEngineClient client;
 	
 	@Inject
-	public DHTSubmitter(DHTEngineClient client, ClaimContext context) {
+	public DHTSubmitter(DHTEngineClient client, ContainerContexts context) {
 		this.client = client;
 		this.context = context;
 	}
 	
-	public Optional<SubmittedClaim> submit(SubmittableClaim submittableClaim) {
+	public Optional<SubmittedContainer> submit(SubmittableContainer submittableContainer) {
 		try {
 			// now see if anything has been collected
 			// if so, post it to the DHT
-			if (submittableClaim.isEmpty()) {
+			if (submittableContainer.isEmpty()) {
 				return Optional.empty();
 			}
 			else {
-				var submittedClaim = client.submit(submittableClaim);
+				var submittedContainer = client.submit(submittableContainer);
 
-				// record submitted claim ID in to any triples collected
-				submittableClaim
+				// record submitted container ID in to any triples collected
+				submittableContainer
 					.getTriples()
-					.forEach(trup -> context.add(trup, submittedClaim));
+					.forEach(trup -> context.add(trup, submittedContainer));
 				
-				return Optional.of(submittedClaim);
+				return Optional.of(submittedContainer);
 			}
 		}
 		catch (Exception e) {

@@ -6,22 +6,22 @@ import org.apache.jena.graph.impl.TripleStore;
 import org.apache.jena.util.iterator.ExtendedIterator;
 import org.apache.log4j.Logger;
 
-import com.goodforgoodbusiness.endpoint.dht.ClaimCollector;
-import com.goodforgoodbusiness.endpoint.dht.ClaimContext;
+import com.goodforgoodbusiness.endpoint.dht.ContainerCollector;
+import com.goodforgoodbusiness.endpoint.dht.ContainerContexts;
 import com.goodforgoodbusiness.endpoint.dht.DHTEngineClient;
 import com.goodforgoodbusiness.endpoint.rdf.store.AdvanceMappingStore;
 import com.goodforgoodbusiness.model.Link;
 import com.goodforgoodbusiness.model.Link.RelType;
-import com.goodforgoodbusiness.model.StoredClaim;
+import com.goodforgoodbusiness.model.StoredContainer;
 
 public class DHTTripleStore extends AdvanceMappingStore implements TripleStore {
 	private static final Logger log = Logger.getLogger(DHTTripleStore.class);
 	
 	private final DHTEngineClient client;
-	private final ClaimContext context;
-	private final ClaimCollector collector;
+	private final ContainerContexts context;
+	private final ContainerCollector collector;
 	
-	public DHTTripleStore(Graph parent, DHTEngineClient client, ClaimContext context, ClaimCollector collector) {
+	public DHTTripleStore(Graph parent, DHTEngineClient client, ContainerContexts context, ContainerCollector collector) {
 		this.client = client;
 		this.collector = collector;
 		this.context = context;
@@ -46,28 +46,28 @@ public class DHTTripleStore extends AdvanceMappingStore implements TripleStore {
 		
 		try {
 			// hit up the DHT for extra matches
-			for (StoredClaim claim : client.matches(trup)) {
-				log.debug("Matching claim " + claim.getId());
+			for (StoredContainer container : client.matches(trup)) {
+				log.debug("Matching container " + container.getId());
 				
-				if (context.contains(claim)) {
-					log.debug("(claim already processed)");
+				if (context.contains(container)) {
+					log.debug("(container already processed)");
 				}
 				else {
 					// call super delete/add rather than delete/add to avoid
-					// these received claims getting added to the claim we're building
-					// via the claimCollector. also, they are already wrapped.
+					// these received containers getting added to the container we're building
+					// via the containerCollector. also, they are already wrapped.
 					
-					claim.getRemoved()
+					container.getRemoved()
 						.forEach(t -> {
 							log.debug("Delete " + t);
-							context.add(t, claim);
+							context.add(t, container);
 							super.delete(t);
 						});
 					
-					claim.getAdded()
+					container.getAdded()
 						.forEach(t -> {
 							log.debug("Adding " + t);
-							context.add(t, claim);
+							context.add(t, container);
 							super.add(t);
 						});
 				}
@@ -78,8 +78,8 @@ public class DHTTripleStore extends AdvanceMappingStore implements TripleStore {
 		}
 		
 		return super.find(trup).mapWith(t -> {
-			for (var claim : context.get(t)) {
-				collector.linked(new Link(claim.getId(), RelType.CAUSED_BY));
+			for (var container : context.get(t)) {
+				collector.linked(new Link(container.getId(), RelType.CAUSED_BY));
 			}
 			
 			return t;

@@ -17,8 +17,8 @@ import org.apache.jena.rdf.model.Model;
 import org.apache.jena.sparql.core.DatasetGraphMaker;
 import org.apache.log4j.Logger;
 
-import com.goodforgoodbusiness.endpoint.dht.ClaimCollector;
-import com.goodforgoodbusiness.endpoint.dht.ClaimContext;
+import com.goodforgoodbusiness.endpoint.dht.ContainerCollector;
+import com.goodforgoodbusiness.endpoint.dht.ContainerContexts;
 import com.goodforgoodbusiness.endpoint.dht.DHTAccessGovernor;
 import com.goodforgoodbusiness.endpoint.dht.DHTEngineClient;
 import com.goodforgoodbusiness.endpoint.dht.DHTGraphProvider;
@@ -70,8 +70,8 @@ public class EndpointModule extends AbstractModule {
 			bind(DHTSubmitter.class);
 			bind(DHTAccessGovernor.class);
 			
-			bind(ClaimContext.class);
-			bind(ClaimCollector.class);
+			bind(ContainerContexts.class);
+			bind(ContainerCollector.class);
 			
 			routes.addBinding(post("/sparql")).to(DHTSparqlRoute.class);
 			routes.addBinding(get("/sparql")).to(DHTSparqlRoute.class);

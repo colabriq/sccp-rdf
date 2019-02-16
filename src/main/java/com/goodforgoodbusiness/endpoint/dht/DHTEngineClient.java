@@ -15,10 +15,10 @@ import java.util.List;
 import org.apache.jena.graph.Triple;
 import org.apache.log4j.Logger;
 
-import com.goodforgoodbusiness.model.StoredClaim;
+import com.goodforgoodbusiness.model.StoredContainer;
 import com.goodforgoodbusiness.model.SubmitResult;
-import com.goodforgoodbusiness.model.SubmittableClaim;
-import com.goodforgoodbusiness.model.SubmittedClaim;
+import com.goodforgoodbusiness.model.SubmittableContainer;
+import com.goodforgoodbusiness.model.SubmittedContainer;
 import com.goodforgoodbusiness.model.TriTuple;
 import com.goodforgoodbusiness.shared.URIModifier;
 import com.goodforgoodbusiness.shared.encode.JSON;
@@ -40,7 +40,7 @@ public class DHTEngineClient {
 		;
 	
 	private static final String MATCHES_PATH = "/matches";
-	private static final String CLAIMS_PATH = "/claims";
+	private static final String CONTAINERS_PATH = "/containers";
 	
 	private final URI dhtURI;
 	private final DHTAccessGovernor governor;
@@ -51,7 +51,7 @@ public class DHTEngineClient {
 		this.governor = governor;
 	}
 	
-	public List<StoredClaim> matches(Triple trup) throws URISyntaxException, IOException, InterruptedException {
+	public List<StoredContainer> matches(Triple trup) throws URISyntaxException, IOException, InterruptedException {
 		if (governor.allow(trup)) {
 			log.info("Finding matches for: " + trup);
 			
@@ -69,10 +69,10 @@ public class DHTEngineClient {
 			var response = HTTP_CLIENT.send(request, BodyHandlers.ofString());
 			
 			if (response.statusCode() == 200) {
-				List<StoredClaim> claims = StoredClaim.fromJson(response.body());
-				log.info("Results=" + claims.size());
+				List<StoredContainer> containers = StoredContainer.fromJson(response.body());
+				log.info("Results=" + containers.size());
 				
-				return TreeSort.sort(claims, true);
+				return TreeSort.sort(containers, true);
 			}
 			else {
 				throw new IOException("DHT response was " + response.statusCode());
@@ -83,28 +83,28 @@ public class DHTEngineClient {
 		}
 	}
 	
-	public SubmittedClaim submit(SubmittableClaim claim) throws URISyntaxException, IOException, InterruptedException {
-		log.info("Submitting claim: " + claim);
+	public SubmittedContainer submit(SubmittableContainer container) throws URISyntaxException, IOException, InterruptedException {
+		log.info("Submitting container: " + container);
 		
-		// invalidate any cached results for triples in claim
-		claim.getTriples().forEach(governor::invalidate);
+		// invalidate any cached results for triples in container
+		container.getTriples().forEach(governor::invalidate);
 		
 		var uri = URIModifier
 			.from(dhtURI)
-			.appendPath(CLAIMS_PATH)
+			.appendPath(CONTAINERS_PATH)
 			.build();
 
 		var request = HttpRequest
 			.newBuilder(uri)
 			.header("Content-Type", ContentType.json.getContentTypeString())
-			.POST(BodyPublishers.ofString(JSON.encode(claim).toString()))
+			.POST(BodyPublishers.ofString(JSON.encode(container).toString()))
 			.build();
 		
 		var response = HTTP_CLIENT.send(request, BodyHandlers.ofString());
 		
 		if (response.statusCode() == 200) {
-			return new SubmittedClaim(
-				claim,
+			return new SubmittedContainer(
+				container,
 				JSON.decode(response.body(), SubmitResult.class)
 			);
 		}
