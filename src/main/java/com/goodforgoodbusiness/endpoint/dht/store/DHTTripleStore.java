@@ -12,7 +12,6 @@ import com.goodforgoodbusiness.endpoint.dht.DHTEngineClient;
 import com.goodforgoodbusiness.endpoint.rdf.store.AdvanceMappingStore;
 import com.goodforgoodbusiness.model.Link;
 import com.goodforgoodbusiness.model.Link.RelType;
-import com.goodforgoodbusiness.model.StoredContainer;
 
 public class DHTTripleStore extends AdvanceMappingStore implements TripleStore {
 	private static final Logger log = Logger.getLogger(DHTTripleStore.class);
@@ -46,7 +45,7 @@ public class DHTTripleStore extends AdvanceMappingStore implements TripleStore {
 		
 		try {
 			// hit up the DHT for extra matches
-			for (StoredContainer container : client.matches(trup)) {
+			for (var container : client.matches(trup)) {
 				log.debug("Matching container " + container.getId());
 				
 				if (context.contains(container)) {

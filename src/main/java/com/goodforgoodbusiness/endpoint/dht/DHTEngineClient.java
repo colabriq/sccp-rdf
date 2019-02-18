@@ -15,7 +15,7 @@ import java.util.List;
 import org.apache.jena.graph.Triple;
 import org.apache.log4j.Logger;
 
-import com.goodforgoodbusiness.model.StoredContainer;
+import com.goodforgoodbusiness.model.StorableContainer;
 import com.goodforgoodbusiness.model.SubmitResult;
 import com.goodforgoodbusiness.model.SubmittableContainer;
 import com.goodforgoodbusiness.model.SubmittedContainer;
@@ -51,7 +51,7 @@ public class DHTEngineClient {
 		this.governor = governor;
 	}
 	
-	public List<StoredContainer> matches(Triple trup) throws URISyntaxException, IOException, InterruptedException {
+	public List<StorableContainer> matches(Triple trup) throws URISyntaxException, IOException, InterruptedException {
 		if (governor.allow(trup)) {
 			log.info("Finding matches for: " + trup);
 			
@@ -69,7 +69,7 @@ public class DHTEngineClient {
 			var response = HTTP_CLIENT.send(request, BodyHandlers.ofString());
 			
 			if (response.statusCode() == 200) {
-				List<StoredContainer> containers = StoredContainer.fromJson(response.body());
+				var containers = StorableContainer.fromJson(response.body());
 				log.info("Results=" + containers.size());
 				
 				return TreeSort.sort(containers, true);
