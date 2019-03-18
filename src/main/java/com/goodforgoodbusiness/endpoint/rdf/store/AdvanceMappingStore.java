@@ -1,6 +1,6 @@
 package com.goodforgoodbusiness.endpoint.rdf.store;
 
-import static com.goodforgoodbusiness.shared.TripleUtil.ANYANYANY;
+import static com.goodforgoodbusiness.shared.TripleUtil.ANY_ANY_ANY;
 import static org.apache.jena.graph.Node.ANY;
 
 import java.util.HashMap;
@@ -52,8 +52,8 @@ public class AdvanceMappingStore implements TripleStore {
 			new Triple(ANY, pre, ANY),
 			new Triple(ANY, ANY, obj),
 			
-			// pick 0
-			new Triple(ANY, ANY, ANY)
+			// pick 0 (use internalised object)
+			ANY_ANY_ANY
 		);
 	}
 	
@@ -63,7 +63,7 @@ public class AdvanceMappingStore implements TripleStore {
 	}
 	
 	private ObservableSet<Triple> getPatternSet(Triple pattern) {
-		patternMap.computeIfAbsent(pattern, k -> new ObservableSet<Triple>(new HashSet<>(), Triple.class));
+		patternMap.computeIfAbsent(pattern, k -> new ObservableSet<>(new HashSet<>(), Triple.class));
 		return patternMap.get(pattern);
 	}
 	
@@ -89,17 +89,17 @@ public class AdvanceMappingStore implements TripleStore {
 
 	@Override
 	public int size() {
-		return getPatternSet(ANYANYANY).size();
+		return getPatternSet(ANY_ANY_ANY).size();
 	}
 
 	@Override
 	public boolean isEmpty() {
-		return getPatternSet(ANYANYANY).isEmpty();
+		return getPatternSet(ANY_ANY_ANY).isEmpty();
 	}
 
 	@Override
 	public boolean contains(Triple t) {
-		return getPatternSet(ANYANYANY).contains(t);
+		return getPatternSet(ANY_ANY_ANY).contains(t);
 	}
 	
 	@Override
@@ -113,16 +113,16 @@ public class AdvanceMappingStore implements TripleStore {
 
 	@Override
 	public ExtendedIterator<Node> listSubjects() {
-		return new NodeIterator(getPatternSet(ANYANYANY), Triple::getSubject);
+		return new NodeIterator(getPatternSet(ANY_ANY_ANY), Triple::getSubject);
 	}
 	
 	@Override
 	public ExtendedIterator<Node> listPredicates() {
-		return new NodeIterator(getPatternSet(ANYANYANY), Triple::getPredicate);
+		return new NodeIterator(getPatternSet(ANY_ANY_ANY), Triple::getPredicate);
 	}
 
 	@Override
 	public ExtendedIterator<Node> listObjects() {
-		return new NodeIterator(getPatternSet(ANYANYANY), Triple::getObject);
+		return new NodeIterator(getPatternSet(ANY_ANY_ANY), Triple::getObject);
 	}
 }

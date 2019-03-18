@@ -31,12 +31,12 @@ public class DequeIterator<T> implements ExtendedIterator<T> {
 	 * Subsequent adds/removes will be appended.
 	 */
 	DequeIterator(Stream<T> results) {
-		this.deque = new LinkedList<T>();
+		this.deque = new LinkedList<>();
 		results.forEach(deque::add);
 	}
 	
 	DequeIterator(Collection<T> results) {
-		this.deque = new LinkedList<T>(results);
+		this.deque = new LinkedList<>(results);
 	}
 	
 	private void checkClosed() {
@@ -59,9 +59,8 @@ public class DequeIterator<T> implements ExtendedIterator<T> {
 		if (seen.contains(element)) {
 			throw new IllegalArgumentException("Cannot skip element already consumed");
 		}
-		else {
-			skip.add(element);
-		}
+		
+		skip.add(element);
 	}
 
 	@Override
@@ -130,7 +129,7 @@ public class DequeIterator<T> implements ExtendedIterator<T> {
 	public <Y> ExtendedIterator<Y> mapWith(Function<T, Y> mapper) {
 		checkClosed();
 		
-		return new MappedIterator<T, Y>(this, mapper);
+		return new MappedIterator<>(this, mapper);
 	}
 
 	@Override

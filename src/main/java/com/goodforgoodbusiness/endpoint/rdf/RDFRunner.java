@@ -4,6 +4,7 @@ import static com.goodforgoodbusiness.endpoint.MIMEMappings.FILE_TYPES;
 import static org.apache.commons.io.FilenameUtils.getExtension;
 
 import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -51,26 +52,33 @@ public class RDFRunner {
 		}
 	}
 	
-	public void query(String queryStmt, String contentType, OutputStream outputStream) throws RDFException {
+	public void query(String queryStmt, String contentType, OutputStream outputStream) throws RDFException, IOException {
 		log.info("Querying: \n" + queryStmt);
 		
 		var query = QueryFactory.create(queryStmt);
-		var exe = QueryExecutionFactory.create(query, model);
-		
-		try {
+		try (var exe = QueryExecutionFactory.create(query, model)) {
 			if (exe.getQuery().isSelectType()) {
 				var format = MIMEMappings.getResultsFormat(contentType);
 				log.info("Result format=" + format.getSymbol());
 				
 				var resultSet = exe.execSelect();
-				ResultSetFormatter.output(outputStream, resultSet, format);
+				
+				if (log.isDebugEnabled()) {
+					var captureStream = new ByteArrayOutputStream();
+					ResultSetFormatter.output(captureStream, resultSet, format);
+					log.debug("Result=\n" + new String(captureStream.toByteArray()));
+					outputStream.write(captureStream.toByteArray());
+				}
+				else {
+					ResultSetFormatter.output(outputStream, resultSet, format);
+				}
 			}
 //			else if (queryExec.getQuery().isAskType()) {
 //				boolean result = queryExec.execAsk();
 //			}
 			else if (exe.getQuery().isDescribeType() || exe.getQuery().isConstructType()) {
 				var lang = MIMEMappings.getResultsLang(contentType);
-				log.info("Result Lang=" + lang);
+				log.info("Result lang=" + lang);
 				
 				if (lang == null) {
 					throw new RDFException("Unable to serialize to " + contentType);
@@ -80,14 +88,20 @@ public class RDFRunner {
 				
 				var writer = result.getWriter(lang);
 				writer.setProperty("allowBadURIs", true);
-				writer.write(result, outputStream, "PREFIX:");
+				
+				if (log.isDebugEnabled()) {
+					var captureStream = new ByteArrayOutputStream();
+					writer.write(result, captureStream, "PREFIX:");
+					log.debug("Result=\n" + new String(captureStream.toByteArray()));
+					outputStream.write(captureStream.toByteArray());
+				}
+				else {
+					writer.write(result, outputStream, "PREFIX:");
+				}
 			}
 			else {
 				throw new RDFException("Could not determine query type");
 			}
-		}
-		finally {
-			exe.close();
 		}
 	}
 	

@@ -26,16 +26,19 @@ public class DHTTripleStore extends AdvanceMappingStore implements TripleStore {
 		this.context = context;
 	}
 
+	@Override
 	public void add ( Triple trup ) {
 		collector.added(trup);
 		super.add(trup);
 	}
 
+	@Override
 	public void delete ( Triple trup ) {
 		collector.removed(trup);
 		super.delete(trup);
 	}
 
+	@Override
 	public ExtendedIterator<Triple> find ( Triple trup ) {
 		log.debug("Find: " + trup);
 		

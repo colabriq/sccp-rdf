@@ -14,7 +14,7 @@ import org.apache.jena.graph.Graph;
 import org.apache.jena.query.Dataset;
 import org.apache.jena.query.DatasetFactory;
 import org.apache.jena.rdf.model.Model;
-import org.apache.jena.sparql.core.DatasetGraphMaker;
+import org.apache.jena.sparql.core.DatasetGraphFactory;
 import org.apache.log4j.Logger;
 
 import com.goodforgoodbusiness.endpoint.dht.ContainerCollector;
@@ -89,7 +89,7 @@ public class EndpointModule extends AbstractModule {
 	
 	@Provides @Singleton
 	protected Dataset getDataset(Graph graph) {
-		return DatasetFactory.create(new DatasetGraphMaker(graph));
+		return DatasetFactory.wrap(DatasetGraphFactory.wrap(graph));
 	}
 	
 	@Provides @Singleton

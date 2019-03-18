@@ -37,7 +37,7 @@ class DHTRequestUtil {
 	 */
 	public static Stream<Link> processCustodyChainHeader(String header) {
 		if (header != null && header.length() > 0) {
-			return Stream.<String>of((String[])header.split(";"))
+			return Stream.<String>of(header.split(";"))
 				.map(String::trim)
 				.map(str -> parse(str, defaultCharset()))
 				.map(DHTRequestUtil::toLink)
@@ -45,9 +45,8 @@ class DHTRequestUtil {
 				
 			;
 		}
-		else {
-			return Stream.empty();
-		}
+		
+		return Stream.empty();
 	}
 	
 	private static Optional<Link> toLink(List<NameValuePair> pairs) {

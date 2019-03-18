@@ -27,7 +27,7 @@ public class NodeIterator extends DequeIterator<Node> implements ExtendedIterato
 		
 		// important: maintain a hard ref to the listener
 		// otherwise ObservableSet will let it garbage collect
-		this.listener = new ObservableSetListener<Triple>() {
+		this.listener = new ObservableSetListener<>() {
 			@Override
 			public void added(Triple t) {
 				NodeIterator.this.append(mapper.apply(t));

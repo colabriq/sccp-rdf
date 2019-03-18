@@ -54,8 +54,8 @@ class MappedIterator<X, T> implements ExtendedIterator<T> {
 	}
 
 	@Override
-	public <Y> ExtendedIterator<Y> mapWith(Function<T, Y> mapper) {
-		return new MappedIterator<T, Y>(this, mapper);
+	public <Y> ExtendedIterator<Y> mapWith(Function<T, Y> nextMapper) {
+		return new MappedIterator<>(this, nextMapper);
 	}
 
 	@Override

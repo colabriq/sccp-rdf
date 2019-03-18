@@ -28,6 +28,7 @@ public class DHTSparqlRoute extends SparqlRoute implements Route {
 		this.submitter = submitter;
 	}
 
+	@Override
 	public Object doUpdate(Request req, Response res, String sparqlStmt) throws BadRequestException {
 		var container = collector.begin();
 		processCustodyChainHeader(req).forEach(container::linked);
