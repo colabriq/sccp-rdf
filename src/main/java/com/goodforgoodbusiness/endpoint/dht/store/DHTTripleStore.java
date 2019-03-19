@@ -7,8 +7,8 @@ import org.apache.jena.util.iterator.ExtendedIterator;
 import org.apache.log4j.Logger;
 
 import com.goodforgoodbusiness.endpoint.dht.ContainerCollector;
-import com.goodforgoodbusiness.endpoint.dht.ContainerContexts;
 import com.goodforgoodbusiness.endpoint.dht.DHTEngineClient;
+import com.goodforgoodbusiness.endpoint.dht.TripleContextStore;
 import com.goodforgoodbusiness.endpoint.rdf.store.AdvanceMappingStore;
 import com.goodforgoodbusiness.model.Link;
 import com.goodforgoodbusiness.model.Link.RelType;
@@ -17,13 +17,13 @@ public class DHTTripleStore extends AdvanceMappingStore implements TripleStore {
 	private static final Logger log = Logger.getLogger(DHTTripleStore.class);
 	
 	private final DHTEngineClient client;
-	private final ContainerContexts context;
+	private final TripleContextStore contextStore;
 	private final ContainerCollector collector;
 	
-	public DHTTripleStore(Graph parent, DHTEngineClient client, ContainerContexts context, ContainerCollector collector) {
+	public DHTTripleStore(Graph parent, DHTEngineClient client, TripleContextStore contextStore, ContainerCollector collector) {
 		this.client = client;
+		this.contextStore = contextStore;
 		this.collector = collector;
-		this.context = context;
 	}
 
 	@Override
@@ -51,7 +51,7 @@ public class DHTTripleStore extends AdvanceMappingStore implements TripleStore {
 			for (var container : client.matches(trup)) {
 				log.debug("Matching container " + container.getId());
 				
-				if (context.contains(container)) {
+				if (contextStore.contains(container)) {
 					log.debug("(container already processed)");
 				}
 				else {
@@ -62,14 +62,14 @@ public class DHTTripleStore extends AdvanceMappingStore implements TripleStore {
 					container.getRemoved()
 						.forEach(t -> {
 							log.debug("Delete " + t);
-							context.add(t, container);
+							contextStore.add(t, container);
 							super.delete(t);
 						});
 					
 					container.getAdded()
 						.forEach(t -> {
 							log.debug("Adding " + t);
-							context.add(t, container);
+							contextStore.add(t, container);
 							super.add(t);
 						});
 				}
@@ -80,7 +80,7 @@ public class DHTTripleStore extends AdvanceMappingStore implements TripleStore {
 		}
 		
 		return super.find(trup).mapWith(t -> {
-			for (var container : context.get(t)) {
+			for (var container : contextStore.get(t)) {
 				collector.linked(new Link(container.getId(), RelType.CAUSED_BY));
 			}
 			

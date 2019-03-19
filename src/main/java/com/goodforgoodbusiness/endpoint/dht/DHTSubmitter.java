@@ -11,13 +11,13 @@ import com.google.inject.Inject;
  * Provides the logic level above raw submission of containers to the DHT
  */
 public class DHTSubmitter {
-	private final ContainerContexts context;
+	private final TripleContextStore contextStore;
 	private final DHTEngineClient client;
 	
 	@Inject
-	public DHTSubmitter(DHTEngineClient client, ContainerContexts context) {
+	public DHTSubmitter(DHTEngineClient client, TripleContextStore contexts) {
 		this.client = client;
-		this.context = context;
+		this.contextStore = contexts;
 	}
 	
 	public Optional<SubmittedContainer> submit(SubmittableContainer submittableContainer) {
@@ -33,7 +33,7 @@ public class DHTSubmitter {
 				// record submitted container ID in to any triples collected
 				submittableContainer
 					.getTriples()
-					.forEach(trup -> context.add(trup, submittedContainer));
+					.forEach(trup -> contextStore.add(trup, submittedContainer));
 				
 				return Optional.of(submittedContainer);
 			}

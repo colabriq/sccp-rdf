@@ -12,13 +12,13 @@ import com.google.inject.Singleton;
 @Singleton
 public class DHTGraphProvider implements Provider<Graph> {
 	private final DHTEngineClient client;
-	private final ContainerContexts contextMap;
+	private final TripleContextStore contextStore;
 	private final ContainerCollector collector;
 	
 	@Inject
-	public DHTGraphProvider(DHTEngineClient client, ContainerContexts contextMap, ContainerCollector collector) {
+	public DHTGraphProvider(DHTEngineClient client, TripleContextStore contextStore, ContainerCollector collector) {
 		this.client = client;
-		this.contextMap = contextMap;
+		this.contextStore = contextStore;
 		this.collector = collector;
 	}
 	
@@ -27,7 +27,7 @@ public class DHTGraphProvider implements Provider<Graph> {
 		return new GraphMem() {
 			@Override
 			protected TripleStore createTripleStore() {
-				return new DHTTripleStore(this, client, contextMap, collector);
+				return new DHTTripleStore(this, client, contextStore, collector);
 			}
 		};
 	}

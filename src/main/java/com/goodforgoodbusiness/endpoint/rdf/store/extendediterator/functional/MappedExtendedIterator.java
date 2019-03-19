@@ -1,19 +1,17 @@
-package com.goodforgoodbusiness.endpoint.rdf.store.iterator;
+package com.goodforgoodbusiness.endpoint.rdf.store.extendediterator.functional;
 
-import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 import java.util.function.Function;
-import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
 import org.apache.jena.util.iterator.ExtendedIterator;
 
-class MappedIterator<X, T> implements ExtendedIterator<T> {
+public class MappedExtendedIterator<X, T> implements DefaultExtendedIterator<T> {
 	private final ExtendedIterator<X> iterator;
 	private final Function<X, T> mapper;
 	
-	MappedIterator(ExtendedIterator<X> iterator, Function<X, T> mapper) {
+	public MappedExtendedIterator(ExtendedIterator<X> iterator, Function<X, T> mapper) {
 		this.iterator = iterator;
 		this.mapper = mapper;
 	}
@@ -36,26 +34,6 @@ class MappedIterator<X, T> implements ExtendedIterator<T> {
 	@Override
 	public T removeNext() {
 		throw new UnsupportedOperationException();
-	}
-
-	@Override
-	public <TT extends T> ExtendedIterator<T> andThen(Iterator<TT> other) {
-		throw new UnsupportedOperationException();
-	}
-
-	@Override
-	public ExtendedIterator<T> filterKeep(Predicate<T> f) {
-		throw new UnsupportedOperationException();
-	}
-
-	@Override
-	public ExtendedIterator<T> filterDrop(Predicate<T> f) {
-		throw new UnsupportedOperationException();
-	}
-
-	@Override
-	public <Y> ExtendedIterator<Y> mapWith(Function<T, Y> nextMapper) {
-		return new MappedIterator<>(this, nextMapper);
 	}
 
 	@Override

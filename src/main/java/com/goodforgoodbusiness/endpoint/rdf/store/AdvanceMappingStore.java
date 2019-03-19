@@ -14,8 +14,8 @@ import org.apache.jena.graph.impl.TripleStore;
 import org.apache.jena.util.iterator.ExtendedIterator;
 import org.apache.log4j.Logger;
 
-import com.goodforgoodbusiness.endpoint.rdf.store.iterator.NodeIterator;
-import com.goodforgoodbusiness.endpoint.rdf.store.iterator.TripleIterator;
+import com.goodforgoodbusiness.endpoint.rdf.store.extendediterator.NodeIterator;
+import com.goodforgoodbusiness.endpoint.rdf.store.extendediterator.TripleIterator;
 import com.goodforgoodbusiness.shared.ObservableSet;
 
 /**
@@ -79,11 +79,13 @@ public class AdvanceMappingStore implements TripleStore {
 
 	@Override
 	public void add(Triple t) {
+		if (log.isDebugEnabled()) log.debug("Add = " + t.toString());
 		mappings(t).forEach(p -> getPatternSet(p).add(t));
 	}
 
 	@Override
 	public void delete(Triple t) {
+		if (log.isDebugEnabled()) log.debug("Delete = " + t.toString());
 		mappings(t).forEach(p -> getPatternSet(p).remove(t));
 	}
 

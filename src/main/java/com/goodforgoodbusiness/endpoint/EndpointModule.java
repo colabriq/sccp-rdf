@@ -18,11 +18,11 @@ import org.apache.jena.sparql.core.DatasetGraphFactory;
 import org.apache.log4j.Logger;
 
 import com.goodforgoodbusiness.endpoint.dht.ContainerCollector;
-import com.goodforgoodbusiness.endpoint.dht.ContainerContexts;
 import com.goodforgoodbusiness.endpoint.dht.DHTAccessGovernor;
 import com.goodforgoodbusiness.endpoint.dht.DHTEngineClient;
 import com.goodforgoodbusiness.endpoint.dht.DHTGraphProvider;
 import com.goodforgoodbusiness.endpoint.dht.DHTSubmitter;
+import com.goodforgoodbusiness.endpoint.dht.TripleContextStore;
 import com.goodforgoodbusiness.endpoint.rdf.RDFPreloader;
 import com.goodforgoodbusiness.endpoint.rdf.RDFRunner;
 import com.goodforgoodbusiness.endpoint.rdf.StandaloneGraphProvider;
@@ -70,7 +70,7 @@ public class EndpointModule extends AbstractModule {
 			bind(DHTSubmitter.class);
 			bind(DHTAccessGovernor.class);
 			
-			bind(ContainerContexts.class);
+			bind(TripleContextStore.class);
 			bind(ContainerCollector.class);
 			
 			routes.addBinding(post("/sparql")).to(DHTSparqlRoute.class);

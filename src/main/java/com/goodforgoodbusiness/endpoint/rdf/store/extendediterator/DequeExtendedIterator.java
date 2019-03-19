@@ -1,4 +1,4 @@
-package com.goodforgoodbusiness.endpoint.rdf.store.iterator;
+package com.goodforgoodbusiness.endpoint.rdf.store.extendediterator;
 
 import java.util.Collection;
 import java.util.Deque;
@@ -14,11 +14,15 @@ import java.util.stream.Stream;
 
 import org.apache.jena.util.iterator.ExtendedIterator;
 
+import com.goodforgoodbusiness.endpoint.rdf.store.extendediterator.functional.FilteredExtendedIterator;
+import com.goodforgoodbusiness.endpoint.rdf.store.extendediterator.functional.MappedExtendedIterator;
+
 /**
  * Iterator based on a deque.
  * This is so triples download from the DHT in response to subqueries are reflected immediately. 
+ * This will cause the stream to get immeidately iterated, so it's not that efficient, but necessary.
  */
-public class DequeIterator<T> implements ExtendedIterator<T> {
+public class DequeExtendedIterator<T> implements ExtendedIterator<T> {
 	protected final Deque<T> deque;
 	
 	protected final Set<T> seen = new HashSet<>();
@@ -30,13 +34,13 @@ public class DequeIterator<T> implements ExtendedIterator<T> {
 	 * Copy the provided Set in to the deque. 
 	 * Subsequent adds/removes will be appended.
 	 */
-	DequeIterator(Stream<T> results) {
+	public DequeExtendedIterator(Stream<T> items) {
 		this.deque = new LinkedList<>();
-		results.forEach(deque::add);
+		items.forEach(deque::add);
 	}
 	
-	DequeIterator(Collection<T> results) {
-		this.deque = new LinkedList<>(results);
+	public DequeExtendedIterator(Collection<T> items) {
+		this.deque = new LinkedList<>(items);
 	}
 	
 	private void checkClosed() {
@@ -117,19 +121,19 @@ public class DequeIterator<T> implements ExtendedIterator<T> {
 
 	@Override
 	public ExtendedIterator<T> filterKeep(Predicate<T> f) {
-		throw new UnsupportedOperationException();
+		return new FilteredExtendedIterator<>(this, f);
 	}
 
 	@Override
 	public ExtendedIterator<T> filterDrop(Predicate<T> f) {
-		throw new UnsupportedOperationException();
+		return new FilteredExtendedIterator<>(this, x -> !f.test(x));
 	}
 
 	@Override
 	public <Y> ExtendedIterator<Y> mapWith(Function<T, Y> mapper) {
 		checkClosed();
 		
-		return new MappedIterator<>(this, mapper);
+		return new MappedExtendedIterator<>(this, mapper);
 	}
 
 	@Override

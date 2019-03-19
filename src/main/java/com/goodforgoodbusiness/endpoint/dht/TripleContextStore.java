@@ -12,10 +12,10 @@ import com.goodforgoodbusiness.model.Container;
 import com.google.inject.Singleton;
 
 /**
- * Stores the containers associated with the Triples while they're stored locally.
+ * Stores the context associated with the Triples while they're stored locally.
  */
 @Singleton
-public class ContainerContexts {
+public class TripleContextStore {
 	private final Set<Container> containerSet = newSetFromMap(new ConcurrentHashMap<Container, Boolean>());
 	private final ConcurrentHashMap<Triple, Set<Container>> tripleMap = new ConcurrentHashMap<>();
 	
