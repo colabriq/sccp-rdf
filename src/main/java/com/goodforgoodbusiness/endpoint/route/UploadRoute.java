@@ -5,7 +5,7 @@ import static org.apache.commons.io.FilenameUtils.getExtension;
 import javax.servlet.MultipartConfigElement;
 
 import com.goodforgoodbusiness.endpoint.MIMEMappings;
-import com.goodforgoodbusiness.endpoint.rdf.RDFRunner;
+import com.goodforgoodbusiness.endpoint.processor.ImportProcessor;
 import com.goodforgoodbusiness.webapp.ContentType;
 import com.goodforgoodbusiness.webapp.error.BadRequestException;
 import com.google.inject.Inject;
@@ -17,10 +17,10 @@ import spark.Route;
 
 @Singleton
 public class UploadRoute implements Route {
-	private final RDFRunner runner;
+	private final ImportProcessor runner;
 	
 	@Inject
-	public UploadRoute(RDFRunner runner) {
+	public UploadRoute(ImportProcessor runner) {
 		this.runner = runner;
 	}
 	

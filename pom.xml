@@ -106,6 +106,12 @@
 		</dependency>
 		
 		<dependency>
+		    <groupId>org.javassist</groupId>
+		    <artifactId>javassist</artifactId>
+		    <version>3.24.1-GA</version>
+		</dependency>
+		
+		<dependency>
 			<groupId>com.fasterxml.jackson.dataformat</groupId>
 			<artifactId>jackson-dataformat-cbor</artifactId>
 			<version>2.9.8</version>

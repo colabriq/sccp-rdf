@@ -2,9 +2,9 @@ package com.goodforgoodbusiness.endpoint.route.dht;
 
 import static com.goodforgoodbusiness.endpoint.route.dht.DHTRequestUtil.processCustodyChainHeader;
 
-import com.goodforgoodbusiness.endpoint.dht.ContainerCollector;
-import com.goodforgoodbusiness.endpoint.dht.DHTSubmitter;
-import com.goodforgoodbusiness.endpoint.rdf.RDFRunner;
+import com.goodforgoodbusiness.endpoint.dht.DHTContainerCollector;
+import com.goodforgoodbusiness.endpoint.dht.DHTContainerSubmitter;
+import com.goodforgoodbusiness.endpoint.processor.SparqlProcessor;
 import com.goodforgoodbusiness.endpoint.route.SparqlRoute;
 import com.goodforgoodbusiness.webapp.error.BadRequestException;
 import com.google.gson.JsonObject;
@@ -17,11 +17,11 @@ import spark.Route;
 
 @Singleton
 public class DHTSparqlRoute extends SparqlRoute implements Route {
-	private final ContainerCollector collector;
-	private final DHTSubmitter submitter;
+	private final DHTContainerCollector collector;
+	private final DHTContainerSubmitter submitter;
 	
 	@Inject
-	public DHTSparqlRoute(ContainerCollector collector, RDFRunner runner, DHTSubmitter submitter) {
+	public DHTSparqlRoute(DHTContainerCollector collector, SparqlProcessor runner, DHTContainerSubmitter submitter) {
 		super(runner);
 		
 		this.collector = collector;

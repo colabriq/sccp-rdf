@@ -2,9 +2,9 @@ package com.goodforgoodbusiness.endpoint.route.dht;
 
 import static com.goodforgoodbusiness.endpoint.route.dht.DHTRequestUtil.processCustodyChainHeader;
 
-import com.goodforgoodbusiness.endpoint.dht.ContainerCollector;
-import com.goodforgoodbusiness.endpoint.dht.DHTSubmitter;
-import com.goodforgoodbusiness.endpoint.rdf.RDFRunner;
+import com.goodforgoodbusiness.endpoint.dht.DHTContainerCollector;
+import com.goodforgoodbusiness.endpoint.dht.DHTContainerSubmitter;
+import com.goodforgoodbusiness.endpoint.processor.ImportProcessor;
 import com.goodforgoodbusiness.endpoint.route.UploadRoute;
 import com.google.gson.JsonObject;
 import com.google.inject.Inject;
@@ -16,11 +16,11 @@ import spark.Route;
 
 @Singleton
 public class DHTUploadRoute extends UploadRoute implements Route {
-	private final ContainerCollector collector;
-	private final DHTSubmitter submitter;
+	private final DHTContainerCollector collector;
+	private final DHTContainerSubmitter submitter;
 	
 	@Inject
-	public DHTUploadRoute(ContainerCollector collector, RDFRunner runner, DHTSubmitter submitter) {
+	public DHTUploadRoute(DHTContainerCollector collector, ImportProcessor runner, DHTContainerSubmitter submitter) {
 		super(runner);
 		
 		this.collector = collector;

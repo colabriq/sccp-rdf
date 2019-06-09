@@ -7,8 +7,8 @@ import java.util.Optional;
 import org.apache.log4j.Logger;
 
 import com.goodforgoodbusiness.endpoint.MIMEMappings;
-import com.goodforgoodbusiness.endpoint.rdf.RDFException;
-import com.goodforgoodbusiness.endpoint.rdf.RDFRunner;
+import com.goodforgoodbusiness.endpoint.processor.ImportProcessException;
+import com.goodforgoodbusiness.endpoint.processor.SparqlProcessor;
 import com.goodforgoodbusiness.webapp.ContentType;
 import com.goodforgoodbusiness.webapp.error.BadRequestException;
 import com.google.inject.Inject;
@@ -22,10 +22,10 @@ import spark.Route;
 public class SparqlRoute implements Route {
 	private static final Logger log = Logger.getLogger(SparqlRoute.class);
 	
-	private final RDFRunner runner;
+	private final SparqlProcessor runner;
 	
 	@Inject
-	public SparqlRoute(RDFRunner runner) {
+	public SparqlRoute(SparqlProcessor runner) {
 		this.runner = runner;
 	}
 	
@@ -75,7 +75,7 @@ public class SparqlRoute implements Route {
 			runner.query(sparqlStmt, contentType.get(), stream);
 			return 200;
 		}
-		catch (RDFException e) {
+		catch (ImportProcessException e) {
 			throw new BadRequestException(e.getMessage(), e);
 		}
 	}
@@ -87,7 +87,7 @@ public class SparqlRoute implements Route {
 			runner.update(sparqlStmt);
 			return "{}";
 		}
-		catch (RDFException e) {
+		catch (ImportProcessException e) {
 			throw new BadRequestException(e.getMessage(), e);
 		}
 	}

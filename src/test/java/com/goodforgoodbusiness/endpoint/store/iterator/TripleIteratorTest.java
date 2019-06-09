@@ -4,7 +4,7 @@ import org.apache.jena.graph.Node;
 import org.apache.jena.graph.NodeFactory;
 import org.apache.jena.graph.Triple;
 
-import com.goodforgoodbusiness.endpoint.rdf.store.AdvanceMappingStore;
+import com.goodforgoodbusiness.endpoint.graph.store.AdvanceMappingStore;
 
 public class TripleIteratorTest {
 	public static void main(String[] args) throws Exception {
