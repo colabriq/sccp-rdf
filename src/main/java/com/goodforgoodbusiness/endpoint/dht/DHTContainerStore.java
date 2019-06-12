@@ -2,7 +2,9 @@ package com.goodforgoodbusiness.endpoint.dht;
 
 import static java.util.Collections.newSetFromMap;
 
+import java.util.ArrayList;
 import java.util.Collections;
+import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
@@ -17,11 +19,16 @@ import com.google.inject.Singleton;
  */
 @Singleton
 public class DHTContainerStore {
+	private final List<DHTContainerListener> listeners = new ArrayList<>();
+	
 	private final ConcurrentHashMap<String, GraphContainer> containerMap = new ConcurrentHashMap<>();
 	private final ConcurrentHashMap<Triple, Set<GraphContainer>> tripleMap = new ConcurrentHashMap<>();
 	
 	public void addContainer(GraphContainer container) {
-		containerMap.put(container.getId(), container);
+		if (containerMap.put(container.getId(), container) == null) {
+			// it's a new container. do container add actions.
+			listeners.forEach(listener -> listener.containerAdded(container));
+		}
 	}
 	
 	public boolean hasContainer(GraphContainer container) {
