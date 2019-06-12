@@ -11,20 +11,19 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 
-import org.apache.jena.graph.Graph;
 import org.apache.jena.query.Dataset;
-import org.apache.jena.query.DatasetFactory;
 import org.apache.jena.rdf.model.Model;
-import org.apache.jena.sparql.core.DatasetGraphFactory;
 import org.apache.log4j.Logger;
 
 import com.goodforgoodbusiness.shared.Skolemizer;
 import com.google.inject.Inject;
 import com.google.inject.Provider;
+import com.google.inject.Singleton;
 
 /** 
  * Run imports turtle data (files, streams, etc.)
  */
+@Singleton
 public class ImportProcessor {
 	private static Logger log = Logger.getLogger(ImportProcessor.class);
 	
@@ -40,20 +39,11 @@ public class ImportProcessor {
 		model.add(newModel);
 	}
 	
-	private final Provider<Graph> graphProvider;
+	private final Dataset dataset;
 	
 	@Inject
-	public ImportProcessor(Provider<Graph> graphProvider) {
-		this.graphProvider = graphProvider;
-	}
-	
-	/**
-	 * Returns the current dataset, wrapping whatever the Graph Provider returns
-	 */
-	private Dataset getCurrentDataset() {
-		return DatasetFactory.wrap(
-			DatasetGraphFactory.wrap(graphProvider.get())
-		);
+	public ImportProcessor(Provider<Dataset> datasetProvider) {
+		this.dataset = datasetProvider.get();
 	}
 	
 	/**
@@ -61,7 +51,7 @@ public class ImportProcessor {
 	 * @throws FileNotFoundException 
 	 */
 	public void importPath(File path) throws FileNotFoundException {
-		var model = getCurrentDataset().getDefaultModel();
+		var model = dataset.getDefaultModel();
 		
 		scan(path, file -> {
 			var lang = FILE_TYPES.get(getExtension(file.getName().toLowerCase()));
@@ -85,7 +75,7 @@ public class ImportProcessor {
 	 * Import data in a buffer directly
 	 */
 	public void importData(CharSequence data, String lang) throws ImportProcessException {
-		var model = getCurrentDataset().getDefaultModel();
+		var model = dataset.getDefaultModel();
 		
 		try (InputStream stream = new ByteArrayInputStream(data.toString().getBytes("UTF-8"))) {
 			doImport(model, stream, lang);
@@ -100,7 +90,7 @@ public class ImportProcessor {
 	 * Import data in a stream directly
 	 */
 	public void importStream(InputStream stream, String lang) throws ImportProcessException {
-		var model = getCurrentDataset().getDefaultModel();
+		var model = dataset.getDefaultModel();
 		
 		doImport(model, stream, lang);
 		log.info("Loaded data (now " + model.size() + ")");

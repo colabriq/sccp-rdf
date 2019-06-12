@@ -1,5 +1,7 @@
 package com.goodforgoodbusiness.endpoint.dht;
 
+import static com.goodforgoodbusiness.endpoint.dht.container.StorableGraphContainer.toStorableGraphContainers;
+import static com.goodforgoodbusiness.shared.treesort.TreeSort.sort;
 import static java.util.Collections.emptyList;
 
 import java.io.IOException;
@@ -15,14 +17,13 @@ import java.util.List;
 import org.apache.jena.graph.Triple;
 import org.apache.log4j.Logger;
 
-import com.goodforgoodbusiness.model.StorableContainer;
+import com.goodforgoodbusiness.endpoint.dht.container.StorableGraphContainer;
+import com.goodforgoodbusiness.endpoint.dht.container.SubmittedGraphContainer;
 import com.goodforgoodbusiness.model.SubmitResult;
 import com.goodforgoodbusiness.model.SubmittableContainer;
-import com.goodforgoodbusiness.model.SubmittedContainer;
 import com.goodforgoodbusiness.model.TriTuple;
 import com.goodforgoodbusiness.shared.URIModifier;
 import com.goodforgoodbusiness.shared.encode.JSON;
-import com.goodforgoodbusiness.shared.treesort.TreeSort;
 import com.goodforgoodbusiness.webapp.ContentType;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
@@ -51,7 +52,7 @@ public class DHTEngineClient {
 		this.governor = governor;
 	}
 	
-	public List<StorableContainer> matches(Triple trup) throws URISyntaxException, IOException, InterruptedException {
+	public List<StorableGraphContainer> matches(Triple trup) throws URISyntaxException, IOException, InterruptedException {
 		if (governor.allow(trup)) {
 			log.info("Finding matches for: " + trup);
 			
@@ -69,10 +70,10 @@ public class DHTEngineClient {
 			var response = HTTP_CLIENT.send(request, BodyHandlers.ofString());
 			
 			if (response.statusCode() == 200) {
-				var containers = StorableContainer.fromJson(response.body());
+				var containers = toStorableGraphContainers(response.body());
 				log.info("Results=" + containers.size());
 				
-				return TreeSort.sort(containers, true);
+				return sort(containers, true);
 			}
 			else {
 				throw new IOException("DHT response was " + response.statusCode());
@@ -83,7 +84,7 @@ public class DHTEngineClient {
 		}
 	}
 	
-	public SubmittedContainer submit(SubmittableContainer container) throws URISyntaxException, IOException, InterruptedException {
+	public SubmittedGraphContainer submit(SubmittableContainer container) throws URISyntaxException, IOException, InterruptedException {
 		log.info("Submitting container: " + container);
 		
 		// invalidate any cached results for triples in container
@@ -103,7 +104,7 @@ public class DHTEngineClient {
 		var response = HTTP_CLIENT.send(request, BodyHandlers.ofString());
 		
 		if (response.statusCode() == 200) {
-			return new SubmittedContainer(
+			return new SubmittedGraphContainer(
 				container,
 				JSON.decode(response.body(), SubmitResult.class)
 			);

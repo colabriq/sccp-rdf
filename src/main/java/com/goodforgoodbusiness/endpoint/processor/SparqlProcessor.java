@@ -7,13 +7,10 @@ import java.io.StringWriter;
 import java.nio.charset.Charset;
 
 import org.apache.commons.io.output.WriterOutputStream;
-import org.apache.jena.graph.Graph;
 import org.apache.jena.query.Dataset;
-import org.apache.jena.query.DatasetFactory;
 import org.apache.jena.query.QueryExecutionFactory;
 import org.apache.jena.query.QueryFactory;
 import org.apache.jena.query.ResultSetFormatter;
-import org.apache.jena.sparql.core.DatasetGraphFactory;
 import org.apache.jena.update.UpdateExecutionFactory;
 import org.apache.jena.update.UpdateFactory;
 import org.apache.log4j.Logger;
@@ -21,27 +18,20 @@ import org.apache.log4j.Logger;
 import com.goodforgoodbusiness.endpoint.MIMEMappings;
 import com.google.inject.Inject;
 import com.google.inject.Provider;
+import com.google.inject.Singleton;
 
 /**
  * Runs SPARQL queries and imports turtle files, etc.
  */
+@Singleton
 public class SparqlProcessor {
 	private static Logger log = Logger.getLogger(SparqlProcessor.class);
 	
-	private final Provider<Graph> graphProvider;
+	private final Dataset dataset;
 	
 	@Inject
-	public SparqlProcessor(Provider<Graph> graphProvider) {
-		this.graphProvider = graphProvider;
-	}
-	
-	/**
-	 * Returns the current dataset, wrapping whatever the Graph Provider returns
-	 */
-	private Dataset getCurrentDataset() {
-		return DatasetFactory.wrap(
-			DatasetGraphFactory.wrap(graphProvider.get())
-		);
+	public SparqlProcessor(Provider<Dataset> datasetProvider) {
+		this.dataset = datasetProvider.get();
 	}
 	
 	public String query(String queryStmt, String contentType) throws SparqlProcessException {
@@ -59,10 +49,8 @@ public class SparqlProcessor {
 	public void query(String queryStmt, String contentType, OutputStream outputStream) throws SparqlProcessException, IOException {
 		log.info("Querying: \n" + queryStmt);
 		
-		var dataset = getCurrentDataset();
-		
 		var query = QueryFactory.create(queryStmt);
-		try (var exe = QueryExecutionFactory.create(query, dataset.getDefaultModel())) {
+		try (var exe = QueryExecutionFactory.create(query, dataset)) {
 			if (exe.getQuery().isSelectType()) {
 				var format = MIMEMappings.getResultsFormat(contentType);
 				log.info("Result format=" + format.getSymbol());
@@ -113,8 +101,6 @@ public class SparqlProcessor {
 	
 	public void update(String updateStmt) throws SparqlProcessException {
 		log.info("Updating: \n" + updateStmt);
-		
-		var dataset = getCurrentDataset();
 		
 		var update = UpdateFactory.create(updateStmt);
 		var processor = UpdateExecutionFactory.create(update, dataset);

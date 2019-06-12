@@ -1,6 +1,8 @@
 package com.goodforgoodbusiness.endpoint.reasoner;
 
 import org.apache.jena.graph.Triple;
+import org.apache.jena.sparql.core.DatasetGraphOne;
+import org.apache.jena.sparql.core.DatasetOne;
 
 import com.goodforgoodbusiness.endpoint.graph.BaseGraph;
 import com.goodforgoodbusiness.endpoint.processor.ImportProcessor;
@@ -18,7 +20,8 @@ public class Reasoning {
 			}
 		};
 		
-		var processor = new ImportProcessor(() -> graph);
+		var dataset = DatasetOne.wrap(DatasetGraphOne.create(graph));
+		var processor = new ImportProcessor(() -> dataset);
 		
 		var stream = Reasoning.class.getResourceAsStream("./schema.ttl");
 		processor.importStream(stream, "TURTLE");

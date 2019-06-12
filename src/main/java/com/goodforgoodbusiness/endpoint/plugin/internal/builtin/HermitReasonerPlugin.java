@@ -4,6 +4,9 @@ import org.apache.jena.graph.Graph;
 import org.semanticweb.owlapi.model.OWLOntologyCreationException;
 import org.semanticweb.owlapi.reasoner.OWLReasonerFactory;
 
+import com.google.inject.Singleton;
+
+@Singleton
 public class HermitReasonerPlugin extends AbstractReasonerPlugin {
 	private static final OWLReasonerFactory HERMIT_FACTORY = new org.semanticweb.HermiT.ReasonerFactory();
 	

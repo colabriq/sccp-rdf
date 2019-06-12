@@ -8,20 +8,24 @@ import org.apache.log4j.Logger;
 
 import com.goodforgoodbusiness.endpoint.dht.DHTContainerCollector;
 import com.goodforgoodbusiness.endpoint.dht.DHTEngineClient;
-import com.goodforgoodbusiness.endpoint.dht.DHTContextStore;
+import com.goodforgoodbusiness.endpoint.dht.DHTContainerStore;
 import com.goodforgoodbusiness.model.Link;
 import com.goodforgoodbusiness.model.Link.RelType;
+import com.google.inject.Inject;
+import com.google.inject.Singleton;
 
+@Singleton
 public class DHTBackedStore extends AdvanceMappingStore implements TripleStore {
 	private static final Logger log = Logger.getLogger(DHTBackedStore.class);
 	
 	private final DHTEngineClient client;
-	private final DHTContextStore contextStore;
+	private final DHTContainerStore containerStore;
 	private final DHTContainerCollector collector;
 	
-	public DHTBackedStore(Graph parent, DHTEngineClient client, DHTContextStore contextStore, DHTContainerCollector collector) {
+	@Inject
+	public DHTBackedStore(Graph parent, DHTEngineClient client, DHTContainerStore containerStore, DHTContainerCollector collector) {
 		this.client = client;
-		this.contextStore = contextStore;
+		this.containerStore = containerStore;
 		this.collector = collector;
 	}
 
@@ -50,10 +54,12 @@ public class DHTBackedStore extends AdvanceMappingStore implements TripleStore {
 			for (var container : client.matches(trup)) {
 				log.debug("Matching container " + container.getId());
 				
-				if (contextStore.contains(container)) {
+				if (containerStore.hasContainer(container)) {
 					log.debug("(container already processed)");
 				}
 				else {
+					containerStore.addContainer(container);
+					
 					// call super delete/add rather than delete/add to avoid
 					// these received containers getting added to the container we're building
 					// via the containerCollector. also, they are already wrapped.
@@ -61,14 +67,14 @@ public class DHTBackedStore extends AdvanceMappingStore implements TripleStore {
 					container.getRemoved()
 						.forEach(t -> {
 							log.debug("Delete " + t);
-							contextStore.add(t, container);
+							containerStore.addSource(t, container);
 							super.delete(t);
 						});
 					
 					container.getAdded()
 						.forEach(t -> {
 							log.debug("Adding " + t);
-							contextStore.add(t, container);
+							containerStore.addSource(t, container);
 							super.add(t);
 						});
 				}
@@ -79,7 +85,7 @@ public class DHTBackedStore extends AdvanceMappingStore implements TripleStore {
 		}
 		
 		return super.find(trup).mapWith(t -> {
-			for (var container : contextStore.get(t)) {
+			for (var container : containerStore.getSources(t)) {
 				collector.linked(new Link(container.getId(), RelType.CAUSED_BY));
 			}
 			

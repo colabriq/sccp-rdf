@@ -1,6 +1,6 @@
 package com.goodforgoodbusiness.endpoint.processor;
 
-import org.apache.jena.graph.Graph;
+import org.apache.jena.query.Dataset;
 
 import com.google.inject.Inject;
 import com.google.inject.Provider;
@@ -10,8 +10,8 @@ import com.google.inject.Provider;
  */
 public class ReadOnlySparqlProcessor extends SparqlProcessor {
 	@Inject
-	public ReadOnlySparqlProcessor(Provider<Graph> graphProvider) {
-		super(graphProvider);
+	public ReadOnlySparqlProcessor(Provider<Dataset> datasetProvider) {
+		super(datasetProvider);
 	}
 	
 	@Override
