@@ -21,14 +21,25 @@ import com.google.inject.Singleton;
 public class DHTContainerStore {
 	private final List<DHTContainerListener> listeners = new ArrayList<>();
 	
+	public void addListener(DHTContainerListener listener) {
+		this.listeners.add(listener);
+	}
+	
 	private final ConcurrentHashMap<String, GraphContainer> containerMap = new ConcurrentHashMap<>();
 	private final ConcurrentHashMap<Triple, Set<GraphContainer>> tripleMap = new ConcurrentHashMap<>();
 	
-	public void addContainer(GraphContainer container) {
+	/**
+	 * Add a container to the store.
+	 * @param inMainGraph indicates if the triples in the container are already in the main graph.
+	 */
+	public boolean addContainer(GraphContainer container, boolean inMainGraph) {
 		if (containerMap.put(container.getId(), container) == null) {
 			// it's a new container. do container add actions.
-			listeners.forEach(listener -> listener.containerAdded(container));
+			listeners.forEach(listener -> listener.containerAdded(container, inMainGraph));
+			return true;
 		}
+		
+		return false;
 	}
 	
 	public boolean hasContainer(GraphContainer container) {

@@ -7,5 +7,9 @@ import com.goodforgoodbusiness.endpoint.dht.container.GraphContainer;
  * @author ijmad
  */
 public interface DHTContainerListener {
-	public void containerAdded(GraphContainer container);
+	/**
+	 * @param inMainGraph indicates if the triples are already in the main graph
+	 */
+	public void containerAdded(GraphContainer container, boolean inMainGraph);
 }
+ 

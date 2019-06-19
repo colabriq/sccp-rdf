@@ -47,6 +47,7 @@ public class BaseDatasetGraph extends DatasetGraphMap {
         return g != null && !g.isEmpty(); 
     }
     
+    @Override
     protected Graph getGraphCreate(Node graphNode) {
         return extraGraphMaker.create(graphNode);
     }

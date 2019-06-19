@@ -5,6 +5,7 @@ import static com.goodforgoodbusiness.webapp.Resource.get;
 import static com.goodforgoodbusiness.webapp.Resource.post;
 import static com.google.inject.Guice.createInjector;
 import static com.google.inject.multibindings.MapBinder.newMapBinder;
+import static com.google.inject.multibindings.Multibinder.newSetBinder;
 import static com.google.inject.name.Names.named;
 import static org.apache.commons.configuration2.ConfigurationConverter.getProperties;
 
@@ -30,6 +31,10 @@ import com.goodforgoodbusiness.endpoint.graph.BaseDatasetProvider.Fetched;
 import com.goodforgoodbusiness.endpoint.graph.BaseDatasetProvider.Inferred;
 import com.goodforgoodbusiness.endpoint.graph.BaseDatasetProvider.Preloaded;
 import com.goodforgoodbusiness.endpoint.graph.BaseGraph;
+import com.goodforgoodbusiness.endpoint.plugin.internal.InternalReasonerManager;
+import com.goodforgoodbusiness.endpoint.plugin.internal.InternalReasonerPlugin;
+import com.goodforgoodbusiness.endpoint.plugin.internal.builtin.HermitReasonerPlugin;
+import com.goodforgoodbusiness.endpoint.plugin.internal.builtin.ObjectCustodyChainReasonerPlugin;
 import com.goodforgoodbusiness.endpoint.processor.ImportProcessor;
 import com.goodforgoodbusiness.endpoint.processor.SparqlProcessor;
 import com.goodforgoodbusiness.endpoint.route.SparqlRoute;
@@ -96,7 +101,18 @@ public class EndpointModule extends AbstractModule {
 		
 		bind(SparqlProcessor.class);
 		bind(ImportProcessor.class);
-				
+		
+		// add internal reasoner plugins (static for now)
+		
+		var plugins = newSetBinder(binder(), InternalReasonerPlugin.class);
+		
+		plugins.addBinding().to(HermitReasonerPlugin.class);
+		plugins.addBinding().to(ObjectCustodyChainReasonerPlugin.class);
+		
+		bind(InternalReasonerManager.class);
+		
+		// add webapp routes
+		
 		var routes = newMapBinder(binder(), Resource.class, Route.class);
 		
 		if (isDHTEnabled()) {
@@ -124,6 +140,9 @@ public class EndpointModule extends AbstractModule {
 			log.info("Preloading data...");
 			injector.getInstance(Key.get(ImportProcessor.class)).importPath(new File(config.getString("data.preload.path")));
 		}
+		
+		// perform initial reasoner runs
+		injector.getInstance(InternalReasonerManager.class).init();
 		
 		// start data endpoint
 		this.webapp = injector.getInstance(Key.get(Webapp.class));

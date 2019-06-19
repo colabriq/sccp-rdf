@@ -1,13 +1,21 @@
 package com.goodforgoodbusiness.endpoint.plugin.internal;
 
 import org.apache.jena.graph.Graph;
-import org.semanticweb.owlapi.model.OWLOntologyCreationException;
 
 /**
  * Harness for reasoner plugins
  */
 public interface InternalReasonerPlugin {
-	public void initialized(Graph baseGraph) throws OWLOntologyCreationException;
+	/**
+	 * Initialize this plugin.
+	 * 
+	 * @param mainGraph The provided {@link Graph} for reading all triples from.
+	 * @param inferredGraph The target graph that all reasoner outputs should be placed into.
+	 */
+	public void init(Graph mainGraph, Graph inferredGraph) throws InternalReasonerException;
 	
-	public void updated(Graph updateGraph) throws OWLOntologyCreationException;
+	/**
+	 * Perform reasoning on some new triples, just before they're added to mainGraph.
+	 */
+	public void reason(Graph newGraph, boolean inMainGraph) throws InternalReasonerException;
 }

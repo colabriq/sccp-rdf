@@ -31,13 +31,14 @@ public class DHTContainerSubmitter {
 				var submittedContainer = client.submit(submittableContainer);
 
 				// record submitted container ID in to any triples collected
-				containerStore.addContainer(submittedContainer);
-				
-				submittableContainer
-					.getTriples()
-					.forEach(trup -> containerStore.addSource(trup, submittedContainer));
-				
-				return Optional.of(submittedContainer);
+				if (containerStore.addContainer(submittedContainer, true)) {
+					submittableContainer
+						.getTriples()
+						.forEach(trup -> containerStore.addSource(trup, submittedContainer));
+					
+					return Optional.of(submittedContainer);
+				}
+				return Optional.empty();
 			}
 		}
 		catch (Exception e) {

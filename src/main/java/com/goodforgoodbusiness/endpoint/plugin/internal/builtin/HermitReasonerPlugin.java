@@ -1,16 +1,14 @@
 package com.goodforgoodbusiness.endpoint.plugin.internal.builtin;
 
-import org.apache.jena.graph.Graph;
-import org.semanticweb.owlapi.model.OWLOntologyCreationException;
 import org.semanticweb.owlapi.reasoner.OWLReasonerFactory;
 
 import com.google.inject.Singleton;
 
 @Singleton
-public class HermitReasonerPlugin extends AbstractReasonerPlugin {
+public class HermitReasonerPlugin extends OWLReasonerPlugin {
 	private static final OWLReasonerFactory HERMIT_FACTORY = new org.semanticweb.HermiT.ReasonerFactory();
 	
-	public HermitReasonerPlugin(Graph graph) throws OWLOntologyCreationException {
-		super(graph, HERMIT_FACTORY);
+	public HermitReasonerPlugin() {
+		super(HERMIT_FACTORY);
 	}
 }

@@ -53,13 +53,7 @@ public class DHTBackedStore extends AdvanceMappingStore implements TripleStore {
 			// hit up the DHT for extra matches
 			for (var container : client.matches(trup)) {
 				log.debug("Matching container " + container.getId());
-				
-				if (containerStore.hasContainer(container)) {
-					log.debug("(container already processed)");
-				}
-				else {
-					containerStore.addContainer(container);
-					
+				if (containerStore.addContainer(container, false)) {
 					// call super delete/add rather than delete/add to avoid
 					// these received containers getting added to the container we're building
 					// via the containerCollector. also, they are already wrapped.
@@ -78,10 +72,13 @@ public class DHTBackedStore extends AdvanceMappingStore implements TripleStore {
 							super.add(t);
 						});
 				}
+				else {
+					log.debug("(container already processed)");
+				}
 			}
 		}
 		catch (Exception e) {
-			log.error("Could not reach the DHT", e); // XXX how to handle better?
+			log.error("Error reaching DHT", e); // XXX how to handle better?
 		}
 		
 		return super.find(trup).mapWith(t -> {
