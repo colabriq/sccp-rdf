@@ -1,6 +1,6 @@
 package com.goodforgoodbusiness.endpoint;
 
-import com.goodforgoodbusiness.endpoint.dht.container.StorableGraphContainer;
+import com.goodforgoodbusiness.endpoint.graph.dht.container.StorableGraphContainer;
 
 public class StorableGraphContainerTest {
 	public static void main(String[] args) {

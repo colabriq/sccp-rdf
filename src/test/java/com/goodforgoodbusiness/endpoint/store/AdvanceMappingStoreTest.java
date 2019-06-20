@@ -4,11 +4,11 @@ import org.apache.jena.graph.Node;
 import org.apache.jena.graph.NodeFactory;
 import org.apache.jena.graph.Triple;
 
-import com.goodforgoodbusiness.endpoint.graph.store.AdvanceMappingStore;
+import com.goodforgoodbusiness.endpoint.graph.base.store.AdvanceMapTripleStore;
 
 public class AdvanceMappingStoreTest {
 	public static void main(String[] args) {
-		var store = new AdvanceMappingStore();
+		var store = new AdvanceMapTripleStore();
 		
 		var t1 = new Triple(
 			NodeFactory.createURI("urn:s1"),

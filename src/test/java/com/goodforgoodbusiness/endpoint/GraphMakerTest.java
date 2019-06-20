@@ -4,7 +4,6 @@ import static org.apache.jena.graph.NodeFactory.createURI;
 
 import org.apache.jena.graph.Graph;
 import org.apache.jena.graph.Node;
-import org.apache.jena.graph.NodeFactory;
 import org.apache.jena.graph.Triple;
 import org.apache.jena.query.Dataset;
 import org.apache.jena.query.DatasetFactory;
@@ -12,11 +11,10 @@ import org.apache.jena.query.QueryExecutionFactory;
 import org.apache.jena.query.QueryFactory;
 import org.apache.jena.query.ResultSetFormatter;
 import org.apache.jena.sparql.core.DatasetGraphFactory.GraphMaker;
-import org.apache.jena.sparql.core.DatasetGraphMap;
 import org.apache.jena.sparql.resultset.ResultsFormat;
 
-import com.goodforgoodbusiness.endpoint.graph.BaseDatasetGraph;
-import com.goodforgoodbusiness.endpoint.graph.BaseGraph;
+import com.goodforgoodbusiness.endpoint.graph.base.BaseDatasetGraph;
+import com.goodforgoodbusiness.endpoint.graph.base.BaseGraph;
 
 public class GraphMakerTest {
 	public static void main(String[] args) {

@@ -41,9 +41,13 @@ public class ImportProcessor {
 	
 	private final Dataset dataset;
 	
+	public ImportProcessor(Dataset dataset) {
+		this.dataset = dataset;
+	}
+	
 	@Inject
 	public ImportProcessor(Provider<Dataset> datasetProvider) {
-		this.dataset = datasetProvider.get();
+		this(datasetProvider.get());
 	}
 	
 	/**

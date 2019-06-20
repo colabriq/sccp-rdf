@@ -16,24 +16,25 @@ import java.util.Properties;
 import org.apache.commons.configuration2.Configuration;
 import org.apache.jena.graph.Graph;
 import org.apache.jena.query.Dataset;
+import org.apache.jena.query.DatasetFactory;
+import org.apache.jena.sparql.core.DatasetGraphOne;
 import org.apache.log4j.Logger;
 
-import com.goodforgoodbusiness.endpoint.dht.DHTAccessGovernor;
-import com.goodforgoodbusiness.endpoint.dht.DHTContainerCollector;
-import com.goodforgoodbusiness.endpoint.dht.DHTContainerStore;
-import com.goodforgoodbusiness.endpoint.dht.DHTContainerSubmitter;
-import com.goodforgoodbusiness.endpoint.dht.DHTDatasetProvider;
-import com.goodforgoodbusiness.endpoint.dht.DHTEngineClient;
-import com.goodforgoodbusiness.endpoint.dht.DHTGraphMaker;
-import com.goodforgoodbusiness.endpoint.dht.DHTGraphProvider;
-import com.goodforgoodbusiness.endpoint.graph.BaseDatasetProvider;
-import com.goodforgoodbusiness.endpoint.graph.BaseDatasetProvider.Fetched;
-import com.goodforgoodbusiness.endpoint.graph.BaseDatasetProvider.Inferred;
-import com.goodforgoodbusiness.endpoint.graph.BaseDatasetProvider.Preloaded;
-import com.goodforgoodbusiness.endpoint.graph.BaseGraph;
-import com.goodforgoodbusiness.endpoint.plugin.internal.InternalReasonerManager;
+import com.goodforgoodbusiness.endpoint.graph.base.BaseDatasetProvider;
+import com.goodforgoodbusiness.endpoint.graph.base.BaseDatasetProvider.Fetched;
+import com.goodforgoodbusiness.endpoint.graph.base.BaseDatasetProvider.Inferred;
+import com.goodforgoodbusiness.endpoint.graph.base.BaseDatasetProvider.Preloaded;
+import com.goodforgoodbusiness.endpoint.graph.base.BaseGraph;
+import com.goodforgoodbusiness.endpoint.graph.container.ContainerCollector;
+import com.goodforgoodbusiness.endpoint.graph.container.ContainerStore;
+import com.goodforgoodbusiness.endpoint.graph.container.ContainerizedGraph;
+import com.goodforgoodbusiness.endpoint.graph.dht.DHTAccessGovernor;
+import com.goodforgoodbusiness.endpoint.graph.dht.DHTContainerSubmitter;
+import com.goodforgoodbusiness.endpoint.graph.dht.DHTDatasetProvider;
+import com.goodforgoodbusiness.endpoint.graph.dht.DHTEngineClient;
+import com.goodforgoodbusiness.endpoint.graph.dht.DHTGraph;
+import com.goodforgoodbusiness.endpoint.graph.dht.DHTGraphMaker;
 import com.goodforgoodbusiness.endpoint.plugin.internal.InternalReasonerPlugin;
-import com.goodforgoodbusiness.endpoint.plugin.internal.builtin.HermitReasonerPlugin;
 import com.goodforgoodbusiness.endpoint.plugin.internal.builtin.ObjectCustodyChainReasonerPlugin;
 import com.goodforgoodbusiness.endpoint.processor.ImportProcessor;
 import com.goodforgoodbusiness.endpoint.processor.SparqlProcessor;
@@ -53,7 +54,6 @@ import spark.Route;
 public class EndpointModule extends AbstractModule {
 	private static final Logger log = Logger.getLogger(EndpointModule.class);
 	
-	
 	private final Configuration config;
 	private Webapp webapp;
 	
@@ -72,47 +72,43 @@ public class EndpointModule extends AbstractModule {
 		Properties props = getProperties(config);
 		Names.bindProperties(binder(), props);
 		
+		bind(Graph.class).annotatedWith(Preloaded.class).toInstance(new BaseGraph());
+		bind(Graph.class).annotatedWith(Inferred.class).toInstance(new BaseGraph());
+		
 		if (isDHTEnabled()) {
 			log.info("DHT-backed data store");
 			
-			// dht communication components
+			bind(Graph.class).annotatedWith(Fetched.class).to(DHTGraph.class);
+			bind(Dataset.class).toProvider(DHTDatasetProvider.class);
+			
+			// dht comms
 			bind(DHTEngineClient.class);
 			bind(DHTContainerSubmitter.class);
 			bind(DHTAccessGovernor.class);
-			bind(DHTContainerStore.class);
-			bind(DHTContainerCollector.class);
 			bind(DHTGraphMaker.class);
 		}
 		else {
 			log.info("Standalone data store");
-		}
-		
-		bind(Graph.class).annotatedWith(Preloaded.class).to(BaseGraph.class);
-		bind(Graph.class).annotatedWith(Inferred.class).to(BaseGraph.class);
-		
-		if (isDHTEnabled()) {
-			bind(Graph.class).annotatedWith(Fetched.class).toProvider(DHTGraphProvider.class);
-			bind(Dataset.class).toProvider(DHTDatasetProvider.class);
-		}
-		else {
-			bind(Graph.class).annotatedWith(Fetched.class).to(BaseGraph.class);
+			
+			bind(Graph.class).annotatedWith(Fetched.class).to(ContainerizedGraph.class);
 			bind(Dataset.class).toProvider(BaseDatasetProvider.class);
 		}
+		
+		bind(ContainerStore.class);
+		bind(ContainerCollector.class);
 		
 		bind(SparqlProcessor.class);
 		bind(ImportProcessor.class);
 		
 		// add internal reasoner plugins (static for now)
-		
 		var plugins = newSetBinder(binder(), InternalReasonerPlugin.class);
 		
-		plugins.addBinding().to(HermitReasonerPlugin.class);
+//		plugins.addBinding().to(HermitReasonerPlugin.class);
 		plugins.addBinding().to(ObjectCustodyChainReasonerPlugin.class);
 		
-		bind(InternalReasonerManager.class);
+//		bind(InternalReasonerManager.class);
 		
 		// add webapp routes
-		
 		var routes = newMapBinder(binder(), Resource.class, Route.class);
 		
 		if (isDHTEnabled()) {
@@ -138,11 +134,24 @@ public class EndpointModule extends AbstractModule {
 		// check for preload (if the DHT is disabled)
 		if (!module.isDHTEnabled() && config.getBoolean("data.preload.enabled", false)) {
 			log.info("Preloading data...");
-			injector.getInstance(Key.get(ImportProcessor.class)).importPath(new File(config.getString("data.preload.path")));
+			
+			var preloadProcessor = new ImportProcessor(
+				DatasetFactory.wrap(
+					DatasetGraphOne.create(
+						injector.getInstance(Key.get(Graph.class, Preloaded.class))
+					)
+				)
+			);
+			
+			preloadProcessor.importPath(new File(config.getString("data.preload.path")));
 		}
 		
+		System.out.println( injector.getInstance(Key.get(Graph.class, Preloaded.class)).size() );
+		System.out.println( injector.getInstance(Key.get(Graph.class, Fetched.class)).size() );
+		System.out.println( injector.getInstance(Key.get(Graph.class, Inferred.class)).size() );
+		
 		// perform initial reasoner runs
-		injector.getInstance(InternalReasonerManager.class).init();
+//		injector.getInstance(InternalReasonerManager.class).init();
 		
 		// start data endpoint
 		this.webapp = injector.getInstance(Key.get(Webapp.class));

@@ -4,8 +4,8 @@ import java.util.Arrays;
 import java.util.NoSuchElementException;
 import java.util.stream.Stream;
 
-import com.goodforgoodbusiness.endpoint.graph.store.extendediterator.DequeExtendedIterator;
-import com.goodforgoodbusiness.endpoint.graph.store.extendediterator.functional.WrappedExtendedIterator;
+import com.goodforgoodbusiness.endpoint.graph.base.store.iterator.DequeExtendedIterator;
+import com.goodforgoodbusiness.endpoint.graph.base.store.iterator.functional.WrappedExtendedIterator;
 
 public class ExtendedIteratorTest {
 	public static void main(String[] args) throws Exception {

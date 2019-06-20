@@ -6,10 +6,10 @@ import org.apache.jena.graph.Graph;
 import org.apache.jena.query.Dataset;
 import org.apache.log4j.Logger;
 
-import com.goodforgoodbusiness.endpoint.dht.DHTContainerListener;
-import com.goodforgoodbusiness.endpoint.dht.DHTContainerStore;
-import com.goodforgoodbusiness.endpoint.dht.container.GraphContainer;
-import com.goodforgoodbusiness.endpoint.graph.BaseDatasetProvider.Inferred;
+import com.goodforgoodbusiness.endpoint.graph.base.BaseDatasetProvider.Inferred;
+import com.goodforgoodbusiness.endpoint.graph.container.ContainerStore;
+import com.goodforgoodbusiness.endpoint.graph.container.GraphContainer;
+import com.goodforgoodbusiness.endpoint.graph.container.GraphContainerListener;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 
@@ -21,9 +21,9 @@ public class InternalReasonerManager {
 	private static final Logger log = Logger.getLogger(InternalReasonerManager.class);
 	
 	/**
-	 * Bridges {@link InternalReasonerPlugin} with {@link DHTContainerListener}
+	 * Bridges {@link InternalReasonerPlugin} with {@link GraphContainerListener}
 	 */
-	class InternalReasonerPluginListener implements DHTContainerListener {
+	class InternalReasonerPluginListener implements GraphContainerListener {
 		private final InternalReasonerPlugin plugin;
 
 		InternalReasonerPluginListener(InternalReasonerPlugin plugin) {
@@ -43,12 +43,12 @@ public class InternalReasonerManager {
 	}
 	
 	private final Graph mainGraph, inferredGraph;
-	private final DHTContainerStore store;
+	private final ContainerStore store;
 	private final Set<InternalReasonerPlugin> plugins;
 
 	@Inject
 	public InternalReasonerManager(Dataset dataset, @Inferred Graph inferredGraph, 
-		DHTContainerStore store, Set<InternalReasonerPlugin> plugins) {
+		ContainerStore store, Set<InternalReasonerPlugin> plugins) {
 		
 		this.mainGraph = dataset.getDefaultModel().getGraph();
 		this.inferredGraph = inferredGraph;

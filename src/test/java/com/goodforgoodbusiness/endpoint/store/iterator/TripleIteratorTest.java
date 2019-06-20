@@ -4,11 +4,11 @@ import org.apache.jena.graph.Node;
 import org.apache.jena.graph.NodeFactory;
 import org.apache.jena.graph.Triple;
 
-import com.goodforgoodbusiness.endpoint.graph.store.AdvanceMappingStore;
+import com.goodforgoodbusiness.endpoint.graph.base.store.AdvanceMapTripleStore;
 
 public class TripleIteratorTest {
 	public static void main(String[] args) throws Exception {
-		var store1 = new AdvanceMappingStore();
+		var store1 = new AdvanceMapTripleStore();
 		
 		store1.add(
 			new Triple(
@@ -46,7 +46,7 @@ public class TripleIteratorTest {
 		
 		// try a removal test
 		
-		var store2 = new AdvanceMappingStore();
+		var store2 = new AdvanceMapTripleStore();
 		
 		store2.add(
 			new Triple(

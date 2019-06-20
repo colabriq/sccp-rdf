@@ -4,7 +4,7 @@ import org.apache.jena.graph.Triple;
 import org.apache.jena.sparql.core.DatasetGraphOne;
 import org.apache.jena.sparql.core.DatasetOne;
 
-import com.goodforgoodbusiness.endpoint.graph.BaseGraph;
+import com.goodforgoodbusiness.endpoint.graph.base.BaseGraph;
 import com.goodforgoodbusiness.endpoint.processor.ImportProcessor;
 import com.goodforgoodbusiness.shared.LogConfigurer;
 

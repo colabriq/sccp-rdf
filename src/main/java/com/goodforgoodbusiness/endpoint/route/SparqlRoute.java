@@ -7,10 +7,12 @@ import java.util.Optional;
 import org.apache.log4j.Logger;
 
 import com.goodforgoodbusiness.endpoint.MIMEMappings;
+import com.goodforgoodbusiness.endpoint.graph.container.ContainerCollector;
 import com.goodforgoodbusiness.endpoint.processor.ImportProcessException;
 import com.goodforgoodbusiness.endpoint.processor.SparqlProcessor;
 import com.goodforgoodbusiness.webapp.ContentType;
 import com.goodforgoodbusiness.webapp.error.BadRequestException;
+import com.google.gson.JsonObject;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 
@@ -22,10 +24,12 @@ import spark.Route;
 public class SparqlRoute implements Route {
 	private static final Logger log = Logger.getLogger(SparqlRoute.class);
 	
+	private final ContainerCollector collector;
 	private final SparqlProcessor runner;
 	
 	@Inject
-	public SparqlRoute(SparqlProcessor runner) {
+	public SparqlRoute(ContainerCollector collector, SparqlProcessor runner) {
+		this.collector = collector;
 		this.runner = runner;
 	}
 	
@@ -83,12 +87,29 @@ public class SparqlRoute implements Route {
 	public Object doUpdate(Request req, Response res, String sparqlStmt) throws BadRequestException {
 		res.type(ContentType.json.getContentTypeString());
 		
+		var container = collector.begin();
+		
 		try {
 			runner.update(sparqlStmt);
-			return "{}";
 		}
 		catch (ImportProcessException e) {
 			throw new BadRequestException(e.getMessage(), e);
+		}
+		finally {
+			collector.clear();
+		}
+
+		if (container.isEmpty()) {			
+			return "{}";
+		}
+		else {
+			// return created container
+			JsonObject o = new JsonObject();
+			
+			o.addProperty("added", container.getAdded().size());
+			o.addProperty("removed", container.getRemoved().size());
+			
+			return o.toString();
 		}
 	}
 }
