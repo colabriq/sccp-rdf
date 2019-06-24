@@ -1,23 +1,20 @@
 package com.goodforgoodbusiness.endpoint.graph.base;
 
-import static com.github.jsonldjava.shaded.com.google.common.collect.Iterators.concat;
 import static java.lang.annotation.ElementType.FIELD;
 import static java.lang.annotation.ElementType.METHOD;
 import static java.lang.annotation.ElementType.PARAMETER;
 import static java.lang.annotation.RetentionPolicy.RUNTIME;
-import static java.util.Arrays.asList;
-import static java.util.Collections.singleton;
+import static org.apache.jena.query.DatasetFactory.wrap;
 
 import java.lang.annotation.Retention;
 import java.lang.annotation.Target;
 
 import org.apache.jena.graph.Graph;
 import org.apache.jena.graph.Node;
-import org.apache.jena.graph.compose.MultiUnion;
 import org.apache.jena.query.Dataset;
-import org.apache.jena.query.DatasetFactory;
 import org.apache.jena.sparql.core.DatasetGraphFactory.GraphMaker;
 
+import com.goodforgoodbusiness.endpoint.graph.CustomGraphUnion;
 import com.google.inject.BindingAnnotation;
 import com.google.inject.Inject;
 import com.google.inject.Provider;
@@ -52,28 +49,25 @@ public class BaseDatasetProvider implements Provider<Dataset> {
 	public static @interface Inferred {
 		// annotation, no content
 	}
-	
-	/**
-	 * Create a union over some graphs 
-	 */
-	public static Graph newUnionView(Graph head, Graph... others) {
-		var union = new MultiUnion(concat(singleton(head).iterator(), asList(others).iterator()));
-		union.setBaseGraph(head);
-		return union;
-	}
 
-	protected final Graph defaultGraph;
+	private final Graph preloadedGraph, fetchedGraph, inferredGraph;
 	
 	@Inject
 	public BaseDatasetProvider(@Preloaded Graph preloadedGraph, @Fetched Graph fetchedGraph, @Inferred Graph inferredGraph) {
-		this.defaultGraph = newUnionView(fetchedGraph, preloadedGraph, inferredGraph);
+		this.preloadedGraph = preloadedGraph;
+		this.fetchedGraph = fetchedGraph;
+		this.inferredGraph = inferredGraph;
 	}
 	
 	@Override
 	public Dataset get() {
-		return DatasetFactory.wrap(
+		return wrap(
 			new BaseDatasetGraph(
-				defaultGraph,
+				new CustomGraphUnion(
+					fetchedGraph,
+					preloadedGraph,
+					inferredGraph
+				),
 				// doing nothing for the base dataset
 				new GraphMaker() {
 					@Override

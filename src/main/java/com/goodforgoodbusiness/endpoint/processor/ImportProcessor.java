@@ -2,6 +2,8 @@ package com.goodforgoodbusiness.endpoint.processor;
 
 import static com.goodforgoodbusiness.endpoint.MIMEMappings.FILE_TYPES;
 import static com.goodforgoodbusiness.shared.FileLoader.scan;
+import static com.goodforgoodbusiness.shared.TimingRecorder.timer;
+import static com.goodforgoodbusiness.shared.TimingRecorder.TimingCategory.RDF_IMPORTING;
 import static org.apache.commons.io.FilenameUtils.getExtension;
 
 import java.io.ByteArrayInputStream;
@@ -81,12 +83,14 @@ public class ImportProcessor {
 	public void importData(CharSequence data, String lang) throws ImportProcessException {
 		var model = dataset.getDefaultModel();
 		
-		try (InputStream stream = new ByteArrayInputStream(data.toString().getBytes("UTF-8"))) {
-			doImport(model, stream, lang);
-			log.info("Loaded data (now " + model.size() + ")");
-		}
-		catch (IOException e) {
-			throw new ImportProcessException("Error reading string", e);
+		try (var timer = timer(RDF_IMPORTING)) {
+			try (InputStream stream = new ByteArrayInputStream(data.toString().getBytes("UTF-8"))) {
+				doImport(model, stream, lang);
+				log.info("Loaded data (now " + model.size() + ")");
+			}
+			catch (IOException e) {
+				throw new ImportProcessException("Error reading string", e);
+			}
 		}
 	}
 	

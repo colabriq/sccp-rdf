@@ -1,6 +1,9 @@
 package com.goodforgoodbusiness.endpoint.graph.dht;
 
 import static com.goodforgoodbusiness.endpoint.graph.dht.container.StorableGraphContainer.toStorableGraphContainers;
+import static com.goodforgoodbusiness.shared.TimingRecorder.timer;
+import static com.goodforgoodbusiness.shared.TimingRecorder.TimingCategory.RDF_FETCHING;
+import static com.goodforgoodbusiness.shared.TripleUtil.isNone;
 import static com.goodforgoodbusiness.shared.treesort.TreeSort.sort;
 import static java.util.Collections.emptyList;
 
@@ -45,38 +48,51 @@ public class DHTEngineClient {
 	
 	private final URI dhtURI;
 	private final DHTAccessGovernor governor;
+	private final boolean allowTestQueries;
 	
 	@Inject
-	public DHTEngineClient(@Named("dht.uri") String dhtURI, DHTAccessGovernor governor) throws URISyntaxException {
+	public DHTEngineClient(@Named("dht.uri") String dhtURI, DHTAccessGovernor governor, @Named("allow.test.queries") boolean allowTestQueries) 
+		throws URISyntaxException {
+		
 		this.dhtURI = new URI(dhtURI);
 		this.governor = governor;
+		this.allowTestQueries = allowTestQueries;
 	}
 	
 	public List<StorableGraphContainer> matches(Triple trup) throws URISyntaxException, IOException, InterruptedException {
-		if (governor.allow(trup)) {
-			log.info("Finding matches for: " + trup);
-			
-			var uri = URIModifier
-				.from(dhtURI)
-				.appendPath(MATCHES_PATH)
-				.addParam("pattern", JSON.encode(TriTuple.from(trup)).toString())
-				.build();
-			
-			var request = HttpRequest
-				.newBuilder(uri)
-				.GET()
-				.build();
-			
-			var response = HTTP_CLIENT.send(request, BodyHandlers.ofString());
-			
-			if (response.statusCode() == 200) {
-				var containers = toStorableGraphContainers(response.body());
-				log.info("Results=" + containers.size());
-				
-				return sort(containers, true);
+		if (!allowTestQueries) {
+			if (isNone(trup.getSubject()) && isNone(trup.getObject())) {
+				log.error("Triple with s/p/o " + trup.toString() + " cannot be fetched from DHT");
+				return emptyList();
 			}
-			else {
-				throw new IOException("DHT response was " + response.statusCode());
+		}
+		
+		if (governor.allow(trup)) {
+			log.debug("Finding matches for: " + trup);
+			
+			try (var timer = timer(RDF_FETCHING)) {
+				var uri = URIModifier
+					.from(dhtURI)
+					.appendPath(MATCHES_PATH)
+					.addParam("pattern", JSON.encode(TriTuple.from(trup)).toString())
+					.build();
+				
+				var request = HttpRequest
+					.newBuilder(uri)
+					.GET()
+					.build();
+				
+				var response = HTTP_CLIENT.send(request, BodyHandlers.ofString());
+				
+				if (response.statusCode() == 200) {
+					var containers = toStorableGraphContainers(response.body());
+					log.info("Results=" + containers.size());
+					
+					return sort(containers, true);
+				}
+				else {
+					throw new IOException("DHT response was " + response.statusCode());
+				}
 			}
 		}
 		else {

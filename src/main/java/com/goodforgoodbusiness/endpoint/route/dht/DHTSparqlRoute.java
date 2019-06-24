@@ -1,11 +1,13 @@
 package com.goodforgoodbusiness.endpoint.route.dht;
 
 import static com.goodforgoodbusiness.endpoint.route.dht.DHTRequestUtil.processCustodyChainHeader;
+import static com.goodforgoodbusiness.shared.TimingRecorder.timer;
 
 import com.goodforgoodbusiness.endpoint.graph.container.ContainerCollector;
 import com.goodforgoodbusiness.endpoint.graph.dht.DHTContainerSubmitter;
 import com.goodforgoodbusiness.endpoint.processor.SparqlProcessor;
 import com.goodforgoodbusiness.endpoint.route.SparqlRoute;
+import com.goodforgoodbusiness.shared.TimingRecorder.TimingCategory;
 import com.goodforgoodbusiness.webapp.error.BadRequestException;
 import com.google.gson.JsonObject;
 import com.google.inject.Inject;
@@ -32,7 +34,7 @@ public class DHTSparqlRoute extends SparqlRoute implements Route {
 	public Object doUpdate(Request req, Response res, String sparqlStmt) throws BadRequestException {
 		var container = collector.begin();
 		
-		try {
+		try (var timer = timer(TimingCategory.RDF_ROUTE_SPARQL)) {
 			processCustodyChainHeader(req).forEach(container::linked);			
 			super.doUpdate(req, res, sparqlStmt);
 			

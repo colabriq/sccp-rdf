@@ -1,5 +1,7 @@
 package com.goodforgoodbusiness.endpoint.plugin.internal.builtin;
 
+import static com.goodforgoodbusiness.shared.TimingRecorder.timer;
+import static com.goodforgoodbusiness.shared.TimingRecorder.TimingCategory.RDF_REASONING;
 import static java.util.Arrays.asList;
 import static ru.avicomp.ontapi.OntGraphDocumentSource.wrap;
 
@@ -8,13 +10,10 @@ import java.util.List;
 import java.util.stream.Stream;
 
 import org.apache.jena.graph.Graph;
-import org.apache.jena.graph.compose.Union;
 import org.apache.log4j.Logger;
 import org.semanticweb.owlapi.model.OWLObject;
 import org.semanticweb.owlapi.model.OWLOntology;
 import org.semanticweb.owlapi.model.OWLOntologyCreationException;
-import org.semanticweb.owlapi.model.parameters.AxiomAnnotations;
-import org.semanticweb.owlapi.model.parameters.Imports;
 import org.semanticweb.owlapi.reasoner.OWLReasonerFactory;
 import org.semanticweb.owlapi.util.InferredAxiomGenerator;
 import org.semanticweb.owlapi.util.InferredClassAssertionAxiomGenerator;
@@ -31,6 +30,7 @@ import org.semanticweb.owlapi.util.InferredSubClassAxiomGenerator;
 import org.semanticweb.owlapi.util.InferredSubDataPropertyAxiomGenerator;
 import org.semanticweb.owlapi.util.InferredSubObjectPropertyAxiomGenerator;
 
+import com.goodforgoodbusiness.endpoint.graph.CustomGraphUnion;
 import com.goodforgoodbusiness.endpoint.plugin.internal.InternalReasonerException;
 import com.goodforgoodbusiness.endpoint.plugin.internal.InternalReasonerPlugin;
 
@@ -39,7 +39,9 @@ import javassist.util.proxy.ProxyFactory;
 import ru.avicomp.ontapi.OntManagers;
 import ru.avicomp.ontapi.OntologyManager;
 
-
+/**
+ * High level plugin does reasoning for any reasoner following the {@link OWLReasonerPlugin} interfaces
+ */
 public class OWLReasonerPlugin implements InternalReasonerPlugin {
 	private static final Logger log = Logger.getLogger(OWLReasonerPlugin.class);
 	
@@ -65,7 +67,7 @@ public class OWLReasonerPlugin implements InternalReasonerPlugin {
 		this.mainGraph = _mainGraph;
 		this.inferredGraph = _inferredGraph;
 		
-		try {
+		try (var timer = timer(RDF_REASONING)) {
 			// wrap main graph (initial source) + inferred graph (target) in ontology
 			this.mainGraphOntology = manager.loadOntologyFromOntologyDocument(wrap(mainGraph));
 			this.inferredGraphOntology = manager.loadOntologyFromOntologyDocument(wrap(inferredGraph));
@@ -85,29 +87,29 @@ public class OWLReasonerPlugin implements InternalReasonerPlugin {
 	public void reason(Graph newGraph, boolean inMainGraph) throws InternalReasonerException {
 		log.info("Reasoning...");
 		
-		try {
+		try (var timer = timer(RDF_REASONING)) {
 			// if the triples are not yet in the main graph
 			// create a union so we can reason over the whole thing
 			// wrap new graph into ontology
-			var wholeGraph = inMainGraph ? mainGraph : new Union(mainGraph, newGraph);
-			var wholeGraphOntology = manager.loadOntologyFromOntologyDocument(wrap(wholeGraph));
+			var wholeGraph = inMainGraph ? mainGraph : new CustomGraphUnion(mainGraph, newGraph);
+//			var wholeGraphOntology = manager.loadOntologyFromOntologyDocument(wrap(wholeGraph));
 			
-			var reasoner = reasonerFactory.createReasoner(wholeGraphOntology);
+//			var reasoner = reasonerFactory.createReasoner(wholeGraphOntology);
 			
 			// we only reason over triples in newGraph 
 			// use the intercept mechanism so only these are considered
-			var newGraphOntology = manager.loadOntologyFromOntologyDocument(wrap(newGraph));
-			var generators = makeGenerators(newGraphOntology);
-			
+//			var newGraphOntology = manager.loadOntologyFromOntologyDocument(wrap(newGraph));
+//			var generators = makeGenerators(newGraphOntology);
+//			
 			// do triple generation (adding results to inferred graph)
 			
-			generators.stream()
-				.flatMap(g -> g.createAxioms(this.manager.getOWLDataFactory(), reasoner).stream())
-				.filter(ax -> !inferredGraphOntology.containsAxiom(ax, Imports.INCLUDED, AxiomAnnotations.IGNORE_AXIOM_ANNOTATIONS))
-				.forEach(inferredGraphOntology::add)
-			;
+//			generators.stream()
+//				.flatMap(g -> g.createAxioms(this.manager.getOWLDataFactory(), reasoner).stream())
+//				.filter(ax -> !inferredGraphOntology.containsAxiom(ax, Imports.INCLUDED, AxiomAnnotations.IGNORE_AXIOM_ANNOTATIONS))
+//				.forEach(inferredGraphOntology::add)
+//			;
 		}
-		catch (OWLOntologyCreationException e) {
+		catch (Exception /*OWLOntologyCreationException*/ e) {
 			throw new InternalReasonerException("Could not initialize reasoner plugin", e);
 		}
 	}
@@ -132,7 +134,7 @@ public class OWLReasonerPlugin implements InternalReasonerPlugin {
 		);
 	}
 	
-	/* Intercepts the getEntities method to return only new entities */
+	// intercepts the getEntities method to return only new entities
 	private static <T extends InferredAxiomGenerator<?>> T createGeneratorWithInterceptedEntities(
 		Class<T> clazz, Stream<? extends OWLObject> entities) {
 		

@@ -19,6 +19,10 @@ public class BaseGraph extends GraphBase {
 		this.store = store;
     }
 	
+	protected TripleStore getStore() {
+		return store;
+	}
+	
 	@Override
 	public void close() {
 		store.clear();

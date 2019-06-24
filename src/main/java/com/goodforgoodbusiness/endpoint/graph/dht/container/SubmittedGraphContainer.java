@@ -21,7 +21,6 @@ public class SubmittedGraphContainer extends SubmittedContainer implements Graph
 
 	@Override
 	public Graph toGraph() {
-//		return graph;
-		throw new UnsupportedOperationException();
+		return graph;
 	}
 }

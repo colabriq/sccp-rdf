@@ -29,12 +29,15 @@ import com.goodforgoodbusiness.endpoint.graph.container.ContainerCollector;
 import com.goodforgoodbusiness.endpoint.graph.container.ContainerStore;
 import com.goodforgoodbusiness.endpoint.graph.container.ContainerizedGraph;
 import com.goodforgoodbusiness.endpoint.graph.dht.DHTAccessGovernor;
+import com.goodforgoodbusiness.endpoint.graph.dht.DHTBlacklist;
 import com.goodforgoodbusiness.endpoint.graph.dht.DHTContainerSubmitter;
 import com.goodforgoodbusiness.endpoint.graph.dht.DHTDatasetProvider;
 import com.goodforgoodbusiness.endpoint.graph.dht.DHTEngineClient;
 import com.goodforgoodbusiness.endpoint.graph.dht.DHTGraph;
 import com.goodforgoodbusiness.endpoint.graph.dht.DHTGraphMaker;
+import com.goodforgoodbusiness.endpoint.plugin.internal.InternalReasonerManager;
 import com.goodforgoodbusiness.endpoint.plugin.internal.InternalReasonerPlugin;
+import com.goodforgoodbusiness.endpoint.plugin.internal.builtin.HermitReasonerPlugin;
 import com.goodforgoodbusiness.endpoint.plugin.internal.builtin.ObjectCustodyChainReasonerPlugin;
 import com.goodforgoodbusiness.endpoint.processor.ImportProcessor;
 import com.goodforgoodbusiness.endpoint.processor.SparqlProcessor;
@@ -47,6 +50,7 @@ import com.goodforgoodbusiness.webapp.Resource;
 import com.goodforgoodbusiness.webapp.Webapp;
 import com.google.inject.AbstractModule;
 import com.google.inject.Key;
+import com.google.inject.Scopes;
 import com.google.inject.name.Names;
 
 import spark.Route;
@@ -55,7 +59,7 @@ public class EndpointModule extends AbstractModule {
 	private static final Logger log = Logger.getLogger(EndpointModule.class);
 	
 	private final Configuration config;
-	private Webapp webapp;
+	private Webapp webapp = null;
 	
 	public EndpointModule(Configuration config) {
 		this.config = config;
@@ -79,9 +83,10 @@ public class EndpointModule extends AbstractModule {
 			log.info("DHT-backed data store");
 			
 			bind(Graph.class).annotatedWith(Fetched.class).to(DHTGraph.class);
-			bind(Dataset.class).toProvider(DHTDatasetProvider.class);
+			bind(Dataset.class).toProvider(DHTDatasetProvider.class).in(Scopes.SINGLETON);
 			
 			// dht comms
+			bind(DHTBlacklist.class);
 			bind(DHTEngineClient.class);
 			bind(DHTContainerSubmitter.class);
 			bind(DHTAccessGovernor.class);
@@ -91,7 +96,7 @@ public class EndpointModule extends AbstractModule {
 			log.info("Standalone data store");
 			
 			bind(Graph.class).annotatedWith(Fetched.class).to(ContainerizedGraph.class);
-			bind(Dataset.class).toProvider(BaseDatasetProvider.class);
+			bind(Dataset.class).toProvider(BaseDatasetProvider.class).in(Scopes.SINGLETON);
 		}
 		
 		bind(ContainerStore.class);
@@ -104,9 +109,9 @@ public class EndpointModule extends AbstractModule {
 		var plugins = newSetBinder(binder(), InternalReasonerPlugin.class);
 		
 //		plugins.addBinding().to(HermitReasonerPlugin.class);
-		plugins.addBinding().to(ObjectCustodyChainReasonerPlugin.class);
+//		plugins.addBinding().to(ObjectCustodyChainReasonerPlugin.class);
 		
-//		bind(InternalReasonerManager.class);
+		bind(InternalReasonerManager.class);
 		
 		// add webapp routes
 		var routes = newMapBinder(binder(), Resource.class, Route.class);
@@ -128,11 +133,10 @@ public class EndpointModule extends AbstractModule {
 	}
 	
 	public void start() throws FileNotFoundException {
-		var module = new EndpointModule(config);
-		var injector = createInjector(module);
+		var injector = createInjector(this);
 		
 		// check for preload (if the DHT is disabled)
-		if (!module.isDHTEnabled() && config.getBoolean("data.preload.enabled", false)) {
+		if (!isDHTEnabled() && config.getBoolean("data.preload.enabled", false)) {
 			log.info("Preloading data...");
 			
 			var preloadProcessor = new ImportProcessor(
@@ -146,12 +150,8 @@ public class EndpointModule extends AbstractModule {
 			preloadProcessor.importPath(new File(config.getString("data.preload.path")));
 		}
 		
-		System.out.println( injector.getInstance(Key.get(Graph.class, Preloaded.class)).size() );
-		System.out.println( injector.getInstance(Key.get(Graph.class, Fetched.class)).size() );
-		System.out.println( injector.getInstance(Key.get(Graph.class, Inferred.class)).size() );
-		
 		// perform initial reasoner runs
-//		injector.getInstance(InternalReasonerManager.class).init();
+		injector.getInstance(InternalReasonerManager.class).init();
 		
 		// start data endpoint
 		this.webapp = injector.getInstance(Key.get(Webapp.class));

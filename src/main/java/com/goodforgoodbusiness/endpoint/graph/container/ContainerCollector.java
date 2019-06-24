@@ -13,9 +13,14 @@ public class ContainerCollector {
 	private final ThreadLocal<SubmittableContainer> containerLocal = new ThreadLocal<>();
 	
 	public SubmittableContainer begin() {
-		var container = new SubmittableContainer();
-		containerLocal.set(container);
-		return container;
+		if (containerLocal.get() == null) {
+			var container = new SubmittableContainer();
+			containerLocal.set(container);
+			return container;
+		}
+		else {
+			return containerLocal.get();
+		}
 	}
 	
 	public void clear() {

@@ -8,6 +8,7 @@ import org.apache.log4j.Logger;
 import com.goodforgoodbusiness.endpoint.graph.base.store.ContainerizedTripleStore;
 import com.goodforgoodbusiness.endpoint.graph.container.ContainerCollector;
 import com.goodforgoodbusiness.endpoint.graph.container.ContainerStore;
+import com.goodforgoodbusiness.endpoint.graph.dht.DHTBlacklist;
 import com.goodforgoodbusiness.endpoint.graph.dht.DHTEngineClient;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
@@ -17,13 +18,17 @@ public class DHTTripleStore extends ContainerizedTripleStore implements TripleSt
 	private static final Logger log = Logger.getLogger(DHTTripleStore.class);
 	
 	private final DHTEngineClient client;
+	private final DHTBlacklist blacklist;
+	
 	private final ContainerStore containerStore;
 	
 	@Inject
-	public DHTTripleStore(DHTEngineClient client, ContainerStore containerStore, ContainerCollector collector) {
-		super(containerStore, collector);
+	public DHTTripleStore(DHTEngineClient client, DHTBlacklist blacklist, ContainerStore store, ContainerCollector collector) {
+		super(store, collector);
 		this.client = client;
-		this.containerStore = containerStore;
+		this.blacklist = blacklist;
+		
+		this.containerStore = store;
 	}
 
 	@Override
@@ -34,36 +39,38 @@ public class DHTTripleStore extends ContainerizedTripleStore implements TripleSt
 		// be a 'forward snapshot' that contains triples in the local store, with
 		// triples retrieved from the DHT.
 		
-		try {
-			// hit up the DHT for extra matches
-			for (var container : client.matches(trup)) {
-				log.debug("Matching container " + container.getId());
-				if (containerStore.addContainer(container, false)) {
-					// call super delete/add rather than delete/add to avoid
-					// these received containers getting added to the container we're building
-					// via the containerCollector. also, they are already wrapped.
-					
-					container.getRemoved()
-						.forEach(t -> {
-							log.debug("Delete " + t);
-							containerStore.addSource(t, container);
-							super.delete(t);
-						});
-					
-					container.getAdded()
-						.forEach(t -> {
-							log.debug("Adding " + t);
-							containerStore.addSource(t, container);
-							super.add(t);
-						});
-				}
-				else {
-					log.debug("(container already processed)");
+		if (!blacklist.includes(trup)) {
+			try {
+				// hit up the DHT for extra matches
+				for (var container : client.matches(trup)) {
+					log.debug("Matching container " + container.getId());
+					if (containerStore.addContainer(container, false)) {
+						// call super delete/add rather than delete/add to avoid
+						// these received containers getting added to the container we're building
+						// via the containerCollector. also, they are already wrapped.
+						
+						container.getRemoved()
+							.forEach(t -> {
+								log.debug("Delete " + t);
+								containerStore.addSource(t, container);
+								super.delete(t);
+							});
+						
+						container.getAdded()
+							.forEach(t -> {
+								log.debug("Adding " + t);
+								containerStore.addSource(t, container);
+								super.add(t);
+							});
+					}
+					else {
+						log.debug("(container already processed)");
+					}
 				}
 			}
-		}
-		catch (Exception e) {
-			log.error("Error reaching DHT", e); // XXX how to handle better?
+			catch (Exception e) {
+				log.error("Error reaching DHT", e); // XXX how to handle better?
+			}
 		}
 		
 		return super.find(trup);

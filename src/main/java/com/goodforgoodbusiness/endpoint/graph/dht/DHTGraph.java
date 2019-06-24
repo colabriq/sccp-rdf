@@ -1,5 +1,8 @@
 package com.goodforgoodbusiness.endpoint.graph.dht;
 
+import org.apache.jena.graph.Triple;
+import org.apache.jena.util.iterator.ExtendedIterator;
+
 import com.goodforgoodbusiness.endpoint.graph.container.ContainerCollector;
 import com.goodforgoodbusiness.endpoint.graph.container.ContainerStore;
 import com.goodforgoodbusiness.endpoint.graph.container.ContainerizedGraph;
@@ -14,7 +17,17 @@ import com.google.inject.Singleton;
 @Singleton
 public class DHTGraph extends ContainerizedGraph {
 	@Inject
-	public DHTGraph(DHTEngineClient client, ContainerStore containerStore, ContainerCollector collector) {
-		super(new DHTTripleStore(client, containerStore, collector));
+	public DHTGraph(DHTEngineClient client, DHTBlacklist blacklist, ContainerStore store, ContainerCollector collector) {
+		super(new DHTTripleStore(client, blacklist, store, collector));
+	}
+	
+	@Override
+	public ExtendedIterator<Triple> find() { 
+		throw new UnsupportedOperationException();
+	}
+	
+	@Override
+	public int graphBaseSize() {
+		return getStore().size();
 	}
 }
