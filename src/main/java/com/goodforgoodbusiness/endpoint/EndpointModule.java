@@ -35,9 +35,8 @@ import com.goodforgoodbusiness.endpoint.graph.dht.DHTDatasetProvider;
 import com.goodforgoodbusiness.endpoint.graph.dht.DHTEngineClient;
 import com.goodforgoodbusiness.endpoint.graph.dht.DHTGraph;
 import com.goodforgoodbusiness.endpoint.graph.dht.DHTGraphMaker;
-import com.goodforgoodbusiness.endpoint.plugin.internal.InternalReasonerManager;
-import com.goodforgoodbusiness.endpoint.plugin.internal.InternalReasonerPlugin;
-import com.goodforgoodbusiness.endpoint.plugin.internal.builtin.HermitReasonerPlugin;
+import com.goodforgoodbusiness.endpoint.plugin.internal.InternalPlugin;
+import com.goodforgoodbusiness.endpoint.plugin.internal.InternalPluginManager;
 import com.goodforgoodbusiness.endpoint.plugin.internal.builtin.ObjectCustodyChainReasonerPlugin;
 import com.goodforgoodbusiness.endpoint.processor.ImportProcessor;
 import com.goodforgoodbusiness.endpoint.processor.SparqlProcessor;
@@ -106,12 +105,12 @@ public class EndpointModule extends AbstractModule {
 		bind(ImportProcessor.class);
 		
 		// add internal reasoner plugins (static for now)
-		var plugins = newSetBinder(binder(), InternalReasonerPlugin.class);
+		var plugins = newSetBinder(binder(), InternalPlugin.class);
 		
 //		plugins.addBinding().to(HermitReasonerPlugin.class);
-//		plugins.addBinding().to(ObjectCustodyChainReasonerPlugin.class);
+		plugins.addBinding().to(ObjectCustodyChainReasonerPlugin.class);
 		
-		bind(InternalReasonerManager.class);
+		bind(InternalPluginManager.class);
 		
 		// add webapp routes
 		var routes = newMapBinder(binder(), Resource.class, Route.class);
@@ -151,7 +150,7 @@ public class EndpointModule extends AbstractModule {
 		}
 		
 		// perform initial reasoner runs
-		injector.getInstance(InternalReasonerManager.class).init();
+		injector.getInstance(InternalPluginManager.class).init();
 		
 		// start data endpoint
 		this.webapp = injector.getInstance(Key.get(Webapp.class));

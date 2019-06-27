@@ -1,4 +1,4 @@
-package com.goodforgoodbusiness.endpoint.plugin.internal.builtin;
+package com.goodforgoodbusiness.endpoint.plugin.internal.builtin.reasoner;
 
 import org.semanticweb.owlapi.reasoner.OWLReasonerFactory;
 

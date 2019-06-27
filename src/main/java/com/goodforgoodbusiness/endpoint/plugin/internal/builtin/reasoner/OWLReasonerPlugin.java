@@ -1,4 +1,4 @@
-package com.goodforgoodbusiness.endpoint.plugin.internal.builtin;
+package com.goodforgoodbusiness.endpoint.plugin.internal.builtin.reasoner;
 
 import static com.goodforgoodbusiness.shared.TimingRecorder.timer;
 import static com.goodforgoodbusiness.shared.TimingRecorder.TimingCategory.RDF_REASONING;
@@ -31,8 +31,8 @@ import org.semanticweb.owlapi.util.InferredSubDataPropertyAxiomGenerator;
 import org.semanticweb.owlapi.util.InferredSubObjectPropertyAxiomGenerator;
 
 import com.goodforgoodbusiness.endpoint.graph.CustomGraphUnion;
-import com.goodforgoodbusiness.endpoint.plugin.internal.InternalReasonerException;
-import com.goodforgoodbusiness.endpoint.plugin.internal.InternalReasonerPlugin;
+import com.goodforgoodbusiness.endpoint.plugin.internal.InternalPluginException;
+import com.goodforgoodbusiness.endpoint.plugin.internal.InternalPlugin;
 
 import javassist.util.proxy.MethodHandler;
 import javassist.util.proxy.ProxyFactory;
@@ -42,7 +42,7 @@ import ru.avicomp.ontapi.OntologyManager;
 /**
  * High level plugin does reasoning for any reasoner following the {@link OWLReasonerPlugin} interfaces
  */
-public class OWLReasonerPlugin implements InternalReasonerPlugin {
+public class OWLReasonerPlugin extends AbstractReasonerPlugin {
 	private static final Logger log = Logger.getLogger(OWLReasonerPlugin.class);
 	
 	private final OntologyManager manager;
@@ -60,7 +60,7 @@ public class OWLReasonerPlugin implements InternalReasonerPlugin {
 	}
 	
 	@Override
-	public void init(Graph _mainGraph, Graph _inferredGraph) throws InternalReasonerException {
+	public void init(Graph _mainGraph, Graph _inferredGraph) throws InternalPluginException {
 		log.info("Initializing reasoner");
 		
 		// save mainGraph + inferredGraph for later
@@ -79,12 +79,12 @@ public class OWLReasonerPlugin implements InternalReasonerPlugin {
 			iog.fillOntology(this.manager.getOWLDataFactory(), inferredGraphOntology);
 		}
 		catch (OWLOntologyCreationException e) {
-			throw new InternalReasonerException("Could not initialize reasoner plugin", e);
+			throw new InternalPluginException("Could not initialize reasoner plugin", e);
 		}
 	}
 
 	@Override
-	public void reason(Graph newGraph, boolean inMainGraph) throws InternalReasonerException {
+	public void reason(Graph newGraph, boolean inMainGraph) throws InternalPluginException {
 		log.info("Reasoning...");
 		
 		try (var timer = timer(RDF_REASONING)) {
@@ -110,7 +110,7 @@ public class OWLReasonerPlugin implements InternalReasonerPlugin {
 //			;
 		}
 		catch (Exception /*OWLOntologyCreationException*/ e) {
-			throw new InternalReasonerException("Could not initialize reasoner plugin", e);
+			throw new InternalPluginException("Could not initialize reasoner plugin", e);
 		}
 	}
 	

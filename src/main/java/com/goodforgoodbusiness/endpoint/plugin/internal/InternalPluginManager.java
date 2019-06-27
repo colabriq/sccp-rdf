@@ -14,29 +14,29 @@ import com.google.inject.Inject;
 import com.google.inject.Singleton;
 
 /**
- * Manages all the {@link InternalReasonerPlugin}s.
+ * Manages all the {@link InternalPlugin}s.
  */
 @Singleton
-public class InternalReasonerManager {
-	private static final Logger log = Logger.getLogger(InternalReasonerManager.class);
+public class InternalPluginManager {
+	private static final Logger log = Logger.getLogger(InternalPluginManager.class);
 	
 	/**
-	 * Bridges {@link InternalReasonerPlugin} with {@link GraphContainerListener}
+	 * Bridges {@link InternalPlugin} with {@link GraphContainerListener}
 	 */
 	class InternalReasonerPluginListener implements GraphContainerListener {
-		private final InternalReasonerPlugin plugin;
+		private final InternalPlugin plugin;
 
-		InternalReasonerPluginListener(InternalReasonerPlugin plugin) {
+		InternalReasonerPluginListener(InternalPlugin plugin) {
 			this.plugin = plugin;
 		}
 		
 		@Override
 		public void containerAdded(GraphContainer container, boolean inMainGraph) {
 			try {
-				log.info("Reasoning on " + container.getId());
-				plugin.reason(container.toGraph(), inMainGraph);
+				log.info("Running plugins on " + container.getId());
+				plugin.exec(container, inMainGraph);
 			}
-			catch (InternalReasonerException ie) {
+			catch (InternalPluginException ie) {
 				log.error("Error in reasoner " + plugin.getClass().getSimpleName(), ie);
 			}
 		}
@@ -44,11 +44,11 @@ public class InternalReasonerManager {
 	
 	private final Graph mainGraph, inferredGraph;
 	private final ContainerStore store;
-	private final Set<InternalReasonerPlugin> plugins;
+	private final Set<InternalPlugin> plugins;
 
 	@Inject
-	public InternalReasonerManager(Dataset dataset, @Inferred Graph inferredGraph, 
-		ContainerStore store, Set<InternalReasonerPlugin> plugins) {
+	public InternalPluginManager(Dataset dataset, @Inferred Graph inferredGraph, 
+		ContainerStore store, Set<InternalPlugin> plugins) {
 		
 		this.mainGraph = dataset.getDefaultModel().getGraph();
 		this.inferredGraph = inferredGraph;
@@ -62,7 +62,7 @@ public class InternalReasonerManager {
 				plugin.init(mainGraph, inferredGraph);
 				store.addListener(new InternalReasonerPluginListener(plugin));
 			}
-			catch (InternalReasonerException e) {
+			catch (InternalPluginException e) {
 				log.error("Could not initialize " + plugin.getClass().getSimpleName(), e);
 			}
 		});

@@ -31,7 +31,7 @@ import com.google.inject.Singleton;
 public class SparqlProcessor {
 	private static Logger log = Logger.getLogger(SparqlProcessor.class);
 	
-	private final Dataset dataset;	
+	private final Dataset dataset;
 	
 	@Inject
 	public SparqlProcessor(Provider<Dataset> datasetProvider) {
