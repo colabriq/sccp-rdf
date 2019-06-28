@@ -44,7 +44,7 @@ public class DHTAccessGovernor {
 		if (enabled) {
 			this.tracker = CacheBuilder
 				.newBuilder()
-				.expireAfterWrite(cacheDuration)
+// XXX				.expireAfterWrite(cacheDuration)
 				.build()
 			;
 		}
