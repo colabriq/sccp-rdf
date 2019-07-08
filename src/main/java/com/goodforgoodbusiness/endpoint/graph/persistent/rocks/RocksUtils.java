@@ -1,4 +1,4 @@
-package com.goodforgoodbusiness.endpoint.graph.rocks;
+package com.goodforgoodbusiness.endpoint.graph.persistent.rocks;
 
 import static java.util.stream.Collectors.toList;
 

@@ -1,6 +1,6 @@
-package com.goodforgoodbusiness.endpoint.graph.rocks.store;
+package com.goodforgoodbusiness.endpoint.graph.persistent.rocks.store;
 
-import static com.goodforgoodbusiness.endpoint.graph.rocks.store.PrefixPattern.startsWith;
+import static com.goodforgoodbusiness.endpoint.graph.persistent.rocks.store.PrefixPattern.startsWith;
 
 import java.util.Iterator;
 

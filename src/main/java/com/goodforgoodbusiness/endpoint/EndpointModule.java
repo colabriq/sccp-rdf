@@ -77,8 +77,8 @@ public class EndpointModule extends AbstractModule {
 		Properties props = getProperties(config);
 		Names.bindProperties(binder(), props);
 		
-		bind(Graph.class).annotatedWith(Preloaded.class).toInstance(new BaseGraph());
-		bind(Graph.class).annotatedWith(Inferred.class).toInstance(new BaseGraph());
+		bind(Graph.class).annotatedWith(Preloaded.class).toInstance(BaseGraph.newGraph());
+		bind(Graph.class).annotatedWith(Inferred.class).toInstance(BaseGraph.newGraph());
 		
 		if (isDHTEnabled()) {
 			log.info("DHT-backed data store");

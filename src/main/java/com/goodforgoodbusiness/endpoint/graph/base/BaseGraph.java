@@ -8,18 +8,18 @@ import org.apache.jena.util.iterator.ExtendedIterator;
 
 import com.goodforgoodbusiness.endpoint.graph.base.store.AdvanceMapTripleStore;
 
-public class BaseGraph extends GraphBase {
-	private final TripleStore store;
-	
-	public BaseGraph() { 
-		this(new AdvanceMapTripleStore());
+public class BaseGraph<STORE_TYPE extends TripleStore> extends GraphBase {
+	public static BaseGraph<AdvanceMapTripleStore> newGraph() {
+		return new BaseGraph<>(new AdvanceMapTripleStore());
 	}
 	
-	protected BaseGraph(TripleStore store) { 
+	private final STORE_TYPE store;
+	
+	protected BaseGraph(STORE_TYPE store) { 
 		this.store = store;
     }
 	
-	protected TripleStore getStore() {
+	protected STORE_TYPE getStore() {
 		return store;
 	}
 	

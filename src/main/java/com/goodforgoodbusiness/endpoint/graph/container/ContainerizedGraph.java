@@ -9,7 +9,7 @@ import com.google.inject.Singleton;
  * A standalone graph backed with our {@link ContainerizedTripleStore}.
  */
 @Singleton
-public class ContainerizedGraph extends BaseGraph {	
+public class ContainerizedGraph extends BaseGraph<ContainerizedTripleStore> {	
 	public ContainerizedGraph(ContainerizedTripleStore store) {
 		super(store);
 	}

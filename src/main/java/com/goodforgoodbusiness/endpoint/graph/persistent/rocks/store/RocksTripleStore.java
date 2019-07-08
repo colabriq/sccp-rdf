@@ -1,6 +1,6 @@
-package com.goodforgoodbusiness.endpoint.graph.rocks.store;
+package com.goodforgoodbusiness.endpoint.graph.persistent.rocks.store;
 
-import static com.goodforgoodbusiness.endpoint.graph.rocks.store.PrefixPattern.makePrefix;
+import static com.goodforgoodbusiness.endpoint.graph.persistent.rocks.store.PrefixPattern.makePrefix;
 import static com.goodforgoodbusiness.shared.TripleUtil.isNone;
 import static com.goodforgoodbusiness.shared.encode.RDFBinary.encodeNode;
 import static com.goodforgoodbusiness.shared.encode.RDFBinary.encodeTriple;
@@ -12,7 +12,7 @@ import org.apache.jena.graph.impl.TripleStore;
 import org.apache.jena.util.iterator.ExtendedIterator;
 import org.rocksdb.RocksDBException;
 
-import com.goodforgoodbusiness.endpoint.graph.rocks.RocksManager;
+import com.goodforgoodbusiness.endpoint.graph.persistent.rocks.RocksManager;
 
 /**
  * A triple store backed by RocksDB
@@ -29,6 +29,10 @@ public class RocksTripleStore implements TripleStore {
 	
 	public RocksTripleStore(RocksManager manager) {
 		this.manager = manager;
+	}
+	
+	public RocksManager getManager() {
+		return manager;
 	}
 	
 	@Override

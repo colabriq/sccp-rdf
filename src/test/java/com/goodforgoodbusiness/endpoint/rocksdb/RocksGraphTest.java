@@ -20,8 +20,8 @@ import org.apache.jena.sparql.core.DatasetGraphOne;
 import org.apache.jena.sparql.resultset.ResultsFormat;
 import org.apache.log4j.Logger;
 
-import com.goodforgoodbusiness.endpoint.graph.rocks.RocksManager;
-import com.goodforgoodbusiness.endpoint.graph.rocks.store.RocksTripleStore;
+import com.goodforgoodbusiness.endpoint.graph.persistent.rocks.RocksManager;
+import com.goodforgoodbusiness.endpoint.graph.persistent.rocks.store.RocksTripleStore;
 import com.goodforgoodbusiness.endpoint.processor.TaskException;
 import com.goodforgoodbusiness.shared.Skolemizer;
 

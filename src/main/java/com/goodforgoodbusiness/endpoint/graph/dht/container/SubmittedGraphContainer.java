@@ -14,7 +14,7 @@ public class SubmittedGraphContainer extends SubmittedContainer implements Graph
 	public SubmittedGraphContainer(SubmittableContainer container, SubmitResult result) {
 		super(container, result);
 		
-		this.graph = new BaseGraph();
+		this.graph = BaseGraph.newGraph();
 		this.getAdded().forEach(this.graph::add);
 		this.getRemoved().forEach(this.graph::delete);
 	}

@@ -1,4 +1,4 @@
-package com.goodforgoodbusiness.endpoint.graph.rocks.store;
+package com.goodforgoodbusiness.endpoint.graph.persistent.rocks.store;
 
 /**
  * Build index patterns for prefix store

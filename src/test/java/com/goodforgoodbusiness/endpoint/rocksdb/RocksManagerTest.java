@@ -1,6 +1,6 @@
 package com.goodforgoodbusiness.endpoint.rocksdb;
 
-import com.goodforgoodbusiness.endpoint.graph.rocks.RocksManager;
+import com.goodforgoodbusiness.endpoint.graph.persistent.rocks.RocksManager;
 import com.goodforgoodbusiness.shared.LogConfigurer;
 
 public class RocksManagerTest {

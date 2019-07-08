@@ -36,7 +36,7 @@ public class StorableGraphContainer extends StorableContainer implements GraphCo
 	public Graph toGraph() {
 		// lazy init in case we're deserializing
 		if (this.graph == null) {
-			this.graph = new BaseGraph();
+			this.graph = BaseGraph.newGraph();
 			this.getAdded().forEach(this.graph::add);
 			this.getRemoved().forEach(this.graph::delete);
 		}
