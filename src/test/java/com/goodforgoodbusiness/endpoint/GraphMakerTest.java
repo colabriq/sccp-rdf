@@ -18,7 +18,7 @@ import com.goodforgoodbusiness.endpoint.graph.base.BaseGraph;
 
 public class GraphMakerTest {
 	public static void main(String[] args) {
-		var mainGraph = new BaseGraph();
+		var mainGraph = BaseGraph.newGraph();
 		
 		mainGraph.add(new Triple(
 			createURI("urn:s1"),
@@ -40,7 +40,7 @@ public class GraphMakerTest {
 		
 		
 		
-		var contGraph = new BaseGraph();
+		var contGraph = BaseGraph.newGraph();
 		
 		contGraph.add(new Triple(
 			createURI("urn:cs1"),
