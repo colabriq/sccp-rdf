@@ -3,7 +3,7 @@ package com.goodforgoodbusiness.endpoint.graph.dht;
 import java.util.Optional;
 
 import com.goodforgoodbusiness.endpoint.graph.container.ContainerStore;
-import com.goodforgoodbusiness.endpoint.processor.ImportProcessException;
+import com.goodforgoodbusiness.endpoint.processor.TaskException;
 import com.goodforgoodbusiness.model.SubmittableContainer;
 import com.goodforgoodbusiness.model.SubmittedContainer;
 import com.google.inject.Inject;
@@ -43,7 +43,7 @@ public class DHTContainerSubmitter {
 			}
 		}
 		catch (Exception e) {
-			throw new ImportProcessException(e.getMessage(), e); // XXX
+			throw new TaskException(e.getMessage(), e); // XXX
 		}
 	}
 }

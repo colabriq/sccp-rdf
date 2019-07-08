@@ -1,6 +1,5 @@
-package com.goodforgoodbusiness.endpoint.route.dht;
+package com.goodforgoodbusiness.endpoint.webapp.dht;
 
-import static com.goodforgoodbusiness.endpoint.route.dht.DHTRequestUtil.processCustodyChainHeader;
 import static java.util.stream.Collectors.toList;
 
 public class DHTRequestUtilTest {
@@ -11,7 +10,7 @@ public class DHTRequestUtilTest {
 		;
 		
 		System.out.println(
-			processCustodyChainHeader(header).collect(toList())
+			DHTRequestUtil.processCustodyChainHeader(header).collect(toList())
 		);
 	}
 }

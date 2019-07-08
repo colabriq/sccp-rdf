@@ -113,7 +113,7 @@ public class DHTEngineClient {
 
 		var request = HttpRequest
 			.newBuilder(uri)
-			.header("Content-Type", ContentType.json.getContentTypeString())
+			.header("Content-Type", ContentType.JSON.getContentTypeString())
 			.POST(BodyPublishers.ofString(JSON.encode(container).toString()))
 			.build();
 		

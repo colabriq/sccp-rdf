@@ -1,23 +1,20 @@
 package com.goodforgoodbusiness.endpoint;
 
 import static com.goodforgoodbusiness.shared.ConfigLoader.loadConfig;
-import static com.goodforgoodbusiness.webapp.Resource.get;
-import static com.goodforgoodbusiness.webapp.Resource.post;
+import static com.goodforgoodbusiness.shared.GuiceUtil.o;
 import static com.google.inject.Guice.createInjector;
-import static com.google.inject.multibindings.MapBinder.newMapBinder;
 import static com.google.inject.multibindings.Multibinder.newSetBinder;
 import static com.google.inject.name.Names.named;
 import static org.apache.commons.configuration2.ConfigurationConverter.getProperties;
 
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.util.Properties;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 import org.apache.commons.configuration2.Configuration;
 import org.apache.jena.graph.Graph;
 import org.apache.jena.query.Dataset;
-import org.apache.jena.query.DatasetFactory;
-import org.apache.jena.sparql.core.DatasetGraphOne;
 import org.apache.log4j.Logger;
 
 import com.goodforgoodbusiness.endpoint.graph.base.BaseDatasetProvider;
@@ -37,31 +34,36 @@ import com.goodforgoodbusiness.endpoint.graph.dht.DHTGraph;
 import com.goodforgoodbusiness.endpoint.graph.dht.DHTGraphMaker;
 import com.goodforgoodbusiness.endpoint.plugin.internal.InternalPlugin;
 import com.goodforgoodbusiness.endpoint.plugin.internal.InternalPluginManager;
-import com.goodforgoodbusiness.endpoint.plugin.internal.builtin.ObjectCustodyChainReasonerPlugin;
-import com.goodforgoodbusiness.endpoint.processor.ImportProcessor;
-import com.goodforgoodbusiness.endpoint.processor.SparqlProcessor;
-import com.goodforgoodbusiness.endpoint.route.SparqlRoute;
-import com.goodforgoodbusiness.endpoint.route.UploadRoute;
-import com.goodforgoodbusiness.endpoint.route.dht.DHTSparqlRoute;
-import com.goodforgoodbusiness.endpoint.route.dht.DHTUploadRoute;
+import com.goodforgoodbusiness.endpoint.processor.TaskResult;
+import com.goodforgoodbusiness.endpoint.processor.task.ImportPathTask;
+import com.goodforgoodbusiness.endpoint.webapp.SparqlCommon;
+import com.goodforgoodbusiness.endpoint.webapp.SparqlGetHandler;
+import com.goodforgoodbusiness.endpoint.webapp.SparqlPostHandler;
+import com.goodforgoodbusiness.endpoint.webapp.UploadHandler;
 import com.goodforgoodbusiness.shared.LogConfigurer;
-import com.goodforgoodbusiness.webapp.Resource;
-import com.goodforgoodbusiness.webapp.Webapp;
+import com.goodforgoodbusiness.webapp.VerticleRunner;
+import com.goodforgoodbusiness.webapp.VerticleServer;
+import com.goodforgoodbusiness.webapp.VerticleServer.HandlerProvider;
 import com.google.inject.AbstractModule;
+import com.google.inject.Injector;
 import com.google.inject.Key;
 import com.google.inject.Scopes;
 import com.google.inject.name.Names;
 
-import spark.Route;
+import io.vertx.core.Future;
+import io.vertx.core.Verticle;
 
 public class EndpointModule extends AbstractModule {
 	private static final Logger log = Logger.getLogger(EndpointModule.class);
 	
 	private final Configuration config;
-	private Webapp webapp = null;
+	private final Injector injector;
+	
+	private VerticleServer server = null;
 	
 	public EndpointModule(Configuration config) {
 		this.config = config;
+		this.injector = createInjector(this);
 	}
 	
 	public boolean isDHTEnabled() {
@@ -101,60 +103,83 @@ public class EndpointModule extends AbstractModule {
 		bind(ContainerStore.class);
 		bind(ContainerCollector.class);
 		
-		bind(SparqlProcessor.class);
-		bind(ImportProcessor.class);
+		// bind a thread pool for actual query execution
+		// since these depend on synchronous ops against
+		// the database or upstream, but can themselves be
+		// executed progressively at least
+		bind(ExecutorService.class).toInstance(Executors.newFixedThreadPool(10));
 		
 		// add internal reasoner plugins (static for now)
 		var plugins = newSetBinder(binder(), InternalPlugin.class);
 		
 //		plugins.addBinding().to(HermitReasonerPlugin.class);
-		plugins.addBinding().to(ObjectCustodyChainReasonerPlugin.class);
+//		plugins.addBinding().to(ObjectCustodyChainReasonerPlugin.class);
 		
 		bind(InternalPluginManager.class);
 		
-		// add webapp routes
-		var routes = newMapBinder(binder(), Resource.class, Route.class);
-		
-		if (isDHTEnabled()) {
-			routes.addBinding(post("/sparql")).to(DHTSparqlRoute.class);
-			routes.addBinding(get("/sparql")).to(DHTSparqlRoute.class);
-			routes.addBinding(post("/upload")).to(DHTUploadRoute.class);
-		}
-		else {
-			routes.addBinding(post("/sparql")).to(SparqlRoute.class);
-			routes.addBinding(get("/sparql")).to(SparqlRoute.class);
-			routes.addBinding(post("/upload")).to(UploadRoute.class);
-		}
-		
 		// rebind specific port for webapp
 		bind(Integer.class).annotatedWith(named("port")).to(Key.get(Integer.class, named("data.port")));
-		bind(Webapp.class);
+		
+		// bind Vert.x components 
+		bind(VerticleRunner.class);
+		bind(VerticleServer.class);
+		bind(Verticle.class).to(VerticleServer.class);
+		
+		// bind appropriate handlers
+		if (isDHTEnabled()) {
+			throw new UnsupportedOperationException();
+		}
+		else {
+			bind(SparqlCommon.class);
+			bind(SparqlGetHandler.class);
+			bind(SparqlPostHandler.class);
+			bind(UploadHandler.class);
+		}
+		
+		// configure route mappings
+		// fine to use getProvider here because it won't be called until the injector is created
+		bind(HandlerProvider.class).toInstance((router) -> {
+			router.get ("/sparql").handler(o(injector, SparqlGetHandler.class));
+			router.post("/sparql").handler(o(injector, SparqlPostHandler.class));
+			router.post("/upload").handler(o(injector, UploadHandler.class));
+		});
 	}
 	
-	public void start() throws FileNotFoundException {
-		var injector = createInjector(this);
-		
+	public void start() {
 		// check for preload (if the DHT is disabled)
 		if (!isDHTEnabled() && config.getBoolean("data.preload.enabled", false)) {
 			log.info("Preloading data...");
 			
-			var preloadProcessor = new ImportProcessor(
-				DatasetFactory.wrap(
-					DatasetGraphOne.create(
-						injector.getInstance(Key.get(Graph.class, Preloaded.class))
-					)
+			injector.getInstance(ExecutorService.class).submit(
+				new ImportPathTask(
+					injector.getInstance(Dataset.class),
+					new File(config.getString("data.preload.path")),
+					Future.<TaskResult>future().setHandler(result -> {
+						if (result.succeeded()) {
+							log.info("Import loaded " + result.result().getSize() + " triples");
+							this.boot();
+						}
+						else {
+							log.error("Import failed", result.cause());
+						}
+					})
 				)
 			);
-			
-			preloadProcessor.importPath(new File(config.getString("data.preload.path")));
 		}
+		else {
+			this.boot();
+		}
+	}
+	
+	public void boot() {
+		log.info("Booting services...");
 		
 		// perform initial reasoner runs
-		injector.getInstance(InternalPluginManager.class).init();
+		this.injector.getInstance(InternalPluginManager.class).init();
 		
 		// start data endpoint
-		this.webapp = injector.getInstance(Key.get(Webapp.class));
-		this.webapp.start();
+		this.server = injector.getInstance(Key.get(VerticleServer.class));
+		this.server.start();
 	}
 	
 	public static void main(String[] args) throws Exception {

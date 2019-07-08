@@ -1,4 +1,4 @@
-package com.goodforgoodbusiness.endpoint.route.dht;
+package com.goodforgoodbusiness.endpoint.webapp.dht;
 
 import static java.nio.charset.Charset.defaultCharset;
 import static org.apache.http.client.utils.URLEncodedUtils.parse;
@@ -12,7 +12,7 @@ import org.apache.http.NameValuePair;
 import com.goodforgoodbusiness.model.Link;
 import com.goodforgoodbusiness.model.Link.RelType;
 
-import spark.Request;
+import io.vertx.ext.web.RoutingContext;
 
 class DHTRequestUtil {
 	public static final String CUSTODY_CHAIN_HEADER = "X-Custody-Chain";
@@ -24,8 +24,8 @@ class DHTRequestUtil {
 	 * 
 	 * X-Custody: ref=d41d8cd98f00b204e9800998ecf8427e&rel=causedBy ; ref=cf84e9800d4198f00b20998e427ed8cd&rel=causedBy ;
 	 */
-	public static Stream<Link> processCustodyChainHeader(Request req) {
-		return processCustodyChainHeader(req.headers(CUSTODY_CHAIN_HEADER));
+	public static Stream<Link> processCustodyChainHeader(RoutingContext ctx) {
+		return processCustodyChainHeader(ctx.request().getHeader(CUSTODY_CHAIN_HEADER));
 	}
 	
 	/**

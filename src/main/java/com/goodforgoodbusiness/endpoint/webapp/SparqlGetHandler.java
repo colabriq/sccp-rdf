@@ -1,0 +1,40 @@
+package com.goodforgoodbusiness.endpoint.webapp;
+
+import com.goodforgoodbusiness.webapp.error.BadRequestException;
+import com.google.inject.Inject;
+import com.google.inject.Singleton;
+
+import io.vertx.core.Handler;
+import io.vertx.ext.web.RoutingContext;
+
+/**
+ * Handle query param SPARQL queries and updates.
+ * As per SPARQL spec.
+ * @author ijmad
+ */
+@Singleton
+public class SparqlGetHandler implements Handler<RoutingContext> {
+	private final SparqlCommon sparql;
+	
+	@Inject
+	public SparqlGetHandler(SparqlCommon sparql) {
+		this.sparql = sparql;
+	}
+	
+	@Override
+	public void handle(RoutingContext ctx) {
+		var query = ctx.request().getParam("query");
+		if (query != null) {
+			sparql.query(ctx, query);
+		}
+		else {
+			var update = ctx.request().getParam("update");
+			if (update != null) {
+				sparql.update(ctx, update);
+			}
+			else {
+				ctx.fail(new BadRequestException("Must specify SPARQL query or update"));
+			}
+		}
+	}
+}

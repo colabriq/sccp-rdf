@@ -79,13 +79,13 @@ public class AdvanceMapTripleStore implements TripleStore {
 
 	@Override
 	public void add(Triple t) {
-		if (log.isDebugEnabled()) log.debug("Add = " + t.toString());
+		if (log.isTraceEnabled()) log.trace("Add = " + t.toString());
 		mappings(t).forEach(p -> getPatternSet(p).add(t));
 	}
 
 	@Override
 	public void delete(Triple t) {
-		if (log.isDebugEnabled()) log.debug("Delete = " + t.toString());
+		if (log.isTraceEnabled()) log.trace("Delete = " + t.toString());
 		mappings(t).forEach(p -> getPatternSet(p).remove(t));
 	}
 
@@ -106,10 +106,10 @@ public class AdvanceMapTripleStore implements TripleStore {
 	
 	@Override
 	public ExtendedIterator<Triple> find(Triple pattern) {
-		if (log.isDebugEnabled()) log.debug("Pattern: " + pattern);
+		if (log.isTraceEnabled()) log.trace("Pattern: " + pattern);
 		var patternSet = getPatternSet(pattern);
 		
-		if (log.isDebugEnabled()) log.debug("Results= " + patternSet.size());
+		if (log.isTraceEnabled()) log.trace("Results= " + patternSet.size());
 		return new TripleIterator(patternSet);
 	}
 
