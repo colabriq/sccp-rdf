@@ -8,15 +8,18 @@ import org.apache.log4j.Logger;
 
 import com.goodforgoodbusiness.endpoint.MIMEMappings;
 import com.goodforgoodbusiness.endpoint.processor.TaskResult;
+import com.goodforgoodbusiness.endpoint.processor.task.ImportStreamTask;
 import com.goodforgoodbusiness.endpoint.processor.task.QueryTask;
 import com.goodforgoodbusiness.endpoint.processor.task.UpdateTask;
 import com.goodforgoodbusiness.webapp.ContentType;
 import com.goodforgoodbusiness.webapp.error.BadRequestException;
+import com.goodforgoodbusiness.webapp.stream.InputReadStream;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 
 import io.vertx.core.Future;
 import io.vertx.core.buffer.Buffer;
+import io.vertx.core.file.AsyncFile;
 import io.vertx.core.http.HttpHeaders;
 import io.vertx.ext.web.RoutingContext;
 
@@ -24,14 +27,14 @@ import io.vertx.ext.web.RoutingContext;
  * Common query/update methods for SPARQL queries
  */
 @Singleton
-public class SparqlCommon {
-	private static final Logger log = Logger.getLogger(SparqlCommon.class);
+public class SparqlTaskLauncher {
+	private static final Logger log = Logger.getLogger(SparqlTaskLauncher.class);
 	
-	private final ExecutorService service;
-	private final Dataset dataset;
+	protected final ExecutorService service;
+	protected final Dataset dataset;
 	
 	@Inject
-	public SparqlCommon(ExecutorService service, Dataset dataset) {
+	public SparqlTaskLauncher(ExecutorService service, Dataset dataset) {
 		this.service = service;
 		this.dataset = dataset;
 	}
@@ -106,5 +109,30 @@ public class SparqlCommon {
 	 */
 	public void update(RoutingContext ctx, String stmt) {
 		update(ctx, Buffer.buffer(stmt.getBytes()));
+	}
+	
+	/**
+	 * Starts an import from an uploaded file
+	 */
+	public void importFile(RoutingContext ctx, String lang, AsyncFile file) {
+		service.submit(
+			new ImportStreamTask(
+			    dataset,
+			    new InputReadStream(file),
+			    lang,
+				Future.<TaskResult>future().setHandler(result -> {
+					file.close();
+					
+					if (result.failed()) {
+						ctx.fail(result.cause());
+					}
+					else {
+						// standard JSON result
+						ctx.response().end(result.result().toJson());
+						ctx.next();
+					}
+				})
+			)
+		);
 	}
 }

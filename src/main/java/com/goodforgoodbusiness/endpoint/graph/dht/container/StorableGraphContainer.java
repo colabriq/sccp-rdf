@@ -6,7 +6,7 @@ import java.util.Set;
 import org.apache.jena.graph.Graph;
 
 import com.goodforgoodbusiness.endpoint.graph.base.BaseGraph;
-import com.goodforgoodbusiness.endpoint.graph.container.GraphContainer;
+import com.goodforgoodbusiness.endpoint.plugin.GraphContainer;
 import com.goodforgoodbusiness.model.Envelope;
 import com.goodforgoodbusiness.model.ProvenLink;
 import com.goodforgoodbusiness.model.Signature;

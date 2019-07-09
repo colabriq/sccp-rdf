@@ -14,10 +14,10 @@ import io.vertx.ext.web.RoutingContext;
  */
 @Singleton
 public class SparqlGetHandler implements Handler<RoutingContext> {
-	private final SparqlCommon sparql;
+	private final SparqlTaskLauncher sparql;
 	
 	@Inject
-	public SparqlGetHandler(SparqlCommon sparql) {
+	public SparqlGetHandler(SparqlTaskLauncher sparql) {
 		this.sparql = sparql;
 	}
 	

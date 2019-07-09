@@ -4,8 +4,6 @@ import org.apache.jena.graph.Graph;
 import org.apache.jena.graph.Node;
 import org.apache.jena.sparql.core.DatasetGraphFactory.GraphMaker;
 
-import com.goodforgoodbusiness.endpoint.graph.container.ContainerStore;
-import com.goodforgoodbusiness.endpoint.graph.container.GraphContainer;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 
@@ -16,27 +14,27 @@ import com.google.inject.Singleton;
 public class DHTGraphMaker implements GraphMaker {
 	public static final String CONTAINER_URI_PREFIX = "container:";
 	
-	private final ContainerStore containerStore;
+//	private final ContainerStore containerStore;
 	
 	@Inject
-	public DHTGraphMaker(ContainerStore containerStore) {
-		this.containerStore = containerStore;
+	public DHTGraphMaker(/*ContainerStore containerStore*/) {
+//		this.containerStore = containerStore;
 	}
 
 	@Override
 	public Graph create(Node name) {
-		if (name.isURI()) {
-			var uri = name.getURI();
-			if (uri.startsWith(CONTAINER_URI_PREFIX)) {
-				var id = uri.substring(CONTAINER_URI_PREFIX.length());
-				
-				return containerStore
-					.getContainer(id)
-					.map(GraphContainer::toGraph)
-					.orElse(null)
-				;
-			}
-		}
+//		if (name.isURI()) {
+//			var uri = name.getURI();
+//			if (uri.startsWith(CONTAINER_URI_PREFIX)) {
+//				var id = uri.substring(CONTAINER_URI_PREFIX.length());
+//				
+//				return containerStore
+//					.getContainer(id)
+//					.map(GraphContainer::toGraph)
+//					.orElse(null)
+//				;
+//			}
+//		}
 		
 		return null;
 	}

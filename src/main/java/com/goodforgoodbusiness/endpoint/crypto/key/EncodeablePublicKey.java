@@ -1,28 +1,29 @@
-package com.goodforgoodbusiness.endpoint.aaaatemp.crypto.key;
+package com.goodforgoodbusiness.endpoint.crypto.key;
 
 import java.io.UnsupportedEncodingException;
-import java.math.BigInteger;
 import java.security.KeyFactory;
 import java.security.NoSuchAlgorithmException;
-import java.security.PrivateKey;
-import java.security.interfaces.ECPrivateKey;
+import java.security.PublicKey;
+import java.security.interfaces.ECPublicKey;
 import java.security.spec.ECParameterSpec;
+import java.security.spec.ECPoint;
 import java.security.spec.InvalidKeySpecException;
-import java.security.spec.PKCS8EncodedKeySpec;
+import java.security.spec.X509EncodedKeySpec;
 import java.util.Base64;
 
-import com.goodforgoodbusiness.endpoint.aaaatemp.crypto.AsymmetricEncryption;
+import com.goodforgoodbusiness.endpoint.crypto.AsymmetricEncryption;
 import com.google.gson.annotations.JsonAdapter;
 
 @JsonAdapter(EncodeableKey.Serializer.class)
-public class EncodeablePrivateKey extends AbstractEncodeableKey implements EncodeableKey, PrivateKey, ECPrivateKey {
+public class EncodeablePublicKey extends AbstractEncodeableKey implements EncodeableKey, PublicKey, ECPublicKey {
 	private static final long serialVersionUID = 1L;
 	
-	private static PrivateKey unencode(String encodedForm) throws EncodeableKeyException {
+	private static PublicKey unencode(String encodedForm) throws EncodeableKeyException {
 		try {
-			var spec = new PKCS8EncodedKeySpec(Base64.getDecoder().decode(encodedForm.getBytes()));
+			var spec = new X509EncodedKeySpec(Base64.getDecoder().decode(encodedForm.getBytes()));
+			
 			var kf = KeyFactory.getInstance(AsymmetricEncryption.KEY_ALGORITHM);
-	        return kf.generatePrivate(spec);
+	        return kf.generatePublic(spec);
 		}
 		catch (InvalidKeySpecException e) {
 			throw new EncodeableKeyException("Invalid key", e);
@@ -32,24 +33,24 @@ public class EncodeablePrivateKey extends AbstractEncodeableKey implements Encod
 		}
 	}
 	
-	public EncodeablePrivateKey(PrivateKey key) {
+	public EncodeablePublicKey(PublicKey key) {
 		super(key);
 	}
 	
-	public EncodeablePrivateKey(String encodedForm) throws EncodeableKeyException {
-		this(unencode(encodedForm));
+	public EncodeablePublicKey(String encodedForm) throws EncodeableKeyException {
+		super(unencode(encodedForm));
 	}
 	
 	@Override
 	public ECParameterSpec getParams() {
-		return ((ECPrivateKey)key).getParams();
+		return ((ECPublicKey)key).getParams();
 	}
 
 	@Override
-	public BigInteger getS() {
-		return ((ECPrivateKey)key).getS();
+	public ECPoint getW() {
+		return ((ECPublicKey)key).getW();
 	}
-	
+
 	@Override
 	public String toEncodedString() {
 		try {

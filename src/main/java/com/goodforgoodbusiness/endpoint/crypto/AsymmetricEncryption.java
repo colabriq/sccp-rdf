@@ -1,4 +1,4 @@
-package com.goodforgoodbusiness.endpoint.aaaatemp.crypto;
+package com.goodforgoodbusiness.endpoint.crypto;
 
 import java.io.UnsupportedEncodingException;
 import java.security.InvalidKeyException;
@@ -10,9 +10,9 @@ import java.security.SecureRandom;
 import java.security.Signature;
 import java.security.SignatureException;
 
-import com.goodforgoodbusiness.endpoint.aaaatemp.crypto.key.EncodeableKeyPair;
-import com.goodforgoodbusiness.endpoint.aaaatemp.crypto.key.EncodeablePrivateKey;
-import com.goodforgoodbusiness.endpoint.aaaatemp.crypto.key.EncodeablePublicKey;
+import com.goodforgoodbusiness.endpoint.crypto.key.EncodeableKeyPair;
+import com.goodforgoodbusiness.endpoint.crypto.key.EncodeablePrivateKey;
+import com.goodforgoodbusiness.endpoint.crypto.key.EncodeablePublicKey;
 import com.goodforgoodbusiness.shared.encode.Hex;
 
 public class AsymmetricEncryption {

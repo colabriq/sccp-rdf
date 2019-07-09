@@ -2,7 +2,7 @@ package com.goodforgoodbusiness.endpoint.plugin.internal.builtin.reasoner;
 
 import org.apache.jena.graph.Graph;
 
-import com.goodforgoodbusiness.endpoint.graph.container.GraphContainer;
+import com.goodforgoodbusiness.endpoint.plugin.GraphContainer;
 import com.goodforgoodbusiness.endpoint.plugin.internal.InternalPlugin;
 import com.goodforgoodbusiness.endpoint.plugin.internal.InternalPluginException;
 

@@ -1,4 +1,4 @@
-package com.goodforgoodbusiness.endpoint.aaaatemp.crypto.key;
+package com.goodforgoodbusiness.endpoint.crypto.key;
 
 import java.io.UnsupportedEncodingException;
 import java.util.Base64;

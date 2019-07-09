@@ -6,6 +6,9 @@ import java.util.Iterator;
 
 import org.rocksdb.RocksIterator;
 
+import com.goodforgoodbusiness.shared.TimingRecorder;
+import com.goodforgoodbusiness.shared.TimingRecorder.TimingCategory;
+
 /**
  * Iterates over a particular RocksDB prefix.
  * @author ijmad
@@ -20,11 +23,13 @@ public class PrefixIterator implements Iterator<byte[]> {
 		this.it = it;	
 		this.prefix = prefix;
 		
-		if (prefix != null) {
-			it.seek(prefix);
-		}
-		else {
-			it.seekToFirst();
+		try (var timer = TimingRecorder.timer(TimingCategory.RDF_DATABASE)) {
+			if (prefix != null) {
+				it.seek(prefix);
+			}
+			else {
+				it.seekToFirst();
+			}
 		}
 		
 		updateCurrent();
@@ -35,11 +40,13 @@ public class PrefixIterator implements Iterator<byte[]> {
 	}
 	
 	private void updateCurrent() {
-		if (it.isValid() && (prefix == null || startsWith(it.key(), prefix))) {
-			curVal = it.value();
-		}
-		else {
-			curVal = null;
+		try (var timer = TimingRecorder.timer(TimingCategory.RDF_DATABASE)) {
+			if (it.isValid() && (prefix == null || startsWith(it.key(), prefix))) {
+				curVal = it.value();
+			}
+			else {
+				curVal = null;
+			}
 		}
 	}
 	

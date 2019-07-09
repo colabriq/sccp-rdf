@@ -1,4 +1,4 @@
-package com.goodforgoodbusiness.endpoint.aaaatemp.crypto;
+package com.goodforgoodbusiness.endpoint.crypto;
 
 import java.io.UnsupportedEncodingException;
 import java.security.GeneralSecurityException;
@@ -14,8 +14,8 @@ import javax.crypto.SecretKey;
 import javax.crypto.spec.IvParameterSpec;
 import javax.crypto.spec.SecretKeySpec;
 
-import com.goodforgoodbusiness.endpoint.aaaatemp.crypto.key.EncodeableKeyException;
-import com.goodforgoodbusiness.endpoint.aaaatemp.crypto.key.EncodeableSecretKey;
+import com.goodforgoodbusiness.endpoint.crypto.key.EncodeableKeyException;
+import com.goodforgoodbusiness.endpoint.crypto.key.EncodeableSecretKey;
 
 public class SymmetricEncryption {
 	public static final int KEY_LENGTH = 192;

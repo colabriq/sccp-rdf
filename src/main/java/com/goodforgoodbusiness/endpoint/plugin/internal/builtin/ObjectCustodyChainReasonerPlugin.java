@@ -13,8 +13,8 @@ import org.apache.jena.query.DatasetFactory;
 import org.apache.jena.sparql.core.DatasetGraphOne;
 
 import com.github.jsonldjava.shaded.com.google.common.collect.Streams;
-import com.goodforgoodbusiness.endpoint.graph.container.GraphContainer;
 import com.goodforgoodbusiness.endpoint.graph.dht.container.StorableGraphContainer;
+import com.goodforgoodbusiness.endpoint.plugin.GraphContainer;
 import com.goodforgoodbusiness.endpoint.plugin.internal.InternalPlugin;
 import com.goodforgoodbusiness.endpoint.plugin.internal.InternalPluginException;
 

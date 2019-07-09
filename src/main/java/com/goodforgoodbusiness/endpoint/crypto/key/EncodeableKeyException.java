@@ -1,4 +1,4 @@
-package com.goodforgoodbusiness.endpoint.aaaatemp.crypto.key;
+package com.goodforgoodbusiness.endpoint.crypto.key;
 
 public class EncodeableKeyException extends Exception {
 	private static final long serialVersionUID = 1L;

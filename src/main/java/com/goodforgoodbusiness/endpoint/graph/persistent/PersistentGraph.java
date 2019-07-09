@@ -14,9 +14,13 @@ import com.google.inject.name.Named;
  */
 @Singleton
 public class PersistentGraph extends BaseGraph<RocksTripleStore> {
-@Inject
+	@Inject
 	public PersistentGraph(@Named("storage.path") String path) throws RocksDBException {
-		super(new RocksTripleStore(new RocksManager(path)));
+		this(new RocksTripleStore(new RocksManager(path)));
+	}
+	
+	public PersistentGraph(RocksTripleStore store) throws RocksDBException {
+		super(store);
 		super.getStore().getManager().start();
 	}
 }

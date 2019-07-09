@@ -5,7 +5,7 @@ import com.google.gson.JsonObject;
 /**
  * Standard result for tasks that have changed the model
  */
-public final class TaskResult {
+public class TaskResult {
 	private final long added, removed, size;
 
 	public TaskResult(long added, long removed, long size) {

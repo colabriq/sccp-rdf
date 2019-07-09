@@ -1,4 +1,4 @@
-package com.goodforgoodbusiness.endpoint.graph.container;
+package com.goodforgoodbusiness.endpoint.plugin;
 
 import org.apache.jena.graph.Graph;
 

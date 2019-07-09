@@ -2,7 +2,7 @@ package com.goodforgoodbusiness.endpoint.graph.dht;
 
 import static com.goodforgoodbusiness.endpoint.graph.dht.container.StorableGraphContainer.toStorableGraphContainers;
 import static com.goodforgoodbusiness.shared.TimingRecorder.timer;
-import static com.goodforgoodbusiness.shared.TimingRecorder.TimingCategory.RDF_FETCHING;
+import static com.goodforgoodbusiness.shared.TimingRecorder.TimingCategory.CONTAINER_FETCH;
 import static com.goodforgoodbusiness.shared.TripleUtil.isNone;
 import static com.goodforgoodbusiness.shared.treesort.TreeSort.sort;
 import static java.util.Collections.emptyList;
@@ -70,7 +70,7 @@ public class DHTEngineClient {
 		if (governor.allow(trup)) {
 			log.debug("Finding matches for: " + trup);
 			
-			try (var timer = timer(RDF_FETCHING)) {
+			try (var timer = timer(CONTAINER_FETCH)) {
 				var uri = URIModifier
 					.from(dhtURI)
 					.appendPath(MATCHES_PATH)

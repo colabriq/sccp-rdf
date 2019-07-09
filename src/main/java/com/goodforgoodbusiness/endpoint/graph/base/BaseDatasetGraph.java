@@ -6,24 +6,19 @@ import org.apache.jena.sparql.core.DatasetGraphFactory.GraphMaker;
 import org.apache.jena.sparql.core.DatasetGraphMap;
 import org.apache.jena.sparql.core.Quad;
 
-import com.google.inject.Inject;
-import com.google.inject.Singleton;
-
 /**
- * Provides containers as graphs that can be queried via SPARQL
+ * Creates a basic dataset, allowing us to overlay specific extra graphs
  */
-@Singleton
 public class BaseDatasetGraph extends DatasetGraphMap {
 	private final GraphMaker extraGraphMaker;
 	
-	@Inject
-	public BaseDatasetGraph(Graph mainGraph, GraphMaker extraGraphMaker) {
-		// we reimplement getGraphCreate so this only deals with mainGraph
+	public BaseDatasetGraph(Graph graph, GraphMaker extraGraphMaker) {
+		// we reimplement getGraphCreate so this only deals with the main graph
 		super(new GraphMaker() {
 			@Override
 			public Graph create(Node name) {
 				if (name == null) {
-					return mainGraph;
+					return graph;
 				}
 				
 				throw new UnsupportedOperationException();

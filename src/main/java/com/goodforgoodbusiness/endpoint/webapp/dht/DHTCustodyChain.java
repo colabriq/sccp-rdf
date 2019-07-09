@@ -14,7 +14,7 @@ import com.goodforgoodbusiness.model.Link.RelType;
 
 import io.vertx.ext.web.RoutingContext;
 
-class DHTRequestUtil {
+class DHTCustodyChain {
 	public static final String CUSTODY_CHAIN_HEADER = "X-Custody-Chain";
 	
 	/**
@@ -40,7 +40,7 @@ class DHTRequestUtil {
 			return Stream.<String>of(header.split(";"))
 				.map(String::trim)
 				.map(str -> parse(str, defaultCharset()))
-				.map(DHTRequestUtil::toLink)
+				.map(DHTCustodyChain::toLink)
 				.flatMap(Optional::stream)
 				
 			;

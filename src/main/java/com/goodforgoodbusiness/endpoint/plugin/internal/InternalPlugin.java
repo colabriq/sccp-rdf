@@ -2,7 +2,7 @@ package com.goodforgoodbusiness.endpoint.plugin.internal;
 
 import org.apache.jena.graph.Graph;
 
-import com.goodforgoodbusiness.endpoint.graph.container.GraphContainer;
+import com.goodforgoodbusiness.endpoint.plugin.GraphContainer;
 
 /**
  * Harness for reasoner plugins

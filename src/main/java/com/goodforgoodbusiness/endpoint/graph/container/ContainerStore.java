@@ -11,13 +11,15 @@ import java.util.concurrent.ConcurrentHashMap;
 
 import org.apache.jena.graph.Triple;
 
+import com.goodforgoodbusiness.endpoint.plugin.GraphContainer;
+import com.goodforgoodbusiness.endpoint.plugin.GraphContainerListener;
 import com.google.inject.Singleton;
 
 /**
  * Stores the containers and context associated with the Triples while they're stored locally.
  */
 @Singleton
-public class ContainerStore {
+class ContainerStoreX {
 	private final List<GraphContainerListener> listeners = new ArrayList<>();
 	
 	public void addListener(GraphContainerListener listener) {

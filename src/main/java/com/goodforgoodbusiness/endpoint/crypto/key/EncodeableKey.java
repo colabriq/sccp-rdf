@@ -1,4 +1,4 @@
-package com.goodforgoodbusiness.endpoint.aaaatemp.crypto.key;
+package com.goodforgoodbusiness.endpoint.crypto.key;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Type;

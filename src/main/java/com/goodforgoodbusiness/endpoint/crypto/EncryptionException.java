@@ -1,4 +1,4 @@
-package com.goodforgoodbusiness.endpoint.aaaatemp.crypto;
+package com.goodforgoodbusiness.endpoint.crypto;
 
 public class EncryptionException extends Exception {
 	private static final long serialVersionUID = 1L;

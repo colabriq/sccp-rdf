@@ -1,4 +1,4 @@
-package com.goodforgoodbusiness.endpoint.graph.container;
+package com.goodforgoodbusiness.endpoint.plugin;
 
 /**
  * Listen for new containers being added in to the system.

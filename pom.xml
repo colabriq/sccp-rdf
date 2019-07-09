@@ -19,6 +19,12 @@
 	<dependencies>
 		<dependency>
 			<groupId>org.goodforgoodbusiness</groupId>
+			<artifactId>dhtengine</artifactId>
+			<version>0.2-SNAPSHOT</version>
+		</dependency>
+	
+		<dependency>
+			<groupId>org.goodforgoodbusiness</groupId>
 			<artifactId>shared</artifactId>
 			<version>0.2-SNAPSHOT</version>
 		</dependency>
