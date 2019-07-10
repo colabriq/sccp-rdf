@@ -45,11 +45,9 @@ public class SparqlTaskLauncher {
 	public void query(RoutingContext ctx, Buffer sparqlStmt) {
 		String acceptHeader = ctx.request().getHeader(HttpHeaders.ACCEPT);
 		
-		log.info("Query with accept=" + acceptHeader);
-		
 		var responseContentType = MIMEMappings.getContentType(Optional.ofNullable(acceptHeader));
 		if (responseContentType.isPresent()) {
-			log.info("Replying with contentType=" + responseContentType.get());
+			log.info("Query accept = " + acceptHeader + ", reply =" + responseContentType.get());
 			
 			ctx.response().setStatusCode(200);
 			ctx.response().putHeader(HttpHeaders.CONTENT_TYPE, responseContentType.get());
@@ -66,7 +64,7 @@ public class SparqlTaskLauncher {
 					}
 					else {
 						ctx.response().end();
-						ctx.next();
+//						ctx.next();
 					}
 				})
 			));
@@ -98,7 +96,7 @@ public class SparqlTaskLauncher {
 				}
 				else {
 					ctx.response().end(result.result().toJson());
-					ctx.next();
+//					ctx.next();
 				}
 			})
 		));
@@ -129,7 +127,7 @@ public class SparqlTaskLauncher {
 					else {
 						// standard JSON result
 						ctx.response().end(result.result().toJson());
-						ctx.next();
+//						ctx.next();
 					}
 				})
 			)

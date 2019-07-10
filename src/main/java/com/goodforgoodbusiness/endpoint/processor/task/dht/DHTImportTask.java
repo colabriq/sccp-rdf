@@ -19,9 +19,9 @@ public class DHTImportTask implements Runnable {
 	private final Dataset dataset;
 	private final InputStream stream;
 	private final String lang;
-	private final Future<DHTSubmitResult> future;
+	private final Future<DHTPublishResult> future;
 	
-	public DHTImportTask(ContainerCollector collector, Dataset dataset, InputStream stream, String lang, Future<DHTSubmitResult> future) {
+	public DHTImportTask(ContainerCollector collector, Dataset dataset, InputStream stream, String lang, Future<DHTPublishResult> future) {
 		this.collector = collector;
 		this.dataset = dataset;
 		this.stream = stream;
@@ -50,7 +50,7 @@ public class DHTImportTask implements Runnable {
 							container,
 							Future.<StorableContainer>future().setHandler(storeResult -> {
 								if (storeResult.succeeded()) {
-									future.complete(new DHTSubmitResult(
+									future.complete(new DHTPublishResult(
 										storeResult.result(),
 										dataset.getDefaultModel().size()
 									));

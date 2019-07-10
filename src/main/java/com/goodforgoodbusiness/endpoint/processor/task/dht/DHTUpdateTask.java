@@ -16,9 +16,9 @@ public class DHTUpdateTask implements Runnable {
 	private final ContainerCollector collector;
 	private final Dataset dataset;
 	private final String stmt;
-	private final Future<DHTSubmitResult> future;
+	private final Future<DHTPublishResult> future;
 
-	public DHTUpdateTask(ContainerCollector collector, Dataset dataset, String stmt, Future<DHTSubmitResult> future) {
+	public DHTUpdateTask(ContainerCollector collector, Dataset dataset, String stmt, Future<DHTPublishResult> future) {
 		this.collector = collector;
 		this.dataset = dataset;
 		this.stmt = stmt;
@@ -45,7 +45,7 @@ public class DHTUpdateTask implements Runnable {
 							container,
 							Future.<StorableContainer>future().setHandler(storeResult -> {
 								if (storeResult.succeeded()) {
-									future.complete(new DHTSubmitResult(
+									future.complete(new DHTPublishResult(
 										storeResult.result(),
 										dataset.getDefaultModel().size()
 									));

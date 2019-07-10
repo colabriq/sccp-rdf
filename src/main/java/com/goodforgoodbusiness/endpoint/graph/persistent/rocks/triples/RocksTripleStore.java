@@ -1,6 +1,6 @@
-package com.goodforgoodbusiness.endpoint.graph.persistent.rocks.store;
+package com.goodforgoodbusiness.endpoint.graph.persistent.rocks.triples;
 
-import static com.goodforgoodbusiness.endpoint.graph.persistent.rocks.store.PrefixPattern.makePrefix;
+import static com.goodforgoodbusiness.endpoint.graph.persistent.rocks.triples.PrefixPattern.makePrefix;
 import static com.goodforgoodbusiness.shared.TripleUtil.isNone;
 import static com.goodforgoodbusiness.shared.encode.RDFBinary.encodeNode;
 import static com.goodforgoodbusiness.shared.encode.RDFBinary.encodeTriple;

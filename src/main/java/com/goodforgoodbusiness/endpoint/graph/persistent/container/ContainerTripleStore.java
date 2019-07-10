@@ -1,11 +1,17 @@
 package com.goodforgoodbusiness.endpoint.graph.persistent.container;
 
+import java.util.EnumSet;
+
 import org.apache.jena.graph.Node;
 import org.apache.jena.graph.Triple;
 import org.apache.jena.graph.impl.TripleStore;
 import org.apache.jena.util.iterator.ExtendedIterator;
 import org.apache.log4j.Logger;
 
+import com.goodforgoodbusiness.endpoint.graph.persistent.TripleContext.Type;
+import com.goodforgoodbusiness.endpoint.graph.persistent.TripleContexts;
+import com.goodforgoodbusiness.model.Link;
+import com.goodforgoodbusiness.model.Link.RelType;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 
@@ -17,13 +23,13 @@ public class ContainerTripleStore<UNDERLYING_TYPE extends TripleStore> implement
 	private static final Logger log = Logger.getLogger(ContainerTripleStore.class);
 	
 	private final UNDERLYING_TYPE underlying;
-//	private final ContainerStore containerStore;
+	private final TripleContexts contexts;
 	private final ContainerCollector collector;
 	
 	@Inject
-	public ContainerTripleStore(UNDERLYING_TYPE underlying, /*ContainerStore containerStore,*/ ContainerCollector collector) {
+	public ContainerTripleStore(UNDERLYING_TYPE underlying, TripleContexts contexts, ContainerCollector collector) {
 		this.underlying = underlying;
-//		this.containerStore = containerStore;
+		this.contexts = contexts;
 		this.collector = collector;
 	}
 
@@ -70,9 +76,10 @@ public class ContainerTripleStore<UNDERLYING_TYPE extends TripleStore> implement
 		}
 		
 		return underlying.find(trup).mapWith(t -> {
-//			for (var container : containerStore.getSources(t)) {
-//				collector.linked(new Link(container.getId(), RelType.CAUSED_BY));
-//			}
+			contexts.getContexts(t, EnumSet.of(Type.CONTAINER_ID))
+				.forEach(ctx -> {
+					collector.linked(new Link(ctx.getContainerID().get(), RelType.CAUSED_BY));
+				});
 			
 			return t;
 		});

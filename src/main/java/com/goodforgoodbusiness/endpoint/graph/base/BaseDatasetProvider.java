@@ -17,26 +17,27 @@ import com.google.inject.Singleton;
  */
 @Singleton
 public class BaseDatasetProvider implements Provider<Dataset> {
-	private final Graph mainGraph;
+	// default behaviour = do nothing.
+	public static final GraphMaker NONE = 
+		new GraphMaker() {
+			@Override
+			public Graph create(Node name) {
+				return null;
+			}
+		}
+	;
+	
+	private final Graph baseGraph;
+	private final GraphMaker graphMaker;
 	
 	@Inject
-	public BaseDatasetProvider(Graph mainGraph) {
-		this.mainGraph = mainGraph;
+	public BaseDatasetProvider(Graph baseGraph, GraphMaker graphMaker) {
+		this.baseGraph = baseGraph;
+		this.graphMaker = graphMaker;
 	}
 	
 	@Override
 	public Dataset get() {
-		return wrap(
-			new BaseDatasetGraph(
-				mainGraph,
-				// doing nothing for the base dataset
-				new GraphMaker() {
-					@Override
-					public Graph create(Node name) {
-						return null;
-					}
-				}
-			)
-		);
+		return wrap(new BaseDatasetGraph(baseGraph, graphMaker));
 	}
 }

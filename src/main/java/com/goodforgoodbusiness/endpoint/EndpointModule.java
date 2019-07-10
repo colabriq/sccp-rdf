@@ -14,18 +14,29 @@ import java.util.concurrent.ExecutorService;
 import org.apache.commons.configuration2.Configuration;
 import org.apache.jena.graph.Graph;
 import org.apache.jena.query.Dataset;
+import org.apache.jena.sparql.core.DatasetGraphFactory.GraphMaker;
 import org.apache.log4j.Logger;
+import org.rocksdb.RocksDBException;
 
 import com.goodforgoodbusiness.endpoint.crypto.Identity;
 import com.goodforgoodbusiness.endpoint.graph.base.BaseDatasetProvider;
-import com.goodforgoodbusiness.endpoint.graph.dht.DHTDatasetProvider;
+import com.goodforgoodbusiness.endpoint.graph.dht.DHT;
 import com.goodforgoodbusiness.endpoint.graph.dht.DHTGraphMaker;
+import com.goodforgoodbusiness.endpoint.graph.dht.DHTWarpDriver;
+import com.goodforgoodbusiness.endpoint.graph.dht.DHTWeftDriver;
+import com.goodforgoodbusiness.endpoint.graph.dht.keys.MemKeyStore;
+import com.goodforgoodbusiness.endpoint.graph.dht.keys.ShareKeyStore;
 import com.goodforgoodbusiness.endpoint.graph.persistent.PersistentGraph;
+import com.goodforgoodbusiness.endpoint.graph.persistent.TripleContexts;
 import com.goodforgoodbusiness.endpoint.graph.persistent.container.ContainerBuilder;
 import com.goodforgoodbusiness.endpoint.graph.persistent.container.ContainerCollector;
 import com.goodforgoodbusiness.endpoint.graph.persistent.container.ContainerPersistentGraph;
+import com.goodforgoodbusiness.endpoint.graph.persistent.rocks.RocksManager;
+import com.goodforgoodbusiness.endpoint.graph.persistent.rocks.context.TripleContextStore;
 import com.goodforgoodbusiness.endpoint.processor.TaskResult;
 import com.goodforgoodbusiness.endpoint.processor.task.ImportPathTask;
+import com.goodforgoodbusiness.endpoint.temp.DHTBackend;
+import com.goodforgoodbusiness.endpoint.temp.MemDHTBackend;
 import com.goodforgoodbusiness.endpoint.webapp.SparqlGetHandler;
 import com.goodforgoodbusiness.endpoint.webapp.SparqlPostHandler;
 import com.goodforgoodbusiness.endpoint.webapp.SparqlTaskLauncher;
@@ -70,13 +81,23 @@ public class EndpointModule extends AbstractModule {
 		Properties props = getProperties(config);
 		Names.bindProperties(binder(), props);
 		
+		try {
+			// create and start the database 
+			var rocksManager = new RocksManager(props.getProperty("storage.path"));
+			rocksManager.start();
+			bind(RocksManager.class).toInstance(rocksManager);
+		}
+		catch (RocksDBException e) {
+			throw new RuntimeException("RocksDB failed to start");
+		}
+		
 		if (isDHTEnabled()) {
 			log.info("DHT-backed data store");
 			
 			// dht graph
 			bind(Graph.class).to(ContainerPersistentGraph.class);
-			bind(DHTGraphMaker.class);
-			bind(Dataset.class).toProvider(DHTDatasetProvider.class);
+			bind(GraphMaker.class).to(DHTGraphMaker.class);
+			bind(Dataset.class).toProvider(BaseDatasetProvider.class);
 			
 			// dht helpers
 			bind(ContainerCollector.class);
@@ -89,12 +110,26 @@ public class EndpointModule extends AbstractModule {
 //			bind(DHTEngineClient.class);
 //			bind(DHTContainerSubmitter.class);
 //			bind(DHTAccessGovernor.class);
+			
+			bind(ShareManager.class);
+			bind(ShareKeyStore.class).to(MemKeyStore.class);
+			
+			bind(DHT.class);
+			bind(DHTWarpDriver.class);
+			bind(DHTWeftDriver.class);
+			
+			bind(DHTBackend.class).to(MemDHTBackend.class);
 		}
 		else {
 			log.info("Standalone data store");
+			
 			bind(Graph.class).to(PersistentGraph.class);
+			bind(GraphMaker.class).toInstance(BaseDatasetProvider.NONE);
 			bind(Dataset.class).toProvider(BaseDatasetProvider.class);
 		}
+		
+		bind(TripleContextStore.class);
+		bind(TripleContexts.class);
 		
 		// bind a thread pool for actual query execution
 		// since these depend on synchronous ops against
@@ -139,7 +174,7 @@ public class EndpointModule extends AbstractModule {
 		});
 	}
 	
-	public void start() {
+	public void start() throws Exception {
 		// check for preload (if the DHT is disabled)
 		if (config.getBoolean("data.preload.enabled", false)) {
 			log.info("Preloading data...");

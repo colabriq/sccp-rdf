@@ -7,7 +7,7 @@ import org.apache.jena.graph.Triple;
 import org.apache.jena.graph.impl.TripleStore;
 
 import com.goodforgoodbusiness.endpoint.graph.persistent.rocks.RocksManager;
-import com.goodforgoodbusiness.endpoint.graph.persistent.rocks.store.RocksTripleStore;
+import com.goodforgoodbusiness.endpoint.graph.persistent.rocks.triples.RocksTripleStore;
 import com.goodforgoodbusiness.shared.LogConfigurer;
 
 public class RocksTripleStoreTest {

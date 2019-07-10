@@ -9,10 +9,10 @@ import com.goodforgoodbusiness.shared.encode.JSON;
 /**
  * Result of a DHT backed task includes the container it built
  */
-public class DHTSubmitResult extends TaskResult {
+public class DHTPublishResult extends TaskResult {
 	private final StorableContainer container;
 	
-	public DHTSubmitResult(StorableContainer container, long modelSize) {
+	public DHTPublishResult(StorableContainer container, long modelSize) {
 		super(
 			container.getAdded().collect(counting()),
 			container.getRemoved().collect(counting()),

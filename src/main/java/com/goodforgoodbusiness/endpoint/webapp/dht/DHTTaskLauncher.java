@@ -6,7 +6,7 @@ import org.apache.jena.query.Dataset;
 
 import com.goodforgoodbusiness.endpoint.graph.persistent.container.ContainerCollector;
 import com.goodforgoodbusiness.endpoint.processor.task.dht.DHTImportTask;
-import com.goodforgoodbusiness.endpoint.processor.task.dht.DHTSubmitResult;
+import com.goodforgoodbusiness.endpoint.processor.task.dht.DHTPublishResult;
 import com.goodforgoodbusiness.endpoint.processor.task.dht.DHTUpdateTask;
 import com.goodforgoodbusiness.endpoint.webapp.SparqlTaskLauncher;
 import com.goodforgoodbusiness.webapp.ContentType;
@@ -49,13 +49,13 @@ public class DHTTaskLauncher extends SparqlTaskLauncher {
 			collector,
 			dataset,
 			stmt.toString(),
-			Future.<DHTSubmitResult>future().setHandler(result -> {
+			Future.<DHTPublishResult>future().setHandler(result -> {
 				if (result.failed()) {
 					ctx.fail(result.cause());
 				}
 				else {
 					ctx.response().end(result.result().toJson());
-					ctx.next();
+//					ctx.next();
 				}
 			})
 		));
@@ -79,7 +79,7 @@ public class DHTTaskLauncher extends SparqlTaskLauncher {
 			    dataset,
 			    new InputReadStream(file),
 			    lang,
-				Future.<DHTSubmitResult>future().setHandler(result -> {
+				Future.<DHTPublishResult>future().setHandler(result -> {
 					file.close();
 					
 					if (result.failed()) {
@@ -88,7 +88,7 @@ public class DHTTaskLauncher extends SparqlTaskLauncher {
 					else {
 						// standard JSON result
 						ctx.response().end(result.result().toJson());
-						ctx.next();
+//						ctx.next();
 					}
 				})
 			)

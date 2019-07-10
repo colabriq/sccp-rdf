@@ -54,9 +54,9 @@ public class RocksManager {
 	
 	private DBOptions options = null;
 	private RocksDB db = null;
-
+	
 	@Inject
-	public RocksManager(@Named("rocks.path") String path) throws RocksDBException {
+	public RocksManager(@Named("storage.path") String path) throws RocksDBException {
 		this.path = path;
 		
 		this.initialCFDList = RocksUtils.getColumnFamilyDescriptors(path);
@@ -75,26 +75,28 @@ public class RocksManager {
 		}
 	}
 	
-	public void start() throws RocksDBException {
-//		// add shutdown hook to ensure close
-//		Runtime.getRuntime().addShutdownHook(new Thread(() -> {
-//			close();
-//		}));
-		
-		this.options = new DBOptions();
-		this.options.setCreateIfMissing(true);
-		
-		var initialCFHList = new ArrayList<ColumnFamilyHandle>(initialCFDList.size());
-		
-		this.db = RocksDB.open(options, path, initialCFDList, initialCFHList);
-		
-		log.debug("RocksDB returned " + initialCFHList.size() + " column family handles");
-		
-		for (var x = 0; x < initialCFHList.size(); x++) {
-			this.columnFamilyHandles.put(
-				new ByteArrayKey(initialCFDList.get(x).columnFamilyName()),
-				initialCFHList.get(x)
-			);
+	public synchronized void start() throws RocksDBException {
+		if (db == null) {
+	//		// add shutdown hook to ensure close
+	//		Runtime.getRuntime().addShutdownHook(new Thread(() -> {
+	//			close();
+	//		}));
+			
+			this.options = new DBOptions();
+			this.options.setCreateIfMissing(true);
+			
+			var initialCFHList = new ArrayList<ColumnFamilyHandle>(initialCFDList.size());
+			
+			this.db = RocksDB.open(options, path, initialCFDList, initialCFHList);
+			
+			log.debug("RocksDB returned " + initialCFHList.size() + " column family handles");
+			
+			for (var x = 0; x < initialCFHList.size(); x++) {
+				this.columnFamilyHandles.put(
+					new ByteArrayKey(initialCFDList.get(x).columnFamilyName()),
+					initialCFHList.get(x)
+				);
+			}
 		}
 	}
 	

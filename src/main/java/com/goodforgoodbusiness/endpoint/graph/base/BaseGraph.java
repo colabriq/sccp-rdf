@@ -1,6 +1,5 @@
 package com.goodforgoodbusiness.endpoint.graph.base;
 
-import org.apache.jena.graph.GraphEvents;
 import org.apache.jena.graph.Triple;
 import org.apache.jena.graph.impl.GraphBase;
 import org.apache.jena.graph.impl.TripleStore;
@@ -8,6 +7,9 @@ import org.apache.jena.util.iterator.ExtendedIterator;
 
 import com.goodforgoodbusiness.endpoint.graph.base.store.AdvanceMapTripleStore;
 
+/**
+ * A basic graph backed by our triple store.
+ */
 public class BaseGraph<STORE_TYPE extends TripleStore> extends GraphBase {
 	public static BaseGraph<AdvanceMapTripleStore> newGraph() {
 		return new BaseGraph<>(new AdvanceMapTripleStore());
@@ -25,18 +27,17 @@ public class BaseGraph<STORE_TYPE extends TripleStore> extends GraphBase {
 	
 	@Override
 	public void close() {
-		store.clear();
 		super.close();
    }
 
     @Override 
-    public void performAdd( Triple t ) { 
-    	store.add( t ); 
+    public void performAdd(Triple t) { 
+    	store.add(t); 
     }
 
     @Override 
-    public void performDelete( Triple t ) { 
-    	store.delete( t );
+    public void performDelete(Triple t) { 
+    	store.delete(t);
     }
 
     @Override 
@@ -45,18 +46,17 @@ public class BaseGraph<STORE_TYPE extends TripleStore> extends GraphBase {
     }
     
     @Override
-    public ExtendedIterator<Triple> graphBaseFind( Triple m )  { 
-    	return store.find( m );
+    public ExtendedIterator<Triple> graphBaseFind(Triple m)  { 
+    	return store.find(m);
     }
     
     @Override
-    public boolean graphBaseContains( Triple t ) { 
-    	return t.isConcrete() ? store.contains( t ) : super.graphBaseContains( t ); 
+    public boolean graphBaseContains(Triple t) { 
+    	return t.isConcrete() ? store.contains( t ) : super.graphBaseContains(t); 
     }
     
     @Override
     public void clear() { 
     	store.clear();
-        getEventManager().notifyEvent(this, GraphEvents.removeAll ) ;   
     }
 }

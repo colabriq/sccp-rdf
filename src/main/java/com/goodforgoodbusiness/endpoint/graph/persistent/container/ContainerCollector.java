@@ -5,7 +5,8 @@ import java.util.concurrent.ExecutorService;
 
 import org.apache.jena.graph.Triple;
 
-import com.goodforgoodbusiness.endpoint.processor.task.dht.DHTSubmitTask;
+import com.goodforgoodbusiness.endpoint.graph.dht.DHT;
+import com.goodforgoodbusiness.endpoint.processor.task.dht.DHTPublishTask;
 import com.goodforgoodbusiness.model.Link;
 import com.goodforgoodbusiness.model.StorableContainer;
 import com.goodforgoodbusiness.model.SubmittableContainer;
@@ -21,11 +22,13 @@ import io.vertx.core.Future;
 public class ContainerCollector {
 	private final ThreadLocal<SubmittableContainer> containerLocal = new ThreadLocal<>();
 	
+	private final DHT dht;
 	private final ContainerBuilder builder;
 	private final ExecutorService service;
 	
 	@Inject
-	public ContainerCollector(ContainerBuilder builder, ExecutorService service) {
+	public ContainerCollector(DHT dht, ContainerBuilder builder, ExecutorService service) {
+		this.dht = dht;
 		this.builder = builder;
 		this.service = service;
 	}
@@ -65,6 +68,6 @@ public class ContainerCollector {
 	 * Submit a container for publishing
 	 */
 	public void submit(SubmittableContainer container, Future<StorableContainer> future) {
-		service.submit(new DHTSubmitTask(builder, container, future));
+		service.submit(new DHTPublishTask(dht, builder, container, future));
 	}
 }

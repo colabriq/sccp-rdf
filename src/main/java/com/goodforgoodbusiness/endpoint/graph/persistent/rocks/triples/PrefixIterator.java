@@ -1,23 +1,33 @@
-package com.goodforgoodbusiness.endpoint.graph.persistent.rocks.store;
+package com.goodforgoodbusiness.endpoint.graph.persistent.rocks.triples;
 
-import static com.goodforgoodbusiness.endpoint.graph.persistent.rocks.store.PrefixPattern.startsWith;
+import static com.goodforgoodbusiness.endpoint.graph.persistent.rocks.triples.PrefixPattern.startsWith;
 
 import java.util.Iterator;
 
 import org.rocksdb.RocksIterator;
 
+import com.goodforgoodbusiness.endpoint.graph.persistent.rocks.triples.PrefixIterator.Row;
 import com.goodforgoodbusiness.shared.TimingRecorder;
 import com.goodforgoodbusiness.shared.TimingRecorder.TimingCategory;
 
 /**
- * Iterates over a particular RocksDB prefix.
+ * Iterates over values matching a particular RocksDB prefix.
  * @author ijmad
  */
-public class PrefixIterator implements Iterator<byte[]> {
+public class PrefixIterator implements Iterator<Row>, AutoCloseable {
+	public static class Row {
+		public final byte [] key, val;
+		
+		public Row(byte [] key, byte [] val) {
+			this.key = key;
+			this.val = val;
+		}
+	}
+	
 	private final RocksIterator it;
 	private final byte[] prefix;
 	
-	private byte[] curVal = null;
+	private Row curRow = null;
 	
 	public PrefixIterator(RocksIterator it, byte [] prefix) {
 		this.it = it;	
@@ -42,22 +52,22 @@ public class PrefixIterator implements Iterator<byte[]> {
 	private void updateCurrent() {
 		try (var timer = TimingRecorder.timer(TimingCategory.RDF_DATABASE)) {
 			if (it.isValid() && (prefix == null || startsWith(it.key(), prefix))) {
-				curVal = it.value();
+				curRow = new Row(it.key(), it.value());
 			}
 			else {
-				curVal = null;
+				curRow = null;
 			}
 		}
 	}
 	
 	@Override
 	public boolean hasNext() {
-		return curVal != null;
+		return curRow != null;
 	}
 
 	@Override
-	public byte[] next() {
-		var lastVal = curVal;
+	public Row next() {
+		var lastVal = curRow;
 		
 		it.next();
 		updateCurrent();
@@ -65,6 +75,7 @@ public class PrefixIterator implements Iterator<byte[]> {
 		return lastVal;
 	}
 
+	@Override
 	public void close() {
 		it.close();
 	}

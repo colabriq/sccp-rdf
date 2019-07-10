@@ -1,4 +1,4 @@
-package com.goodforgoodbusiness.endpoint.graph.persistent.rocks.store;
+package com.goodforgoodbusiness.endpoint.graph.persistent.rocks.triples;
 
 import java.util.Iterator;
 import java.util.List;
@@ -17,7 +17,7 @@ import com.goodforgoodbusiness.shared.encode.RDFBinary;
  * Interfaces {@link ExtendedIterator} with {@link PrefixIterator}
  * Recheck each Triple against the pattern (just in case there's type weirdness...)
  */
-public class TripleIterator implements ExtendedIterator<Triple> {
+public class TripleIterator implements ExtendedIterator<Triple>, AutoCloseable {
 	private final PrefixIterator it;
 	
 	public TripleIterator(PrefixIterator it) {
@@ -36,7 +36,7 @@ public class TripleIterator implements ExtendedIterator<Triple> {
 
 	@Override
 	public Triple next() {
-		return RDFBinary.decodeTriple(it.next());
+		return RDFBinary.decodeTriple(it.next().val);
 	}
 	
 	@Override
