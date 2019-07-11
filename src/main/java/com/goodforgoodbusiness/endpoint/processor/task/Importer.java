@@ -40,7 +40,6 @@ public class Importer {
 		newModel.read(stream, null, lang);
 		
 		log.info("Adding " + newModel.size() + " stmts");
-		getModel().add(newModel);
 		
 		// if preload, create the preload context for the new triples
 		if (isPreload) {
@@ -49,5 +48,9 @@ public class Importer {
 				contexts.create(it.next()).withType(Type.PRELOADED).save();
 			}
 		}
+		
+		getModel().add(newModel);
+		
+
 	}
 }

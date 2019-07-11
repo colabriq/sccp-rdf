@@ -4,6 +4,7 @@ import static com.goodforgoodbusiness.shared.ConfigLoader.loadConfig;
 import static com.goodforgoodbusiness.shared.GuiceUtil.o;
 import static com.google.inject.Guice.createInjector;
 import static com.google.inject.Scopes.SINGLETON;
+import static com.google.inject.multibindings.Multibinder.newSetBinder;
 import static com.google.inject.name.Names.named;
 import static org.apache.commons.configuration2.ConfigurationConverter.getProperties;
 
@@ -29,6 +30,9 @@ import com.goodforgoodbusiness.endpoint.graph.containerized.ContainerBuilder;
 import com.goodforgoodbusiness.endpoint.graph.containerized.ContainerCollector;
 import com.goodforgoodbusiness.endpoint.graph.dht.DHTGraphMaker;
 import com.goodforgoodbusiness.endpoint.graph.dht.DHTPersistentGraph;
+import com.goodforgoodbusiness.endpoint.plugin.GraphListenerManager;
+import com.goodforgoodbusiness.endpoint.plugin.internal.InternalPlugin;
+import com.goodforgoodbusiness.endpoint.plugin.internal.InternalPluginManager;
 import com.goodforgoodbusiness.endpoint.processor.TaskResult;
 import com.goodforgoodbusiness.endpoint.processor.task.ImportPathTask;
 import com.goodforgoodbusiness.endpoint.processor.task.Importer;
@@ -136,16 +140,18 @@ public class EndpointModule extends AbstractModule {
 		// since these depend on synchronous ops against
 		// the database or upstream, but can themselves be
 		// executed progressively at least
-		bind(ExecutorService.class).toProvider(ThreadPoolProvider.class).in(SINGLETON);
+		bind(ExecutorService.class).toProvider(ExecutorServiceProvider.class).in(SINGLETON);
 		bind(Importer.class);
 		
+		bind(GraphListenerManager.class);
+		
 		// add internal reasoner plugins (static for now)
-//		var plugins = newSetBinder(binder(), InternalPlugin.class);
+		var plugins = newSetBinder(binder(), InternalPlugin.class);
 		
 //		plugins.addBinding().to(HermitReasonerPlugin.class);
 //		plugins.addBinding().to(ObjectCustodyChainReasonerPlugin.class);
 		
-//		bind(InternalPluginManager.class);
+		bind(InternalPluginManager.class);
 		
 		// rebind specific port for webapp
 		bind(Integer.class).annotatedWith(named("port")).to(Key.get(Integer.class, named("data.port")));
@@ -207,7 +213,7 @@ public class EndpointModule extends AbstractModule {
 		log.info("Booting services...");
 		
 		// perform initial reasoner runs
-//		this.injector.getInstance(InternalPluginManager.class).init();
+		this.injector.getInstance(InternalPluginManager.class).init();
 		
 		// start data endpoint
 		this.server = injector.getInstance(Key.get(VerticleServer.class));

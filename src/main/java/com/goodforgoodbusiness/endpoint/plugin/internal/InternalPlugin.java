@@ -2,8 +2,6 @@ package com.goodforgoodbusiness.endpoint.plugin.internal;
 
 import org.apache.jena.graph.Graph;
 
-import com.goodforgoodbusiness.endpoint.plugin.GraphContainer;
-
 /**
  * Harness for reasoner plugins
  */
@@ -11,13 +9,12 @@ public interface InternalPlugin {
 	/**
 	 * Initialize this plugin.
 	 * 
-	 * @param mainGraph The provided {@link Graph} for reading all triples from.
-	 * @param inferredGraph The target graph that all reasoner outputs should be placed into.
+	 * @param mainGraph The provided {@link Graph} for reading/writing all triples to/from.
 	 */
-	public void init(Graph mainGraph, Graph inferredGraph) throws InternalPluginException;
+	public void init(Graph graph) throws InternalPluginException;
 	
 	/**
-	 * Perform reasoning on some new triples, just before they're added to mainGraph.
+	 * Perform reasoning on some new triples added to the main graph
 	 */
-	public void exec(GraphContainer newContainer, boolean inMainGraph) throws InternalPluginException;
+	public void exec(Graph graph) throws InternalPluginException;
 }

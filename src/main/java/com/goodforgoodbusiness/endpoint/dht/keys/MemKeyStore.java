@@ -15,6 +15,9 @@ import com.goodforgoodbusiness.model.TriTuple;
 import com.goodforgoodbusiness.shared.encode.JSON;
 import com.google.inject.Singleton;
 
+/**
+ * An in-memory implementation of {@link ShareKeyStore} for testing purposes.
+ */
 @Singleton
 public class MemKeyStore implements ShareKeyStore {
 	private Map<TriTuple, Set<String>> sharers = new HashMap<>();
