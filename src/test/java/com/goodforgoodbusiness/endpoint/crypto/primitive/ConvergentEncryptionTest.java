@@ -9,9 +9,12 @@ import com.goodforgoodbusiness.endpoint.crypto.Identity;
 import com.goodforgoodbusiness.endpoint.crypto.SymmetricEncryption;
 import com.goodforgoodbusiness.endpoint.graph.containerized.ContainerBuilder;
 import com.goodforgoodbusiness.model.Link;
+import com.goodforgoodbusiness.model.StorableContainer;
 import com.goodforgoodbusiness.model.Link.RelType;
 import com.goodforgoodbusiness.model.SubmittableContainer;
 import com.goodforgoodbusiness.shared.encode.JSON;
+
+import io.vertx.core.Future;
 
 public class ConvergentEncryptionTest {
 	public static void main(String[] args) throws Exception {
@@ -20,7 +23,12 @@ public class ConvergentEncryptionTest {
 		
 		var containerBuilder = new ContainerBuilder(id);
 		
-		var submittedContainer = new SubmittableContainer();
+		var submittedContainer = new SubmittableContainer() {
+			@Override
+			public void submit(Future<StorableContainer> future) {
+				throw new UnsupportedOperationException();	
+			}
+		};
 		
 		submittedContainer.added(
 			new Triple(

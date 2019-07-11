@@ -8,6 +8,7 @@ import org.apache.log4j.Logger;
 
 import com.goodforgoodbusiness.endpoint.MIMEMappings;
 import com.goodforgoodbusiness.endpoint.processor.TaskResult;
+import com.goodforgoodbusiness.endpoint.processor.task.Importer;
 import com.goodforgoodbusiness.endpoint.processor.task.ImportStreamTask;
 import com.goodforgoodbusiness.endpoint.processor.task.QueryTask;
 import com.goodforgoodbusiness.endpoint.processor.task.UpdateTask;
@@ -32,11 +33,13 @@ public class SparqlTaskLauncher {
 	
 	protected final ExecutorService service;
 	protected final Dataset dataset;
+	protected final Importer importer;
 	
 	@Inject
-	public SparqlTaskLauncher(ExecutorService service, Dataset dataset) {
+	public SparqlTaskLauncher(ExecutorService service, Dataset dataset, Importer importer) {
 		this.service = service;
 		this.dataset = dataset;
+		this.importer = importer;
 	}
 	
 	/**
@@ -115,9 +118,10 @@ public class SparqlTaskLauncher {
 	public void importFile(RoutingContext ctx, String lang, AsyncFile file) {
 		service.submit(
 			new ImportStreamTask(
-			    dataset,
+			    importer,
 			    new InputReadStream(file),
 			    lang,
+			    false,
 				Future.<TaskResult>future().setHandler(result -> {
 					file.close();
 					

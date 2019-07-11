@@ -31,6 +31,7 @@ import com.goodforgoodbusiness.endpoint.graph.dht.DHTGraphMaker;
 import com.goodforgoodbusiness.endpoint.graph.dht.DHTPersistentGraph;
 import com.goodforgoodbusiness.endpoint.processor.TaskResult;
 import com.goodforgoodbusiness.endpoint.processor.task.ImportPathTask;
+import com.goodforgoodbusiness.endpoint.processor.task.Importer;
 import com.goodforgoodbusiness.endpoint.storage.PersistentGraph;
 import com.goodforgoodbusiness.endpoint.storage.TripleContexts;
 import com.goodforgoodbusiness.endpoint.storage.rocks.RocksManager;
@@ -136,6 +137,7 @@ public class EndpointModule extends AbstractModule {
 		// the database or upstream, but can themselves be
 		// executed progressively at least
 		bind(ExecutorService.class).toProvider(ThreadPoolProvider.class).in(SINGLETON);
+		bind(Importer.class);
 		
 		// add internal reasoner plugins (static for now)
 //		var plugins = newSetBinder(binder(), InternalPlugin.class);
@@ -181,8 +183,9 @@ public class EndpointModule extends AbstractModule {
 			
 			injector.getInstance(ExecutorService.class).submit(
 				new ImportPathTask(
-					injector.getInstance(Dataset.class),
+					injector.getInstance(Importer.class),
 					new File(config.getString("data.preload.path")),
+					true,
 					Future.<TaskResult>future().setHandler(result -> {
 						if (result.succeeded()) {
 							log.info("Import loaded " + result.result().getSize() + " triples");

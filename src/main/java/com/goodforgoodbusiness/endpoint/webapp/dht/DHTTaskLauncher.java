@@ -5,6 +5,7 @@ import java.util.concurrent.ExecutorService;
 import org.apache.jena.query.Dataset;
 
 import com.goodforgoodbusiness.endpoint.graph.containerized.ContainerCollector;
+import com.goodforgoodbusiness.endpoint.processor.task.Importer;
 import com.goodforgoodbusiness.endpoint.processor.task.dht.DHTImportTask;
 import com.goodforgoodbusiness.endpoint.processor.task.dht.DHTPublishResult;
 import com.goodforgoodbusiness.endpoint.processor.task.dht.DHTUpdateTask;
@@ -28,8 +29,8 @@ public class DHTTaskLauncher extends SparqlTaskLauncher {
 	protected final ContainerCollector collector;
 	
 	@Inject
-	public DHTTaskLauncher(ExecutorService service, Dataset dataset, ContainerCollector collector) {
-		super(service, dataset);
+	public DHTTaskLauncher(ExecutorService service, Dataset dataset, Importer importer, ContainerCollector collector) {
+		super(service, dataset, importer);
 		this.collector = collector;
 	}
 	
@@ -76,7 +77,7 @@ public class DHTTaskLauncher extends SparqlTaskLauncher {
 		service.submit(
 			new DHTImportTask(
 				collector,
-			    dataset,
+			    importer,
 			    new InputReadStream(file),
 			    lang,
 				Future.<DHTPublishResult>future().setHandler(result -> {

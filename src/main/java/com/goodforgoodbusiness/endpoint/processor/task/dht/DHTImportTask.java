@@ -2,11 +2,10 @@ package com.goodforgoodbusiness.endpoint.processor.task.dht;
 
 import java.io.InputStream;
 
-import org.apache.jena.query.Dataset;
-
 import com.goodforgoodbusiness.endpoint.graph.containerized.ContainerCollector;
 import com.goodforgoodbusiness.endpoint.processor.TaskResult;
 import com.goodforgoodbusiness.endpoint.processor.task.ImportStreamTask;
+import com.goodforgoodbusiness.endpoint.processor.task.Importer;
 import com.goodforgoodbusiness.model.StorableContainer;
 
 import io.vertx.core.Future;
@@ -16,14 +15,14 @@ import io.vertx.core.Future;
  */
 public class DHTImportTask implements Runnable {
 	private final ContainerCollector collector;
-	private final Dataset dataset;
+	private final Importer importer;
 	private final InputStream stream;
 	private final String lang;
 	private final Future<DHTPublishResult> future;
 	
-	public DHTImportTask(ContainerCollector collector, Dataset dataset, InputStream stream, String lang, Future<DHTPublishResult> future) {
+	public DHTImportTask(ContainerCollector collector, Importer importer, InputStream stream, String lang, Future<DHTPublishResult> future) {
 		this.collector = collector;
-		this.dataset = dataset;
+		this.importer = importer;
 		this.stream = stream;
 		this.lang = lang;
 		this.future = future;
@@ -39,20 +38,20 @@ public class DHTImportTask implements Runnable {
 		
 		try {
 			var task = new ImportStreamTask(
-				dataset,
+				importer,
 				stream,
 				lang,
+				false,
 				Future.<TaskResult>future().setHandler(importResult -> {
 					// change the TaskResult in to a DHTTaskResult
 					if (importResult.succeeded()) {
 						// now submit
-						collector.submit(
-							container,
+						container.submit(
 							Future.<StorableContainer>future().setHandler(storeResult -> {
 								if (storeResult.succeeded()) {
 									future.complete(new DHTPublishResult(
 										storeResult.result(),
-										dataset.getDefaultModel().size()
+										importer.getModel().size()
 									));
 								}
 								else {

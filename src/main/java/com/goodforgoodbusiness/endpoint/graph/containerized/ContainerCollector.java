@@ -35,7 +35,13 @@ public class ContainerCollector {
 	
 	public SubmittableContainer begin() {
 		if (containerLocal.get() == null) {
-			var container = new SubmittableContainer();
+			var container = new SubmittableContainer() {
+				@Override
+				public void submit(Future<StorableContainer> future) {
+					service.submit(new DHTPublishTask(dht, builder, this, future));
+				}
+			};
+			
 			containerLocal.set(container);
 			return container;
 		}
@@ -62,12 +68,5 @@ public class ContainerCollector {
 	
 	public void linked(Link link) {
 		current().ifPresent(container -> container.linked(link));
-	}
-	
-	/**
-	 * Submit a container for publishing
-	 */
-	public void submit(SubmittableContainer container, Future<StorableContainer> future) {
-		service.submit(new DHTPublishTask(dht, builder, container, future));
 	}
 }

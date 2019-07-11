@@ -41,8 +41,7 @@ public class DHTUpdateTask implements Runnable {
 					// change the TaskResult in to a DHTTaskResult
 					if (updateResult.succeeded()) {
 						// now submit
-						collector.submit(
-							container,
+						container.submit(
 							Future.<StorableContainer>future().setHandler(storeResult -> {
 								if (storeResult.succeeded()) {
 									future.complete(new DHTPublishResult(
