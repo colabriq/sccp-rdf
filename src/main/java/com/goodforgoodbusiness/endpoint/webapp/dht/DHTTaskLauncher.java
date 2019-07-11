@@ -42,13 +42,13 @@ public class DHTTaskLauncher extends SparqlTaskLauncher {
 	public void update(RoutingContext ctx, Buffer stmt) {
 		ctx.response().putHeader(HttpHeaders.CONTENT_TYPE, ContentType.JSON.getContentTypeString());
 		
-		// quickly process custody chain header
-		// XXX this needs to go in to the container somehow, we're in the wrong thread here
-		// DHTCustodyChain.processCustodyChainHeader(ctx);
+		// process custody chain header
+		var custodyChainFromHeader = DHTCustodyChain.processCustodyChainHeader(ctx);
 		
 		service.submit(new DHTUpdateTask(
 			collector,
 			dataset,
+			custodyChainFromHeader,
 			stmt.toString(),
 			Future.<DHTPublishResult>future().setHandler(result -> {
 				if (result.failed()) {
@@ -70,14 +70,14 @@ public class DHTTaskLauncher extends SparqlTaskLauncher {
 	public void importFile(RoutingContext ctx, String lang, AsyncFile file) {
 		ctx.response().putHeader(HttpHeaders.CONTENT_TYPE, ContentType.JSON.getContentTypeString());
 		
-		// quickly process custody chain header
-		// XXX this needs to go in to the container somehow, we're in the wrong thread here
-		// DHTCustodyChain.processCustodyChainHeader(ctx);
+		// process custody chain header
+		var custodyChainFromHeader = DHTCustodyChain.processCustodyChainHeader(ctx);
 		
 		service.submit(
 			new DHTImportTask(
 				collector,
 			    importer,
+			    custodyChainFromHeader,
 			    new InputReadStream(file),
 			    lang,
 				Future.<DHTPublishResult>future().setHandler(result -> {

@@ -1,11 +1,13 @@
 package com.goodforgoodbusiness.endpoint.processor.task.dht;
 
 import java.io.InputStream;
+import java.util.stream.Stream;
 
 import com.goodforgoodbusiness.endpoint.graph.containerized.ContainerCollector;
 import com.goodforgoodbusiness.endpoint.processor.TaskResult;
 import com.goodforgoodbusiness.endpoint.processor.task.ImportStreamTask;
 import com.goodforgoodbusiness.endpoint.processor.task.Importer;
+import com.goodforgoodbusiness.model.Link;
 import com.goodforgoodbusiness.model.StorableContainer;
 
 import io.vertx.core.Future;
@@ -16,13 +18,18 @@ import io.vertx.core.Future;
 public class DHTImportTask implements Runnable {
 	private final ContainerCollector collector;
 	private final Importer importer;
+	
+	private final Stream<Link> custodyChainHeader;
 	private final InputStream stream;
 	private final String lang;
 	private final Future<DHTPublishResult> future;
 	
-	public DHTImportTask(ContainerCollector collector, Importer importer, InputStream stream, String lang, Future<DHTPublishResult> future) {
+	public DHTImportTask(ContainerCollector collector, Importer importer, Stream<Link> custodyChainHeader, 
+		InputStream stream, String lang, Future<DHTPublishResult> future) {
+		
 		this.collector = collector;
 		this.importer = importer;
+		this.custodyChainHeader = custodyChainHeader;
 		this.stream = stream;
 		this.lang = lang;
 		this.future = future;
@@ -35,6 +42,7 @@ public class DHTImportTask implements Runnable {
 		// but may not be valid inside the future
 		// so get a ref to the container we can use inside the future
 		var container = collector.begin();
+		custodyChainHeader.forEach(container::linked);
 		
 		try {
 			var task = new ImportStreamTask(

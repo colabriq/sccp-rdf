@@ -1,10 +1,13 @@
 package com.goodforgoodbusiness.endpoint.processor.task.dht;
 
+import java.util.stream.Stream;
+
 import org.apache.jena.query.Dataset;
 
 import com.goodforgoodbusiness.endpoint.graph.containerized.ContainerCollector;
 import com.goodforgoodbusiness.endpoint.processor.TaskResult;
 import com.goodforgoodbusiness.endpoint.processor.task.UpdateTask;
+import com.goodforgoodbusiness.model.Link;
 import com.goodforgoodbusiness.model.StorableContainer;
 
 import io.vertx.core.Future;
@@ -15,12 +18,17 @@ import io.vertx.core.Future;
 public class DHTUpdateTask implements Runnable {
 	private final ContainerCollector collector;
 	private final Dataset dataset;
+	
+	private final Stream<Link> custodyChainHeader;
 	private final String stmt;
 	private final Future<DHTPublishResult> future;
 
-	public DHTUpdateTask(ContainerCollector collector, Dataset dataset, String stmt, Future<DHTPublishResult> future) {
+	public DHTUpdateTask(ContainerCollector collector, Dataset dataset, 
+		Stream<Link> custodyChainHeader, String stmt, Future<DHTPublishResult> future) {
+		
 		this.collector = collector;
 		this.dataset = dataset;
+		this.custodyChainHeader = custodyChainHeader;
 		this.stmt = stmt;
 		this.future = future;
 	}
@@ -32,6 +40,7 @@ public class DHTUpdateTask implements Runnable {
 		// but may not be valid inside the future
 		// so get a ref to the container we can use inside the future
 		var container = collector.begin();
+		custodyChainHeader.forEach(container::linked);
 		
 		try {
 			var task = new UpdateTask(
