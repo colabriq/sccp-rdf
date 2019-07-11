@@ -7,7 +7,7 @@ import org.apache.jena.sparql.util.NodeFactoryExtra;
 import com.goodforgoodbusiness.endpoint.crypto.AsymmetricEncryption;
 import com.goodforgoodbusiness.endpoint.crypto.Identity;
 import com.goodforgoodbusiness.endpoint.crypto.SymmetricEncryption;
-import com.goodforgoodbusiness.endpoint.graph.persistent.container.ContainerBuilder;
+import com.goodforgoodbusiness.endpoint.graph.containerized.ContainerBuilder;
 import com.goodforgoodbusiness.model.Link;
 import com.goodforgoodbusiness.model.Link.RelType;
 import com.goodforgoodbusiness.model.SubmittableContainer;

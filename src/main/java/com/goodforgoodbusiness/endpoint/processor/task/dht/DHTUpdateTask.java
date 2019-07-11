@@ -2,7 +2,7 @@ package com.goodforgoodbusiness.endpoint.processor.task.dht;
 
 import org.apache.jena.query.Dataset;
 
-import com.goodforgoodbusiness.endpoint.graph.persistent.container.ContainerCollector;
+import com.goodforgoodbusiness.endpoint.graph.containerized.ContainerCollector;
 import com.goodforgoodbusiness.endpoint.processor.TaskResult;
 import com.goodforgoodbusiness.endpoint.processor.task.UpdateTask;
 import com.goodforgoodbusiness.model.StorableContainer;

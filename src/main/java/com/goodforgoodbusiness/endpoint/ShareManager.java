@@ -4,7 +4,7 @@ import java.time.ZonedDateTime;
 import java.util.Optional;
 
 import com.goodforgoodbusiness.endpoint.crypto.key.EncodeableShareKey;
-import com.goodforgoodbusiness.endpoint.graph.persistent.container.ContainerAttributes;
+import com.goodforgoodbusiness.endpoint.graph.containerized.ContainerAttributes;
 import com.goodforgoodbusiness.kpabe.KPABEEncryption;
 import com.goodforgoodbusiness.kpabe.KPABEException;
 import com.goodforgoodbusiness.kpabe.KPABEKeyManager;

@@ -19,22 +19,22 @@ import org.apache.log4j.Logger;
 import org.rocksdb.RocksDBException;
 
 import com.goodforgoodbusiness.endpoint.crypto.Identity;
+import com.goodforgoodbusiness.endpoint.dht.DHT;
+import com.goodforgoodbusiness.endpoint.dht.DHTWarpDriver;
+import com.goodforgoodbusiness.endpoint.dht.DHTWeftDriver;
+import com.goodforgoodbusiness.endpoint.dht.keys.MemKeyStore;
+import com.goodforgoodbusiness.endpoint.dht.keys.ShareKeyStore;
 import com.goodforgoodbusiness.endpoint.graph.base.BaseDatasetProvider;
-import com.goodforgoodbusiness.endpoint.graph.dht.DHT;
+import com.goodforgoodbusiness.endpoint.graph.containerized.ContainerBuilder;
+import com.goodforgoodbusiness.endpoint.graph.containerized.ContainerCollector;
 import com.goodforgoodbusiness.endpoint.graph.dht.DHTGraphMaker;
-import com.goodforgoodbusiness.endpoint.graph.dht.DHTWarpDriver;
-import com.goodforgoodbusiness.endpoint.graph.dht.DHTWeftDriver;
-import com.goodforgoodbusiness.endpoint.graph.dht.keys.MemKeyStore;
-import com.goodforgoodbusiness.endpoint.graph.dht.keys.ShareKeyStore;
-import com.goodforgoodbusiness.endpoint.graph.persistent.PersistentGraph;
-import com.goodforgoodbusiness.endpoint.graph.persistent.TripleContexts;
-import com.goodforgoodbusiness.endpoint.graph.persistent.container.ContainerBuilder;
-import com.goodforgoodbusiness.endpoint.graph.persistent.container.ContainerCollector;
-import com.goodforgoodbusiness.endpoint.graph.persistent.container.ContainerPersistentGraph;
-import com.goodforgoodbusiness.endpoint.graph.persistent.rocks.RocksManager;
-import com.goodforgoodbusiness.endpoint.graph.persistent.rocks.context.TripleContextStore;
+import com.goodforgoodbusiness.endpoint.graph.dht.DHTPersistentGraph;
 import com.goodforgoodbusiness.endpoint.processor.TaskResult;
 import com.goodforgoodbusiness.endpoint.processor.task.ImportPathTask;
+import com.goodforgoodbusiness.endpoint.storage.PersistentGraph;
+import com.goodforgoodbusiness.endpoint.storage.TripleContexts;
+import com.goodforgoodbusiness.endpoint.storage.rocks.RocksManager;
+import com.goodforgoodbusiness.endpoint.storage.rocks.context.TripleContextStore;
 import com.goodforgoodbusiness.endpoint.temp.DHTBackend;
 import com.goodforgoodbusiness.endpoint.temp.MemDHTBackend;
 import com.goodforgoodbusiness.endpoint.webapp.SparqlGetHandler;
@@ -95,7 +95,7 @@ public class EndpointModule extends AbstractModule {
 			log.info("DHT-backed data store");
 			
 			// dht graph
-			bind(Graph.class).to(ContainerPersistentGraph.class);
+			bind(Graph.class).to(DHTPersistentGraph.class);
 			bind(GraphMaker.class).to(DHTGraphMaker.class);
 			bind(Dataset.class).toProvider(BaseDatasetProvider.class);
 			

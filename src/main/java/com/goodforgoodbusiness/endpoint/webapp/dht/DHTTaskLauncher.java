@@ -4,7 +4,7 @@ import java.util.concurrent.ExecutorService;
 
 import org.apache.jena.query.Dataset;
 
-import com.goodforgoodbusiness.endpoint.graph.persistent.container.ContainerCollector;
+import com.goodforgoodbusiness.endpoint.graph.containerized.ContainerCollector;
 import com.goodforgoodbusiness.endpoint.processor.task.dht.DHTImportTask;
 import com.goodforgoodbusiness.endpoint.processor.task.dht.DHTPublishResult;
 import com.goodforgoodbusiness.endpoint.processor.task.dht.DHTUpdateTask;

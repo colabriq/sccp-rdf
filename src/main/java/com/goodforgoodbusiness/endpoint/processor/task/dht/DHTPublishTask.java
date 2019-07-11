@@ -3,8 +3,8 @@ package com.goodforgoodbusiness.endpoint.processor.task.dht;
 import org.apache.log4j.Logger;
 
 import com.goodforgoodbusiness.endpoint.crypto.EncryptionException;
-import com.goodforgoodbusiness.endpoint.graph.dht.DHT;
-import com.goodforgoodbusiness.endpoint.graph.persistent.container.ContainerBuilder;
+import com.goodforgoodbusiness.endpoint.dht.DHT;
+import com.goodforgoodbusiness.endpoint.graph.containerized.ContainerBuilder;
 import com.goodforgoodbusiness.model.StorableContainer;
 import com.goodforgoodbusiness.model.SubmittableContainer;
 

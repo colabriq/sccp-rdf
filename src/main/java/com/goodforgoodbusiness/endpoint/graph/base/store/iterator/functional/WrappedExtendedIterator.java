@@ -22,6 +22,15 @@ public class WrappedExtendedIterator<T> implements DefaultExtendedIterator<T> {
 		if (it instanceof ClosableIterator) {
 			((ClosableIterator<?>)it).close();
 		}
+		
+		try {
+			if (it instanceof AutoCloseable) {
+				((AutoCloseable)it).close();
+			}
+		}
+		catch (Exception e) {
+			throw new RuntimeException("Close failed", e);
+		}
 	}
 
 	@Override

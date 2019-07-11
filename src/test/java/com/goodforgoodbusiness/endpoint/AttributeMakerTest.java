@@ -10,7 +10,7 @@ import java.util.stream.Stream;
 import org.apache.jena.graph.Node;
 import org.apache.jena.graph.Triple;
 
-import com.goodforgoodbusiness.endpoint.graph.persistent.container.ContainerAttributes;
+import com.goodforgoodbusiness.endpoint.graph.containerized.ContainerAttributes;
 import com.goodforgoodbusiness.kpabe.KPABEKeyManager;
 import com.goodforgoodbusiness.model.TriTuple;
 

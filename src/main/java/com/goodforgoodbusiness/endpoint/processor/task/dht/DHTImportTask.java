@@ -4,7 +4,7 @@ import java.io.InputStream;
 
 import org.apache.jena.query.Dataset;
 
-import com.goodforgoodbusiness.endpoint.graph.persistent.container.ContainerCollector;
+import com.goodforgoodbusiness.endpoint.graph.containerized.ContainerCollector;
 import com.goodforgoodbusiness.endpoint.processor.TaskResult;
 import com.goodforgoodbusiness.endpoint.processor.task.ImportStreamTask;
 import com.goodforgoodbusiness.model.StorableContainer;
