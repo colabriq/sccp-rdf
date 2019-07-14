@@ -2,6 +2,8 @@ package com.goodforgoodbusiness.endpoint.webapp;
 
 import static org.apache.commons.io.FilenameUtils.getExtension;
 
+import org.apache.log4j.Logger;
+
 import com.goodforgoodbusiness.endpoint.MIMEMappings;
 import com.goodforgoodbusiness.webapp.ContentType;
 import com.goodforgoodbusiness.webapp.error.BadRequestException;
@@ -16,6 +18,8 @@ import io.vertx.ext.web.RoutingContext;
 
 @Singleton
 public class UploadHandler implements Handler<RoutingContext> {
+	private static final Logger log = Logger.getLogger(UploadHandler.class);
+	
 	private final Verticle parent;
 	private final SparqlTaskLauncher sparql;
 	
@@ -39,6 +43,9 @@ public class UploadHandler implements Handler<RoutingContext> {
 	    var file = uploads.iterator().next();
 	    var filename = file.fileName();
 	    
+	    log.info("Processing upload " + filename + " of length " + file.size() + " at " + file.uploadedFileName());
+	    
+	    // XXX process content-type here??
 	    var lang = MIMEMappings.FILE_TYPES.get(getExtension(filename.toLowerCase()));
 	    if (lang == null) {
 	    	ctx.fail(new BadRequestException("File extension not known: " + filename));

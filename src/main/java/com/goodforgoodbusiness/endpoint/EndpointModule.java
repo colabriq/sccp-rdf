@@ -2,6 +2,7 @@ package com.goodforgoodbusiness.endpoint;
 
 import static com.goodforgoodbusiness.shared.ConfigLoader.loadConfig;
 import static com.goodforgoodbusiness.shared.GuiceUtil.o;
+import static com.goodforgoodbusiness.webapp.BaseVerticle.HandlerProvider.createBodyHandler;
 import static com.google.inject.Guice.createInjector;
 import static com.google.inject.Scopes.SINGLETON;
 import static com.google.inject.multibindings.Multibinder.newSetBinder;
@@ -9,6 +10,8 @@ import static com.google.inject.name.Names.named;
 import static org.apache.commons.configuration2.ConfigurationConverter.getProperties;
 
 import java.io.File;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.Properties;
 import java.util.concurrent.ExecutorService;
 
@@ -48,9 +51,9 @@ import com.goodforgoodbusiness.endpoint.webapp.SparqlTaskLauncher;
 import com.goodforgoodbusiness.endpoint.webapp.UploadHandler;
 import com.goodforgoodbusiness.endpoint.webapp.dht.DHTTaskLauncher;
 import com.goodforgoodbusiness.shared.LogConfigurer;
-import com.goodforgoodbusiness.webapp.VerticleRunner;
-import com.goodforgoodbusiness.webapp.VerticleServer;
-import com.goodforgoodbusiness.webapp.VerticleServer.HandlerProvider;
+import com.goodforgoodbusiness.webapp.BaseServer;
+import com.goodforgoodbusiness.webapp.BaseVerticle;
+import com.goodforgoodbusiness.webapp.BaseVerticle.HandlerProvider;
 import com.google.inject.AbstractModule;
 import com.google.inject.Injector;
 import com.google.inject.Key;
@@ -58,6 +61,7 @@ import com.google.inject.name.Names;
 
 import io.vertx.core.Future;
 import io.vertx.core.Verticle;
+import io.vertx.ext.web.handler.BodyHandler;
 
 /**
  * Main module for launching the RDF endpoint.
@@ -65,10 +69,10 @@ import io.vertx.core.Verticle;
 public class EndpointModule extends AbstractModule {
 	private static final Logger log = Logger.getLogger(EndpointModule.class);
 	
-	private final Configuration config;
-	private final Injector injector;
+	protected final Configuration config;
+	protected final Injector injector;
 	
-	private VerticleServer server = null;
+	private BaseServer runner = null;
 	
 	public EndpointModule(Configuration config) {
 		this.config = config;
@@ -157,9 +161,9 @@ public class EndpointModule extends AbstractModule {
 		bind(Integer.class).annotatedWith(named("port")).to(Key.get(Integer.class, named("data.port")));
 		
 		// bind Vert.x components 
-		bind(VerticleRunner.class);
-		bind(VerticleServer.class);
-		bind(Verticle.class).to(VerticleServer.class);
+		bind(BaseServer.class);
+		bind(BaseVerticle.class);
+		bind(Verticle.class).to(BaseVerticle.class);
 		
 		// bind appropriate handlers
 		if (isDHTEnabled()) {
@@ -178,6 +182,9 @@ public class EndpointModule extends AbstractModule {
 		bind(HandlerProvider.class).toInstance((router) -> {
 			router.get ("/sparql").handler(o(injector, SparqlGetHandler.class));
 			router.post("/sparql").handler(o(injector, SparqlPostHandler.class));
+			
+			// body handler that can do file uploads
+			router.post("/upload").handler(createBodyHandler());
 			router.post("/upload").handler(o(injector, UploadHandler.class));
 		});
 	}
@@ -216,8 +223,8 @@ public class EndpointModule extends AbstractModule {
 		this.injector.getInstance(InternalPluginManager.class).init();
 		
 		// start data endpoint
-		this.server = injector.getInstance(Key.get(VerticleServer.class));
-		this.server.start();
+		this.runner = injector.getInstance(Key.get(BaseServer.class));
+		this.runner.start();
 	}
 	
 	public static void main(String[] args) throws Exception {

@@ -1,5 +1,6 @@
 package com.goodforgoodbusiness.endpoint;
 
+import static com.goodforgoodbusiness.endpoint.PrioritizedTask.Priority.NORMAL;
 import static java.util.concurrent.TimeUnit.MINUTES;
 
 import java.util.concurrent.CancellationException;
@@ -29,7 +30,7 @@ public class ExecutorServiceProvider implements Provider<ExecutorService> {
 	 * Assess the priority of Runnable tasks
 	 */
 	private static int getPriority(Runnable r) {
-		return 1;
+		return (r instanceof PrioritizedTask ? ((PrioritizedTask)r).getPriority() : NORMAL).ordinal;
 	}
 	
 	private final int poolSize;

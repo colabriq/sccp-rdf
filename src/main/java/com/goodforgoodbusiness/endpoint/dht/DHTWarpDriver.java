@@ -1,12 +1,12 @@
 package com.goodforgoodbusiness.endpoint.dht;
 
-import static java.util.Collections.singleton;
-
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
 import java.security.SecureRandom;
+import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import org.apache.log4j.Logger;
@@ -27,6 +27,7 @@ import com.goodforgoodbusiness.shared.encode.JSON;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 
+import io.vertx.core.CompositeFuture;
 import io.vertx.core.Future;
 
 /** 
@@ -74,9 +75,16 @@ public class DHTWarpDriver {
 			);
 			
 			var data = encrypt(pointer, policy);
-			var location = backend.publish(singleton(pattern), data);
-			
-			future.complete(new DHTWarpPublish(pointer, location, data));
+			backend.publishPointer(pattern, data, Future.<Void>future().setHandler(
+				result -> {
+					if (result.succeeded()) {
+						future.complete(new DHTWarpPublish(pointer, data));
+					}
+					else {
+						future.fail(result.cause());
+					}
+				}
+			));
 		}
 		catch (KPABEException e) {
 			log.error("Encryption Error", e);
@@ -87,52 +95,84 @@ public class DHTWarpDriver {
 	/**
 	 * Encrypt a pointer using KP-ABE
 	 */
-	private String encrypt(Pointer pointer, String accessPolicy) throws KPABEException {
-		return KPABEEncryption.getInstance(shareManager.getCurrentKeys()).encrypt(JSON.encodeToString(pointer), accessPolicy);
+	private byte[] encrypt(Pointer pointer, String accessPolicy) throws KPABEException {
+		return KPABEEncryption.getInstance(shareManager.getCurrentKeys())
+			.encrypt(JSON.encodeToString(pointer), accessPolicy).getBytes();
 	}
 	
 	/**
 	 * Search for pointers with a particular triple signature
 	 * This will lead to containers with results in them
 	 */
-	public Stream<Pointer> search(TriTuple tuple) {
+	public void search(TriTuple tuple, Future<Stream<Pointer>> future) {
 		log.debug("Searching warp for triple " + tuple);
 		
 		// look for anyone who's ever shared a key matching these triples with us
 		// (possibly more than one) and fetch containers for each of them from the DHT
 		
-		return keyStore
+		@SuppressWarnings("rawtypes") // because CompositeFuture isn't genericised properly
+		List<Future> creators = keyStore
 			.knownContainerCreators(tuple)
 			.distinct()
-			.flatMap(containerCreator -> search(containerCreator, tuple))
+			.map(creator -> {
+				// kick off a search per creator
+				var searchFuture = Future.<Stream<Pointer>>future();
+				search(creator, tuple, searchFuture);
+				return searchFuture;
+			})
+			.collect(Collectors.toList())
 		;
+		
+		// wait for all futures to complete, then return
+		CompositeFuture.all(creators).setHandler(results -> {
+			if (results.succeeded()) {
+				// create a concatenated stream
+				Stream<Pointer> stream = Stream.empty();
+				
+				for (var x = 0; x < results.result().size(); x++) {
+					results.result().resultAt(x);
+					stream = Stream.concat(results.result().resultAt(x), stream);
+				}
+				
+				future.complete(stream);
+			}
+			else {
+				future.fail(results.cause());
+			}
+		});
 	}
 	
 	/**
 	 * Search for containers by a specific creator
 	 */
-	private Stream<Pointer> search(KPABEPublicKey creator, TriTuple tuple) {
+	private void search(KPABEPublicKey creator, TriTuple tuple, Future<Stream<Pointer>> future) {
 		var patternHash = ContainerPatterns.forSearch(creator, tuple);
 		log.debug("Searching warp for containers from " + creator.toString().substring(0, 10) + 
 			"... with patterns " + patternHash.substring(0,  10) + "...");
 		
 		// have to process this stream because state is changed
-		return backend.search(patternHash)
-			.distinct()
-			.map(location -> backend.fetch(location))
-				.filter(Optional::isPresent)
-				.map(Optional::get)
-			.map(data -> decrypt(creator, tuple, data))
-				.filter(Optional::isPresent)
-				.map(Optional::get)
-		;
+		backend.searchForPointers(patternHash, Future.<Stream<byte[]>>future().setHandler(
+			results -> {
+				if (results.succeeded()) {
+					future.complete(
+						results.result()
+							.map(data -> decrypt(creator, tuple, data))
+								.filter(Optional::isPresent)
+								.map(Optional::get)
+					);
+				}
+				else {
+					future.fail(results.cause());
+				}
+			}
+		));
 	}
 	
 	/**
 	 * Attempt to decrypt a pointer.
 	 * Specify publicKey so we know which keys to try against the data
 	 */
-	private Optional<Pointer> decrypt(KPABEPublicKey creator, TriTuple pattern, String data) {
+	private Optional<Pointer> decrypt(KPABEPublicKey creator, TriTuple pattern, byte[] data) {
 		log.info("Got data for " + pattern + " from " + creator.toString().substring(0, 10) + "...");
 		
 		return
@@ -142,7 +182,7 @@ public class DHTWarpDriver {
 				.map(keyPair -> {
 					try {
 						var dec = KPABEDecryption.getInstance();
-						var result = dec.decrypt(data, keyPair);
+						var result = dec.decrypt(new String(data), keyPair);
 						if (result != null) {
 							log.debug("Decrypt success");
 						}

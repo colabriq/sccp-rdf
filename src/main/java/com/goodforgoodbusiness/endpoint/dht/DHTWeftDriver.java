@@ -1,7 +1,5 @@
 package com.goodforgoodbusiness.endpoint.dht;
 
-import static java.util.Collections.singleton;
-
 import java.util.Optional;
 
 import javax.crypto.SecretKey;
@@ -45,48 +43,76 @@ public class DHTWeftDriver {
 		var secretKey = SymmetricEncryption.createKey();
 			
 		var encryptedContainer = encrypt(container, secretKey);
-		var data = JSON.encodeToString(encryptedContainer);
-		var location = backend.publish(singleton(encryptedContainer.getId()), data);
-			
-		future.complete(
-			new DHTWeftPublish(
-				secretKey,
-				encryptedContainer,
-				location,
-				data
-			)
-		);
+		var data = JSON.encodeToString(encryptedContainer).getBytes();
+		
+		backend.publishContainer(container.getId(), data, Future.<String>future().setHandler(
+			weftLocationResult -> {
+				if (weftLocationResult.succeeded()) {
+					future.complete(
+						new DHTWeftPublish(
+							secretKey,
+							encryptedContainer,
+							weftLocationResult.result(),
+							data
+						)
+					);
+				}
+				else {
+					future.fail(weftLocationResult.cause());
+				}
+			}
+		));
+		
+
 	}
 	
 	/**
 	 * Retrieve a container (in encrypted form)
 	 */
-	public Optional<EncryptedContainer> fetch(String id) {
-		log.debug("Fetching container: " + id);
+	public void fetch(String location, Future<Optional<EncryptedContainer>> future) {
+		log.debug("Fetching container at " + location);
 		
-		// first find the location where this id has been stored
+		// first find a location where this id has been stored
 		// then fetch the data.
 		
-		return backend
-			.search(id)
-			.findFirst()
-			.flatMap(backend::fetch)
-			.map(data -> JSON.decode(data, EncryptedContainer.class))
-		;
+		backend.fetchContainer(location, Future.<Optional<byte[]>>future().setHandler(
+			dataResult -> {
+				if (dataResult.succeeded()) {
+					if (dataResult.result().isPresent()) {
+						future.complete(
+							dataResult.result()
+								.map(String::new)
+								.map(s -> JSON.decode(s, EncryptedContainer.class))
+							)
+						;
+					}
+					else {
+						future.complete(Optional.empty());
+					}
+				}
+				else {
+					future.fail(dataResult.cause());
+				}
+			}
+		));
 	}
 	
 	/**
 	 * Retrieve a container (and try to decrypt)
 	 */
-	public Optional<StorableContainer> fetch(String id, SecretKey secretKey) throws EncryptionException {
-		var containerHolder = fetch(id);
-		
-		if (containerHolder.isPresent()) {
-			return Optional.of(decrypt(containerHolder.get(), secretKey));
-		}
-		else {
-			return Optional.empty();
-		}
+	public void fetch(String location, SecretKey secretKey, Future<Optional<StorableContainer>> future) throws EncryptionException {
+		fetch(location, Future.<Optional<EncryptedContainer>>future().setHandler(fetchResult -> {
+			if (fetchResult.succeeded()) {
+				future.complete(
+					fetchResult.result().map(
+						c -> decrypt(c, secretKey)
+					)
+				);
+			}
+			else {
+				future.fail(fetchResult.cause());
+			}
+		}));
 	}
 	
 	private static EncryptedContainer encrypt(StorableContainer container, SecretKey secretKey) throws EncryptionException {

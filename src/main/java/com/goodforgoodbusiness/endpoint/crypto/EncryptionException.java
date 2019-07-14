@@ -1,6 +1,6 @@
 package com.goodforgoodbusiness.endpoint.crypto;
 
-public class EncryptionException extends Exception {
+public class EncryptionException extends RuntimeException {
 	private static final long serialVersionUID = 1L;
 
 	public EncryptionException(String message, Throwable cause) {

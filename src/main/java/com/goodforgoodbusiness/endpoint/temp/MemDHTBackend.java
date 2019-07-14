@@ -7,56 +7,73 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Stream;
 
+import org.apache.commons.lang3.RandomStringUtils;
 import org.apache.log4j.Logger;
 
-import com.goodforgoodbusiness.shared.encode.Hash;
-import com.goodforgoodbusiness.shared.encode.Hex;
 import com.google.inject.Singleton;
+
+import io.vertx.core.Future;
 
 @Singleton
 public class MemDHTBackend implements DHTBackend { 
 	private static final Logger log = Logger.getLogger(MemDHTBackend.class);
 	
-	private Map<String, Set<String>> keysMap = new HashMap<>();
-	private Map<String, String> dataMap = new HashMap<>();
+	private Map<String, Set< byte[]>> pointers = new HashMap<>();
 
 	@Override
-	public String publish(Set<String> keywords, String data) {
-		log.info("PUBLISH " + keywords.toString() + " -> " + data);
+	public void publishPointer(String hashPattern, byte[] data, Future<Void> future) {
+		log.info("PUBLISH POINTER " + hashPattern.toString() + " -> " + data);
 		
-		String location = Hex.encode(Hash.sha512(data.getBytes()));
-		dataMap.put(location, data);
+		pointers.computeIfAbsent(hashPattern, (k) -> new HashSet<>());
+		pointers.get(hashPattern).add(data);
 		
-		keywords.forEach(keyword -> {
-			var existing = keysMap.get(keyword);
-			if (existing != null) {
-				existing.add(location);
-			}
-			else {
-				var newSet = new HashSet<String>();
-				newSet.add(location);
-				keysMap.put(keyword, newSet);
-			}
-		});
-		
-		return location;
+		future.complete();
 	}
-	
+
 	@Override
-	public Stream<String> search(String keyword) {
-		log.info("SEARCH " + keyword);
+	public void searchForPointers(String hashPattern, Future<Stream<byte[]>> future) {
+		log.info("SEARCH FOR POINTERS " + hashPattern);
 		
-		return Optional
-			.ofNullable(keysMap.get(keyword))
+		var stream = Optional
+			.ofNullable(pointers.get(hashPattern))
 			.stream() // stream so it's just non-empty Optionals
 			.flatMap(Set::stream)
 		;
+		 
+		future.complete(stream);
 	}
+
+	private Map<String, Set<String>> containerIDs = new HashMap<>();
+	private Map<String, byte[]> containerData = new HashMap<>();
 	
 	@Override
-	public Optional<String> fetch(String location) {
-		log.info("FETCH " + location);
+	public void publishContainer(String id, byte[] data, Future<String> future) {
+		log.info("PUBLISH CONTAINER " + id);
 		
-		return Optional.ofNullable(dataMap.get(location));
+		var location = RandomStringUtils.random(20, true, true);
+		
+		containerData.put(location, data);
+		containerIDs.computeIfAbsent(id, (k) -> new HashSet<>());
+		containerIDs.get(id).add(location);
+		
+		future.complete(location);		
+	}
+
+	@Override
+	public void searchForContainer(String id, Future<Stream<String>> future) {
+		log.info("SEARCH FOR CONTAINER " + id);
+		
+		future.complete(
+			Optional
+				.ofNullable(containerIDs.get(id))
+				.stream() // stream so it's just non-empty Optionals
+				.flatMap(Set::stream)
+		);
+	}
+
+	@Override
+	public void fetchContainer(String location, Future<Optional<byte[]>> future) {
+		log.info("FETCH CONTAINER " + location);
+		future.complete(Optional.ofNullable(containerData.get(location)));
 	}
 }

@@ -7,14 +7,10 @@ import com.goodforgoodbusiness.model.Pointer;
  */
 public class DHTWarpPublish {
 	private final Pointer pointer;
+	private final byte[] publishedData;
 	
-	private final String publishedLocation;
-	private final String publishedData;
-	
-	public DHTWarpPublish(Pointer pointer, String publishedLocation, String publishedData) {
+	public DHTWarpPublish(Pointer pointer, byte[] publishedData) {
 		this.pointer = pointer;
-		
-		this.publishedLocation = publishedLocation;
 		this.publishedData = publishedData;
 	}
 	
@@ -25,11 +21,7 @@ public class DHTWarpPublish {
 	/**
 	 * This will be the encrypted pointer
 	 */
-	public String getPublishedData() {
+	public byte[] getPublishedData() {
 		return publishedData;
-	}
-	
-	public String getPublishedLocation() {
-		return publishedLocation;
 	}
 }

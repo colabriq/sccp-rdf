@@ -1,30 +1,40 @@
 package com.goodforgoodbusiness.endpoint.temp;
 
 import java.util.Optional;
-import java.util.Set;
 import java.util.stream.Stream;
+
+import io.vertx.core.Future;
 
 /**
  * Basic implementable DHT backend for storing pointers & containers.
  */
 public interface DHTBackend {
 	/**
-	 * Publish some data with some keywords it can be searched for with
-	 * Returns a String representing where it's stored in the backing store.
-	 * Can be different representations depending on backend.
+	 * Publish a pointer to the index against a pattern.
 	 */
-	public String publish(Set<String> keywords, String data);
+	public void publishPointer(String hashPattern, byte[] data, Future<Void> future);
 	
 	/**
-	 * Searches the backend with a keyword as specified to publish.
-	 * Returns a Set of Strings representing things that can be retrieved.
-	 * Representation is implementation-specific.
+	 * Searches for pointers with a specific pattern.
+	 * Returns a Set of pointers that have been retrieved.
 	 */
-	public Stream<String> search(String keyword);
+	public void searchForPointers(String hashPattern, Future<Stream<byte[]>> future);
 	
 	/**
-	 * Fetches published data based on its location as returned 
-	 * from publish or search operations.
+	 * Publish a container so others may access it.
+	 * Yields the container location URI.
 	 */
-	public Optional<String> fetch(String location);
+	public void publishContainer(String id, byte[] data, Future<String> future);
+	
+	/**
+	 * Search for a container by its ID.
+	 * This will yield various locations that it is available to download.
+	 */
+	public void searchForContainer(String id, Future<Stream<String>> future);
+	
+	/**
+	 * Fetches container data based on its location as returned 
+	 * from pointer search operation. 
+	 */
+	public void fetchContainer(String location, Future<Optional<byte[]>> future);
 }

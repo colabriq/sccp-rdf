@@ -10,10 +10,10 @@ public final class DHTWeftPublish {
 	private final EncodeableSecretKey key;
 	private final EncryptedContainer container;
 	
-	private final String publishedData;
+	private final byte[] publishedData;
 	private final String publishedLocation;
 	
-	public DHTWeftPublish(EncodeableSecretKey key, EncryptedContainer container, String publishedLocation, String publishedData) {
+	public DHTWeftPublish(EncodeableSecretKey key, EncryptedContainer container, String publishedLocation, byte[] publishedData) {
 		this.key = key;
 		this.container = container;
 		
@@ -32,7 +32,7 @@ public final class DHTWeftPublish {
 	/**
 	 * This will be the container's JSON, encrypted.
 	 */
-	public String getPublishedData() {
+	public byte[] getPublishedData() {
 		return publishedData;
 	}
 	
