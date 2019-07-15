@@ -170,6 +170,10 @@ public class RocksManager {
 	}
 	
 	public void close() {
+		// free column family handles
+		columnFamilyHandles.values().forEach(cfh -> cfh.close());
+		columnFamilyHandles.clear();
+		
 		if (options != null) {
 			options.close();
 		}
@@ -177,5 +181,7 @@ public class RocksManager {
 		if (db != null) {
 			db.close();
 		}
+		
+		log.info("RocksDB has shut down cleanly");
 	}
 }

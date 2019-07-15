@@ -51,6 +51,7 @@ import com.goodforgoodbusiness.endpoint.webapp.SparqlGetHandler;
 import com.goodforgoodbusiness.endpoint.webapp.SparqlPostHandler;
 import com.goodforgoodbusiness.endpoint.webapp.SparqlTaskLauncher;
 import com.goodforgoodbusiness.endpoint.webapp.UploadHandler;
+import com.goodforgoodbusiness.endpoint.webapp.admin.StopHandler;
 import com.goodforgoodbusiness.endpoint.webapp.dht.DHTTaskLauncher;
 import com.goodforgoodbusiness.shared.LogConfigurer;
 import com.goodforgoodbusiness.webapp.BaseServer;
@@ -62,7 +63,9 @@ import com.google.inject.Injector;
 import com.google.inject.Key;
 import com.google.inject.name.Names;
 
+import io.vertx.core.AsyncResult;
 import io.vertx.core.Future;
+import io.vertx.core.Handler;
 import io.vertx.core.Verticle;
 import io.vertx.core.Vertx;
 
@@ -190,6 +193,8 @@ public class EndpointModule extends AbstractModule {
 			// body handler that can do file uploads
 			router.post("/upload").handler(createBodyHandler());
 			router.post("/upload").handler(o(injector, UploadHandler.class));
+			
+			router.post("/admin/stop").handler(new StopHandler(EndpointModule.this));
 		});
 	}
 	
@@ -231,9 +236,49 @@ public class EndpointModule extends AbstractModule {
 		this.server.start();
 	}
 	
+	public void shutdown() {
+		if (this.server != null) {
+			// carefully close those pieces that need shutting down
+			this.server.stop();
+			this.server = null;
+			
+			var vx = injector.getInstance(Vertx.class);
+			vx.close(voidResult -> {
+				log.info("Vert.x closed");
+				
+				var es = injector.getInstance(ExecutorService.class);
+				es.shutdown();
+				
+				// flush + await safe stop 
+				while (!es.isTerminated()) {
+					try {
+						log.info("Awaiting ExecutorService termination...");
+						es.awaitTermination(1, TimeUnit.SECONDS);
+					}
+					catch (InterruptedException e) {
+					}
+				}
+				
+				log.info("ExecutorService has terminated");
+				
+				var rm = injector.getInstance(RocksManager.class);
+				rm.close();
+			});
+			
+//			Thread.getAllStackTraces().keySet().forEach(thread -> thread.interrupt());
+		}
+	}
+	
 	public static void main(String[] args) throws Exception {
 		var config = loadConfig(EndpointModule.class,  args.length > 0 ? args[0] : "env.properties");
 		LogConfigurer.init(EndpointModule.class, config.getString("log.properties", "log4j.properties"));
-		new EndpointModule(config).start();
+		
+		var module = new EndpointModule(config);
+		module.start();
+		
+		// add shutdown hook to catch SIGTERM
+		Runtime.getRuntime().addShutdownHook(new Thread(() -> {
+			module.shutdown();
+		}));
 	}
 }
