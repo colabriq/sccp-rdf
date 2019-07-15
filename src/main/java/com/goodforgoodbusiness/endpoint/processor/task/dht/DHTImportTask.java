@@ -4,7 +4,8 @@ import java.io.InputStream;
 import java.util.stream.Stream;
 
 import com.goodforgoodbusiness.endpoint.graph.containerized.ContainerCollector;
-import com.goodforgoodbusiness.endpoint.processor.TaskResult;
+import com.goodforgoodbusiness.endpoint.processor.PrioritizedTask;
+import com.goodforgoodbusiness.endpoint.processor.ModelTaskResult;
 import com.goodforgoodbusiness.endpoint.processor.task.ImportStreamTask;
 import com.goodforgoodbusiness.endpoint.processor.task.Importer;
 import com.goodforgoodbusiness.model.Link;
@@ -15,7 +16,7 @@ import io.vertx.core.Future;
 /**
  * Import data in a stream directly
  */
-public class DHTImportTask implements Runnable {
+public class DHTImportTask implements Runnable, PrioritizedTask {
 	private final ContainerCollector collector;
 	private final Importer importer;
 	
@@ -50,7 +51,7 @@ public class DHTImportTask implements Runnable {
 				stream,
 				lang,
 				false,
-				Future.<TaskResult>future().setHandler(importResult -> {
+				Future.<ModelTaskResult>future().setHandler(importResult -> {
 					// change the TaskResult in to a DHTTaskResult
 					if (importResult.succeeded()) {
 						// now submit
@@ -79,5 +80,10 @@ public class DHTImportTask implements Runnable {
 		finally {
 			collector.clear();
 		}
+	}
+	
+	@Override
+	public Priority getPriority() {
+		return Priority.REAL;
 	}
 }

@@ -4,23 +4,24 @@ import java.io.InputStream;
 
 import org.apache.log4j.Logger;
 
-import com.goodforgoodbusiness.endpoint.processor.TaskResult;
+import com.goodforgoodbusiness.endpoint.processor.PrioritizedTask;
+import com.goodforgoodbusiness.endpoint.processor.ModelTaskResult;
 
 import io.vertx.core.Future;
 
 /**
  * Import data in a stream directly
  */
-public class ImportStreamTask implements Runnable {
+public class ImportStreamTask implements Runnable, PrioritizedTask {
 	private static Logger log = Logger.getLogger(ImportStreamTask.class);
 	
 	private final Importer importer;
 	private final InputStream stream;
 	private final String lang;
 	private final boolean isPreload;
-	private final Future<TaskResult> future;
+	private final Future<ModelTaskResult> future;
 	
-	public ImportStreamTask(Importer importer, InputStream stream, String lang, boolean isPreload, Future<TaskResult> future) {
+	public ImportStreamTask(Importer importer, InputStream stream, String lang, boolean isPreload, Future<ModelTaskResult> future) {
 		this.importer = importer;
 		this.stream = stream;
 		this.lang = lang;
@@ -37,10 +38,15 @@ public class ImportStreamTask implements Runnable {
 			var sizeAfter = importer.getModel().size();
 			
 			log.info("Loaded data (now " + sizeAfter + ")");
-			future.complete(new TaskResult(sizeAfter - sizeBefore, 0, sizeAfter));
+			future.complete(new ModelTaskResult(sizeAfter - sizeBefore, 0, sizeAfter));
 		}
 		catch (Exception e) {
 			future.fail(e);
 		}
+	}
+	
+	@Override
+	public Priority getPriority() {
+		return Priority.REAL;
 	}
 }

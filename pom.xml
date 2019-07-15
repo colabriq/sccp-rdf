@@ -19,12 +19,6 @@
 	<dependencies>
 		<dependency>
 			<groupId>org.goodforgoodbusiness</groupId>
-			<artifactId>dhtengine</artifactId>
-			<version>0.2-SNAPSHOT</version>
-		</dependency>
-	
-		<dependency>
-			<groupId>org.goodforgoodbusiness</groupId>
 			<artifactId>shared</artifactId>
 			<version>0.2-SNAPSHOT</version>
 		</dependency>
@@ -48,15 +42,21 @@
 		</dependency>
 		
 		<dependency>
+		 	<groupId>org.rocksdb</groupId>
+		  	<artifactId>rocksdbjni</artifactId>
+		  	<version>5.5.1</version>
+		</dependency>
+		
+		<dependency>
 		    <groupId>io.vertx</groupId>
 		    <artifactId>vertx-web</artifactId>
 		    <version>3.7.1</version>
 		</dependency>
-
+		
 		<dependency>
-		 	<groupId>org.rocksdb</groupId>
-		  	<artifactId>rocksdbjni</artifactId>
-		  	<version>5.5.1</version>
+ 			<groupId>io.vertx</groupId>
+			<artifactId>vertx-web-client</artifactId>
+ 			<version>3.7.1</version>
 		</dependency>
 		
 		<dependency>

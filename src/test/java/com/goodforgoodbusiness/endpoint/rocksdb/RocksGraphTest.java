@@ -21,7 +21,6 @@ import org.apache.jena.sparql.resultset.ResultsFormat;
 import org.apache.log4j.Logger;
 
 import com.goodforgoodbusiness.endpoint.graph.rocks.RocksTripleStore;
-import com.goodforgoodbusiness.endpoint.processor.TaskException;
 import com.goodforgoodbusiness.endpoint.storage.rocks.RocksManager;
 import com.goodforgoodbusiness.shared.Skolemizer;
 
@@ -38,13 +37,13 @@ public class RocksGraphTest {
 					log.info("Loaded file " + file + " (now " + model.size() + ")");
 				}
 				catch (IOException e) {
-					throw new TaskException("Error reading file " + file, e);
+					throw new RuntimeException("Error reading file " + file, e);
 				}
 			}
 		});
 	}
 	
-	public static void doImport(Model model, InputStream stream, String lang) throws TaskException {
+	public static void doImport(Model model, InputStream stream, String lang) {
 		// read in to a separate model so we can control the triples
 		var newDataset = Skolemizer.autoSkolemizingDataset();
 		

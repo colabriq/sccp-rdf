@@ -1,6 +1,6 @@
-package com.goodforgoodbusiness.endpoint;
+package com.goodforgoodbusiness.endpoint.processor;
 
-import static com.goodforgoodbusiness.endpoint.PrioritizedTask.Priority.NORMAL;
+import static com.goodforgoodbusiness.endpoint.processor.PrioritizedTask.Priority.NORMAL;
 import static java.util.concurrent.TimeUnit.MINUTES;
 
 import java.util.concurrent.CancellationException;
@@ -22,8 +22,8 @@ import com.google.inject.name.Named;
  * This is a priority-queue backed threadpool that can assess which tasks to run first.
  */
 @Singleton
-public class ExecutorServiceProvider implements Provider<ExecutorService> {
-	private static final Logger log = Logger.getLogger(ExecutorServiceProvider.class);
+public class ExecutorProvider implements Provider<ExecutorService> {
+	private static final Logger log = Logger.getLogger(ExecutorProvider.class);
 	private static final int INITIAL_CAPACITY = 10;
 	
 	/**
@@ -36,7 +36,7 @@ public class ExecutorServiceProvider implements Provider<ExecutorService> {
 	private final int poolSize;
 	
 	@Inject
-	public ExecutorServiceProvider(@Named("threadpool.size") int threadPoolSize) {
+	public ExecutorProvider(@Named("threadpool.size") int threadPoolSize) {
 		this.poolSize = threadPoolSize;
 	}
 
@@ -49,6 +49,12 @@ public class ExecutorServiceProvider implements Provider<ExecutorService> {
 		);
 		
 		return new ThreadPoolExecutor(poolSize, poolSize, 1, MINUTES, priorityQueue) {
+			@Override
+			protected void beforeExecute(Thread t, Runnable r) {
+				log.info("ExecutorService queue size = " + priorityQueue.size());
+				super.beforeExecute(t, r);
+			}
+			
 			@Override
 			protected void afterExecute(Runnable r, Throwable t) {
 				super.afterExecute(r, t);
@@ -75,6 +81,8 @@ public class ExecutorServiceProvider implements Provider<ExecutorService> {
 		        if (cause != null) {
 		            log.error("Error from task", cause);
 		        }
+		        
+		        log.info("ExecutorService queue size = " + priorityQueue.size());
 			}
 		};
 	}

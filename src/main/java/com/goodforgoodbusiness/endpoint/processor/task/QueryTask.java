@@ -10,6 +10,7 @@ import org.apache.jena.query.ResultSetFormatter;
 import org.apache.log4j.Logger;
 
 import com.goodforgoodbusiness.endpoint.MIMEMappings;
+import com.goodforgoodbusiness.endpoint.processor.PrioritizedTask;
 import com.goodforgoodbusiness.webapp.stream.OutputWriteStream;
 
 import io.vertx.core.Future;
@@ -20,7 +21,7 @@ import io.vertx.core.streams.WriteStream;
  * Performs a SPARQL query
  * @author ijmad
  */
-public class QueryTask implements Runnable {
+public class QueryTask implements Runnable, PrioritizedTask {
 	private static Logger log = Logger.getLogger(QueryTask.class);
 	
 	private final Dataset dataset;
@@ -85,5 +86,10 @@ public class QueryTask implements Runnable {
 				future.fail("Could not determine query type");
 			}
 		}
+	}
+	
+	@Override
+	public Priority getPriority() {
+		return Priority.REAL;
 	}
 }

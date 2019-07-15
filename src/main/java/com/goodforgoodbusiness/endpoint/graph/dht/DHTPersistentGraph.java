@@ -4,7 +4,7 @@ import com.goodforgoodbusiness.endpoint.graph.base.BaseGraph;
 import com.goodforgoodbusiness.endpoint.graph.containerized.ContainerCollector;
 import com.goodforgoodbusiness.endpoint.graph.containerized.ContainerTripleStore;
 import com.goodforgoodbusiness.endpoint.graph.rocks.RocksTripleStore;
-import com.goodforgoodbusiness.endpoint.plugin.GraphListenerManager;
+import com.goodforgoodbusiness.endpoint.plugin.ContainerListenerManager;
 import com.goodforgoodbusiness.endpoint.storage.TripleContexts;
 import com.goodforgoodbusiness.endpoint.storage.rocks.RocksManager;
 import com.google.inject.Inject;
@@ -16,7 +16,7 @@ import com.google.inject.Singleton;
 @Singleton
 public class DHTPersistentGraph extends BaseGraph<DHTTripleStore> {
 	@Inject
-	public DHTPersistentGraph(ContainerCollector collector, GraphListenerManager glManager, TripleContexts tctx, RocksManager dbManager) {
+	public DHTPersistentGraph(ContainerCollector collector, ContainerListenerManager glManager, TripleContexts tctx, RocksManager dbManager) {
 		super(new DHTTripleStore(
 			tctx, 
 			glManager,

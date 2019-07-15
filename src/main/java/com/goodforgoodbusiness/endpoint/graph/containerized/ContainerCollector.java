@@ -6,6 +6,7 @@ import java.util.concurrent.ExecutorService;
 import org.apache.jena.graph.Triple;
 
 import com.goodforgoodbusiness.endpoint.dht.DHT;
+import com.goodforgoodbusiness.endpoint.plugin.ContainerListenerManager;
 import com.goodforgoodbusiness.endpoint.processor.task.dht.DHTPublishTask;
 import com.goodforgoodbusiness.model.Link;
 import com.goodforgoodbusiness.model.StorableContainer;
@@ -24,11 +25,14 @@ public class ContainerCollector {
 	
 	private final DHT dht;
 	private final ContainerBuilder builder;
+	private final ContainerListenerManager listenerManager;
 	private final ExecutorService service;
 	
+	
 	@Inject
-	public ContainerCollector(DHT dht, ContainerBuilder builder, ExecutorService service) {
+	public ContainerCollector(DHT dht, ContainerListenerManager listMan, ContainerBuilder builder, ExecutorService service) {
 		this.dht = dht;
+		this.listenerManager = listMan;
 		this.builder = builder;
 		this.service = service;
 	}
@@ -38,7 +42,23 @@ public class ContainerCollector {
 			var container = new SubmittableContainer() {
 				@Override
 				public void submit(Future<StorableContainer> future) {
-					service.submit(new DHTPublishTask(dht, builder, this, future));
+					// publish this new container
+					service.submit(
+						new DHTPublishTask(dht, builder, this, Future.<StorableContainer>future().setHandler(
+							result -> {
+								if (result.succeeded()) {
+									// trigger listeners for reasoning etc
+									listenerManager.trigger(result.result());
+									
+									// pass back to outer future
+									future.complete(result.result());
+								}
+								else {
+									future.fail(result.cause());
+								}
+							}
+						)
+					));
 				}
 			};
 			

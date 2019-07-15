@@ -1,4 +1,4 @@
-package com.goodforgoodbusiness.endpoint.temp;
+package com.goodforgoodbusiness.endpoint.dht.backend;
 
 import java.util.HashMap;
 import java.util.HashSet;
@@ -14,9 +14,10 @@ import com.google.inject.Singleton;
 
 import io.vertx.core.Future;
 
+/** In memory implementation of DHTBackend - for testing */
 @Singleton
-public class MemDHTBackend implements DHTBackend { 
-	private static final Logger log = Logger.getLogger(MemDHTBackend.class);
+public class DHTMemBackend implements DHTBackend { 
+	private static final Logger log = Logger.getLogger(DHTMemBackend.class);
 	
 	private Map<String, Set< byte[]>> pointers = new HashMap<>();
 

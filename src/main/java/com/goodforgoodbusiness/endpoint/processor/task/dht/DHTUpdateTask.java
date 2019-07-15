@@ -5,7 +5,8 @@ import java.util.stream.Stream;
 import org.apache.jena.query.Dataset;
 
 import com.goodforgoodbusiness.endpoint.graph.containerized.ContainerCollector;
-import com.goodforgoodbusiness.endpoint.processor.TaskResult;
+import com.goodforgoodbusiness.endpoint.processor.PrioritizedTask;
+import com.goodforgoodbusiness.endpoint.processor.ModelTaskResult;
 import com.goodforgoodbusiness.endpoint.processor.task.UpdateTask;
 import com.goodforgoodbusiness.model.Link;
 import com.goodforgoodbusiness.model.StorableContainer;
@@ -15,7 +16,7 @@ import io.vertx.core.Future;
 /**
  * Wraps {@link UpdateTask} so that triples are collected and containerized
  */
-public class DHTUpdateTask implements Runnable {
+public class DHTUpdateTask implements Runnable, PrioritizedTask {
 	private final ContainerCollector collector;
 	private final Dataset dataset;
 	
@@ -46,7 +47,7 @@ public class DHTUpdateTask implements Runnable {
 			var task = new UpdateTask(
 				dataset,
 				stmt,
-				Future.<TaskResult>future().setHandler(updateResult -> {
+				Future.<ModelTaskResult>future().setHandler(updateResult -> {
 					// change the TaskResult in to a DHTTaskResult
 					if (updateResult.succeeded()) {
 						// now submit
@@ -75,5 +76,10 @@ public class DHTUpdateTask implements Runnable {
 		finally {
 			collector.clear();
 		}
+	}
+	
+	@Override
+	public Priority getPriority() {
+		return Priority.REAL;
 	}
 }

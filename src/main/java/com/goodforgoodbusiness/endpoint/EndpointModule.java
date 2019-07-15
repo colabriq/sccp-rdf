@@ -10,10 +10,9 @@ import static com.google.inject.name.Names.named;
 import static org.apache.commons.configuration2.ConfigurationConverter.getProperties;
 
 import java.io.File;
-import java.nio.file.Files;
-import java.nio.file.Path;
 import java.util.Properties;
 import java.util.concurrent.ExecutorService;
+import java.util.concurrent.TimeUnit;
 
 import org.apache.commons.configuration2.Configuration;
 import org.apache.jena.graph.Graph;
@@ -26,6 +25,8 @@ import com.goodforgoodbusiness.endpoint.crypto.Identity;
 import com.goodforgoodbusiness.endpoint.dht.DHT;
 import com.goodforgoodbusiness.endpoint.dht.DHTWarpDriver;
 import com.goodforgoodbusiness.endpoint.dht.DHTWeftDriver;
+import com.goodforgoodbusiness.endpoint.dht.backend.DHTBackend;
+import com.goodforgoodbusiness.endpoint.dht.backend.DHTMemBackend;
 import com.goodforgoodbusiness.endpoint.dht.keys.MemKeyStore;
 import com.goodforgoodbusiness.endpoint.dht.keys.ShareKeyStore;
 import com.goodforgoodbusiness.endpoint.graph.base.BaseDatasetProvider;
@@ -33,18 +34,19 @@ import com.goodforgoodbusiness.endpoint.graph.containerized.ContainerBuilder;
 import com.goodforgoodbusiness.endpoint.graph.containerized.ContainerCollector;
 import com.goodforgoodbusiness.endpoint.graph.dht.DHTGraphMaker;
 import com.goodforgoodbusiness.endpoint.graph.dht.DHTPersistentGraph;
-import com.goodforgoodbusiness.endpoint.plugin.GraphListenerManager;
+import com.goodforgoodbusiness.endpoint.plugin.ContainerListenerManager;
 import com.goodforgoodbusiness.endpoint.plugin.internal.InternalPlugin;
 import com.goodforgoodbusiness.endpoint.plugin.internal.InternalPluginManager;
-import com.goodforgoodbusiness.endpoint.processor.TaskResult;
+import com.goodforgoodbusiness.endpoint.plugin.internal.builtin.ObjectCustodyChainReasonerPlugin;
+import com.goodforgoodbusiness.endpoint.plugin.internal.builtin.reasoner.HermitReasonerPlugin;
+import com.goodforgoodbusiness.endpoint.processor.ExecutorProvider;
+import com.goodforgoodbusiness.endpoint.processor.ModelTaskResult;
 import com.goodforgoodbusiness.endpoint.processor.task.ImportPathTask;
 import com.goodforgoodbusiness.endpoint.processor.task.Importer;
 import com.goodforgoodbusiness.endpoint.storage.PersistentGraph;
 import com.goodforgoodbusiness.endpoint.storage.TripleContexts;
 import com.goodforgoodbusiness.endpoint.storage.rocks.RocksManager;
 import com.goodforgoodbusiness.endpoint.storage.rocks.context.TripleContextStore;
-import com.goodforgoodbusiness.endpoint.temp.DHTBackend;
-import com.goodforgoodbusiness.endpoint.temp.MemDHTBackend;
 import com.goodforgoodbusiness.endpoint.webapp.SparqlGetHandler;
 import com.goodforgoodbusiness.endpoint.webapp.SparqlPostHandler;
 import com.goodforgoodbusiness.endpoint.webapp.SparqlTaskLauncher;
@@ -54,6 +56,7 @@ import com.goodforgoodbusiness.shared.LogConfigurer;
 import com.goodforgoodbusiness.webapp.BaseServer;
 import com.goodforgoodbusiness.webapp.BaseVerticle;
 import com.goodforgoodbusiness.webapp.BaseVerticle.HandlerProvider;
+import com.goodforgoodbusiness.webapp.VertxProvider;
 import com.google.inject.AbstractModule;
 import com.google.inject.Injector;
 import com.google.inject.Key;
@@ -61,7 +64,7 @@ import com.google.inject.name.Names;
 
 import io.vertx.core.Future;
 import io.vertx.core.Verticle;
-import io.vertx.ext.web.handler.BodyHandler;
+import io.vertx.core.Vertx;
 
 /**
  * Main module for launching the RDF endpoint.
@@ -72,7 +75,7 @@ public class EndpointModule extends AbstractModule {
 	protected final Configuration config;
 	protected final Injector injector;
 	
-	private BaseServer runner = null;
+	private BaseServer server = null;
 	
 	public EndpointModule(Configuration config) {
 		this.config = config;
@@ -97,7 +100,7 @@ public class EndpointModule extends AbstractModule {
 			bind(RocksManager.class).toInstance(rocksManager);
 		}
 		catch (RocksDBException e) {
-			throw new RuntimeException("RocksDB failed to start");
+			throw new RuntimeException("RocksDB failed to start", e);
 		}
 		
 		if (isDHTEnabled()) {
@@ -127,7 +130,7 @@ public class EndpointModule extends AbstractModule {
 			bind(DHTWarpDriver.class);
 			bind(DHTWeftDriver.class);
 			
-			bind(DHTBackend.class).to(MemDHTBackend.class);
+			bind(DHTBackend.class).to(DHTMemBackend.class);
 		}
 		else {
 			log.info("Standalone data store");
@@ -144,16 +147,16 @@ public class EndpointModule extends AbstractModule {
 		// since these depend on synchronous ops against
 		// the database or upstream, but can themselves be
 		// executed progressively at least
-		bind(ExecutorService.class).toProvider(ExecutorServiceProvider.class).in(SINGLETON);
+		bind(ExecutorService.class).toProvider(ExecutorProvider.class).in(SINGLETON);
 		bind(Importer.class);
 		
-		bind(GraphListenerManager.class);
+		bind(ContainerListenerManager.class);
 		
 		// add internal reasoner plugins (static for now)
 		var plugins = newSetBinder(binder(), InternalPlugin.class);
 		
-//		plugins.addBinding().to(HermitReasonerPlugin.class);
-//		plugins.addBinding().to(ObjectCustodyChainReasonerPlugin.class);
+		plugins.addBinding().to(HermitReasonerPlugin.class);
+		plugins.addBinding().to(ObjectCustodyChainReasonerPlugin.class);
 		
 		bind(InternalPluginManager.class);
 		
@@ -161,6 +164,7 @@ public class EndpointModule extends AbstractModule {
 		bind(Integer.class).annotatedWith(named("port")).to(Key.get(Integer.class, named("data.port")));
 		
 		// bind Vert.x components 
+		bind(Vertx.class).toProvider(VertxProvider.class);
 		bind(BaseServer.class);
 		bind(BaseVerticle.class);
 		bind(Verticle.class).to(BaseVerticle.class);
@@ -199,7 +203,7 @@ public class EndpointModule extends AbstractModule {
 					injector.getInstance(Importer.class),
 					new File(config.getString("data.preload.path")),
 					true,
-					Future.<TaskResult>future().setHandler(result -> {
+					Future.<ModelTaskResult>future().setHandler(result -> {
 						if (result.succeeded()) {
 							log.info("Import loaded " + result.result().getSize() + " triples");
 							this.boot();
@@ -223,8 +227,8 @@ public class EndpointModule extends AbstractModule {
 		this.injector.getInstance(InternalPluginManager.class).init();
 		
 		// start data endpoint
-		this.runner = injector.getInstance(Key.get(BaseServer.class));
-		this.runner.start();
+		this.server = injector.getInstance(Key.get(BaseServer.class));
+		this.server.start();
 	}
 	
 	public static void main(String[] args) throws Exception {

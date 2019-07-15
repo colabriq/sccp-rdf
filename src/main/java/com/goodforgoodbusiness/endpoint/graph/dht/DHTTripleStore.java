@@ -15,7 +15,7 @@ import org.apache.log4j.Logger;
 
 import com.goodforgoodbusiness.endpoint.graph.containerized.ContainerTripleStore;
 import com.goodforgoodbusiness.endpoint.graph.rocks.RocksTripleStore;
-import com.goodforgoodbusiness.endpoint.plugin.GraphListenerManager;
+import com.goodforgoodbusiness.endpoint.plugin.ContainerListenerManager;
 import com.goodforgoodbusiness.endpoint.storage.TripleContext.Type;
 import com.goodforgoodbusiness.endpoint.storage.TripleContexts;
 import com.goodforgoodbusiness.model.StorableContainer;
@@ -30,14 +30,14 @@ public class DHTTripleStore implements TripleStore {
 	private static final Logger log = Logger.getLogger(DHTTripleStore.class);
 	
 	private final TripleContexts contexts;
-	private final GraphListenerManager listenerManager;
+	private final ContainerListenerManager listenerManager;
 	private final ContainerTripleStore<RocksTripleStore> baseStore;
 	
 	private final Set<DHTTripleIterator> openIterators = newSetFromMap(new ConcurrentHashMap<>());
 	
 	@Inject
 	public DHTTripleStore(TripleContexts contexts,
-		GraphListenerManager listenerManager, ContainerTripleStore<RocksTripleStore> baseStore) {
+		ContainerListenerManager listenerManager, ContainerTripleStore<RocksTripleStore> baseStore) {
 		
 		this.contexts = contexts;
 		this.listenerManager = listenerManager;

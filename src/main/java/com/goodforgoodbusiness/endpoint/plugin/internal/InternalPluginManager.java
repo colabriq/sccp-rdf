@@ -2,12 +2,11 @@ package com.goodforgoodbusiness.endpoint.plugin.internal;
 
 import java.util.Set;
 
-import org.apache.jena.graph.Graph;
-import org.apache.jena.query.Dataset;
 import org.apache.log4j.Logger;
 
-import com.goodforgoodbusiness.endpoint.plugin.GraphListener;
-import com.goodforgoodbusiness.endpoint.plugin.GraphListenerManager;
+import com.goodforgoodbusiness.endpoint.plugin.ContainerListener;
+import com.goodforgoodbusiness.endpoint.plugin.ContainerListenerManager;
+import com.goodforgoodbusiness.endpoint.plugin.StorableGraphContainer;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 
@@ -19,9 +18,9 @@ public class InternalPluginManager {
 	private static final Logger log = Logger.getLogger(InternalPluginManager.class);
 	
 	/**
-	 * Bridges {@link InternalPlugin} with {@link GraphListener}
+	 * Bridges {@link InternalPlugin} with {@link ContainerListener}
 	 */
-	class InternalReasonerPluginListener implements GraphListener {
+	class InternalReasonerPluginListener implements ContainerListener {
 		private final InternalPlugin plugin;
 
 		InternalReasonerPluginListener(InternalPlugin plugin) {
@@ -29,23 +28,26 @@ public class InternalPluginManager {
 		}
 		
 		@Override
-		public void newGraph(Graph newGraph) {
+		public void newContainer(StorableGraphContainer container) {
 			try {
-				plugin.exec(newGraph);
+				plugin.exec(container);
 			}
 			catch (InternalPluginException ie) {
 				log.error("Error in reasoner " + plugin.getClass().getSimpleName(), ie);
 			}
 		}
+		
+		@Override
+		public String toString() {
+			return "InternalReasonerPluginListener(" + plugin.getClass().getSimpleName() + ")";
+		}
 	}
 	
-	private final Graph graph;
-	private final GraphListenerManager manager;
+	private final ContainerListenerManager manager;
 	private final Set<InternalPlugin> plugins;
 
 	@Inject
-	public InternalPluginManager(Dataset dataset, GraphListenerManager manager, Set<InternalPlugin> plugins) {
-		this.graph = dataset.getDefaultModel().getGraph();
+	public InternalPluginManager(ContainerListenerManager manager, Set<InternalPlugin> plugins) {
 		this.manager = manager;
 		this.plugins = plugins;
 	}
@@ -53,7 +55,7 @@ public class InternalPluginManager {
 	public void init() {
 		this.plugins.forEach(plugin -> {
 			try {
-				plugin.init(graph);
+				plugin.init();
 				manager.register(new InternalReasonerPluginListener(plugin));
 			}
 			catch (InternalPluginException e) {

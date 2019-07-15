@@ -8,7 +8,7 @@ import org.apache.log4j.Logger;
 
 import com.goodforgoodbusiness.endpoint.crypto.EncryptionException;
 import com.goodforgoodbusiness.endpoint.crypto.SymmetricEncryption;
-import com.goodforgoodbusiness.endpoint.temp.DHTBackend;
+import com.goodforgoodbusiness.endpoint.dht.backend.DHTBackend;
 import com.goodforgoodbusiness.model.Contents;
 import com.goodforgoodbusiness.model.EncryptedContainer;
 import com.goodforgoodbusiness.model.EncryptedEnvelope;

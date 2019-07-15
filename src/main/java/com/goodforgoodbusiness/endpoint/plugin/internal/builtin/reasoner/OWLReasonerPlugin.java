@@ -25,6 +25,7 @@ import org.semanticweb.owlapi.util.InferredSubClassAxiomGenerator;
 import org.semanticweb.owlapi.util.InferredSubDataPropertyAxiomGenerator;
 import org.semanticweb.owlapi.util.InferredSubObjectPropertyAxiomGenerator;
 
+import com.goodforgoodbusiness.endpoint.plugin.StorableGraphContainer;
 import com.goodforgoodbusiness.endpoint.plugin.internal.InternalPlugin;
 import com.goodforgoodbusiness.endpoint.plugin.internal.InternalPluginException;
 
@@ -44,9 +45,6 @@ public class OWLReasonerPlugin implements InternalPlugin {
 	
 	private Graph mainGraph;
 	private OWLOntology mainGraphOntology;
-	
-	private Graph inferredGraph;
-	private OWLOntology inferredGraphOntology;
 
 	protected OWLReasonerPlugin(OWLReasonerFactory reasonerFactory) {
 		this.manager = OntManagers.createONT();
@@ -54,7 +52,7 @@ public class OWLReasonerPlugin implements InternalPlugin {
 	}
 	
 	@Override
-	public void init(Graph _mainGraph) throws InternalPluginException {
+	public void init() throws InternalPluginException {
 		log.info("Initializing reasoner");
 		
 //		// save mainGraph + inferredGraph for later
@@ -78,7 +76,7 @@ public class OWLReasonerPlugin implements InternalPlugin {
 	}
 
 	@Override
-	public void exec(Graph newGraph) throws InternalPluginException {
+	public void exec(StorableGraphContainer newGraph) throws InternalPluginException {
 		log.info("Reasoning...");
 		
 		try {

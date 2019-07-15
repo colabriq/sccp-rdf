@@ -1,4 +1,4 @@
-package com.goodforgoodbusiness.endpoint;
+package com.goodforgoodbusiness.endpoint.processor;
 
 /**
  * Holds priority for analysis by thread pool.

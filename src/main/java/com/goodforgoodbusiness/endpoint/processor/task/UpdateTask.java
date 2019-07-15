@@ -7,19 +7,20 @@ import org.apache.jena.query.Dataset;
 import org.apache.jena.update.UpdateExecutionFactory;
 import org.apache.jena.update.UpdateFactory;
 
-import com.goodforgoodbusiness.endpoint.processor.TaskResult;
+import com.goodforgoodbusiness.endpoint.processor.PrioritizedTask;
+import com.goodforgoodbusiness.endpoint.processor.ModelTaskResult;
 
 import io.vertx.core.Future;
 
 /**
  * Processes a SPARQL update statement
  */
-public class UpdateTask implements Runnable {	
+public class UpdateTask implements Runnable, PrioritizedTask {	
 	private final Dataset dataset;
 	private final String stmt;
-	private final Future<TaskResult> future;
+	private final Future<ModelTaskResult> future;
 
-	public UpdateTask(Dataset dataset, String stmt, Future<TaskResult> future) {
+	public UpdateTask(Dataset dataset, String stmt, Future<ModelTaskResult> future) {
 		this.dataset = dataset;
 		this.stmt = stmt;
 		this.future = future;
@@ -37,7 +38,7 @@ public class UpdateTask implements Runnable {
 			
 			long sizeAfter = dataset.getDefaultModel().size();
 			
-			future.complete(new TaskResult(
+			future.complete(new ModelTaskResult(
 				// XXX this calculation is a temporary
 				sizeAfter > sizeBefore ? (sizeAfter - sizeBefore) : 0,
 				sizeAfter < sizeBefore ? (sizeBefore - sizeAfter) : 0,
@@ -47,5 +48,10 @@ public class UpdateTask implements Runnable {
 		catch (Exception e) {
 			future.fail(e);
 		}
+	}
+
+	@Override
+	public Priority getPriority() {
+		return Priority.REAL;
 	}
 }

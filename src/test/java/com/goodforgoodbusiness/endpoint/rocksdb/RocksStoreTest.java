@@ -3,7 +3,7 @@ package com.goodforgoodbusiness.endpoint.rocksdb;
 import org.rocksdb.Options;
 import org.rocksdb.RocksDB;
 
-public class RocksTest {
+public class RocksStoreTest {
 	static {
 		RocksDB.loadLibrary();
 	}
@@ -14,7 +14,7 @@ public class RocksTest {
 		byte [] val = new byte [] { 4, 5, 6, };
 		
 		try (final Options options = new Options().setCreateIfMissing(true)) {
-			try (final RocksDB db = RocksDB.open(options, "/Users/ijmad/Desktop/sccp/prototype/rocks")) {
+			try (final RocksDB db = RocksDB.open(options, "./rocks")) {
 				final byte[] got = db.get(key);
 				
 				if (got != null) {

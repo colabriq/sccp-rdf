@@ -7,7 +7,7 @@ import org.apache.jena.query.Dataset;
 import org.apache.log4j.Logger;
 
 import com.goodforgoodbusiness.endpoint.MIMEMappings;
-import com.goodforgoodbusiness.endpoint.processor.TaskResult;
+import com.goodforgoodbusiness.endpoint.processor.ModelTaskResult;
 import com.goodforgoodbusiness.endpoint.processor.task.Importer;
 import com.goodforgoodbusiness.endpoint.processor.task.ImportStreamTask;
 import com.goodforgoodbusiness.endpoint.processor.task.QueryTask;
@@ -93,7 +93,7 @@ public class SparqlTaskLauncher {
 		service.submit(new UpdateTask(
 			dataset,
 			stmt.toString(),
-			Future.<TaskResult>future().setHandler(result -> {
+			Future.<ModelTaskResult>future().setHandler(result -> {
 				if (result.failed()) {
 					ctx.fail(result.cause());
 				}
@@ -122,7 +122,7 @@ public class SparqlTaskLauncher {
 			    new InputReadStream(file),
 			    lang,
 			    false,
-				Future.<TaskResult>future().setHandler(result -> {
+				Future.<ModelTaskResult>future().setHandler(result -> {
 					file.close();
 					
 					if (result.failed()) {

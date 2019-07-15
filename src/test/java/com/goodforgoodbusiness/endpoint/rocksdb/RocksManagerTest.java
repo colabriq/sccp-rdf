@@ -7,7 +7,7 @@ public class RocksManagerTest {
 	public static void main(String[] args) throws Exception {
 		LogConfigurer.init(RocksManagerTest.class, "log4j.properties");
 		
-		var manager = new RocksManager("/Users/ijmad/Desktop/sccp/prototype/rocks");
+		var manager = new RocksManager("./rocks");
 		
 		manager.start();
 		

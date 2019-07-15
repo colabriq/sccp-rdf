@@ -10,8 +10,8 @@ import java.io.IOException;
 
 import org.apache.log4j.Logger;
 
-import com.goodforgoodbusiness.endpoint.processor.TaskException;
-import com.goodforgoodbusiness.endpoint.processor.TaskResult;
+import com.goodforgoodbusiness.endpoint.processor.ModelTaskResult;
+import com.goodforgoodbusiness.endpoint.processor.PrioritizedTask;
 
 import io.vertx.core.Future;
 
@@ -19,15 +19,15 @@ import io.vertx.core.Future;
  * Import a local file or directory from storage
  * @throws FileNotFoundException 
  */
-public class ImportPathTask implements Runnable {
+public class ImportPathTask implements Runnable, PrioritizedTask {
 	private static Logger log = Logger.getLogger(ImportPathTask.class);
 	
 	private final Importer importer;
 	private final File path;
 	private final boolean isPreload;
-	private final Future<TaskResult> future;
+	private final Future<ModelTaskResult> future;
 	
-	public ImportPathTask(Importer importer, File path, boolean isPreload, Future<TaskResult> future) {
+	public ImportPathTask(Importer importer, File path, boolean isPreload, Future<ModelTaskResult> future) {
 		this.importer = importer;
 		this.path = path;
 		this.isPreload = isPreload;
@@ -48,7 +48,7 @@ public class ImportPathTask implements Runnable {
 						log.info("Loaded file " + file + " (now " + importer.getModel().size() + ")");
 					}
 					catch (IOException e) {
-						throw new TaskException("Error reading file " + file, e);
+						throw new RuntimeException("Error reading file " + file, e);
 					}
 				}
 				else {
@@ -57,10 +57,15 @@ public class ImportPathTask implements Runnable {
 			});
 			
 			var sizeAfter = importer.getModel().size();
-			future.complete(new TaskResult(sizeAfter - sizeBefore, 0, sizeAfter));
+			future.complete(new ModelTaskResult(sizeAfter - sizeBefore, 0, sizeAfter));
 		}
 		catch (Exception e) {
 			future.fail(e);
 		}
+	}
+	
+	@Override
+	public Priority getPriority() {
+		return Priority.NORMAL;
 	}
 }

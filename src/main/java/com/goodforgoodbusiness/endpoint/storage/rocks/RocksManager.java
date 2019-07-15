@@ -76,12 +76,7 @@ public class RocksManager {
 	}
 	
 	public synchronized void start() throws RocksDBException {
-		if (db == null) {
-	//		// add shutdown hook to ensure close
-	//		Runtime.getRuntime().addShutdownHook(new Thread(() -> {
-	//			close();
-	//		}));
-			
+		if (db == null) {			
 			this.options = new DBOptions();
 			this.options.setCreateIfMissing(true);
 			

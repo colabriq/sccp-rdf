@@ -6,7 +6,8 @@ import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ExecutorService;
 
-import com.goodforgoodbusiness.endpoint.graph.base.BaseGraph;
+import org.apache.log4j.Logger;
+
 import com.goodforgoodbusiness.model.StorableContainer;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
@@ -16,16 +17,18 @@ import com.google.inject.Singleton;
  * @author ijmad
  */
 @Singleton
-public class GraphListenerManager {
+public class ContainerListenerManager {
+	private static final Logger log = Logger.getLogger(ContainerListenerManager.class);
+	
 	private final ExecutorService service;
-	private final Set<GraphListener> listeners = newSetFromMap(new ConcurrentHashMap<>());
+	private final Set<ContainerListener> listeners = newSetFromMap(new ConcurrentHashMap<>());
 	
 	@Inject
-	public GraphListenerManager(ExecutorService service) {
+	public ContainerListenerManager(ExecutorService service) {
 		this.service = service;
 	}
 	
-	public void register(GraphListener listener) {
+	public void register(ContainerListener listener) {
 		listeners.add(listener);
 	}
 	
@@ -34,16 +37,15 @@ public class GraphListenerManager {
 	 * This is an async operation that will run in the background.
 	 */
 	public void trigger(StorableContainer container) {
+		log.info("Triggering listeners for " + container.getId());
+		
 		// set task to build graph (async)
 		service.execute(() -> {
-			var graph = BaseGraph.newGraph();
-			
-			// XXX layer this on top of the old graph?
-			container.getRemoved().forEach(graph::add); 
-			container.getAdded().forEach(graph::add);
+			var sgc = new StorableGraphContainer(container);
 			
 			listeners.forEach(listener -> {
-				service.execute(new GraphListenerTriggerTask(graph, listener));
+				log.info("Scheduling " + listener.toString() + " for " + container.getId());
+				service.execute(new ContainerListenerTriggerTask(sgc, listener));
 			});
 		});
 	}
