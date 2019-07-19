@@ -16,19 +16,28 @@ public class TripleContext {
 	 */
 	public static enum Type {
 		/**
-		 * Indicates this triple was the result of a preload operation
+		 * Indicates this triple was the result of a preload operation.
+		 * Like LOCAL_ONLY, these will not be published.
 		 */
 		PRELOADED,
 		
 		/**
-		 * Captures the ID of any containers that included this triple
+		 * Indicates the Triple came from a container.
+		 * Should also set @see {@link TripleContextBuilder#withContainerID(String)}
 		 */
-		CONTAINER_ID,
+		CONTAINER,
 		
 		/**
 		 * Indicates the triple was created as a result of a reasoner being run
+		 * Should also set @see {@link TripleContextBuilder#withContainerID(String)}
+		 * And @see {@link TripleContextBuilder#}
 		 */
-		REASONER
+		REASONER,
+		
+		/**
+		 * Indicates the Triple was loaded as 'local only' triple and is not for publish.
+		 */
+		LOCAL_ONLY,
 	}
 	
 	/**
@@ -45,16 +54,22 @@ public class TripleContext {
 	@SerializedName("containerID")
 	protected final String containerID;
 	
-	TripleContext(byte [] id, Type type, String containerID) {
+	@Expose
+	@SerializedName("reasoner")
+	protected final String reasoner;
+	
+	TripleContext(byte [] id, Type type, String containerID, String reasoner) {
 		System.arraycopy(id, 0, this.id, 0, 16);
 		
 		this.type = type;
 		this.containerID = containerID;
+		this.reasoner = reasoner;
 	}
 	
 	TripleContext() {
 		this.type = null;
 		this.containerID = null;
+		this.reasoner = null;
 	}
 	
 	public byte [] getID() {

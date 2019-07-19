@@ -55,7 +55,7 @@ public class DHT {
 					// record context for all the triples
 					container.getTriples().forEach(triple ->
 						contexts.create(triple)
-							.withType(Type.CONTAINER_ID)
+							.withType(Type.CONTAINER)
 							.withContainerID(container.getId())
 							.save()
 					);

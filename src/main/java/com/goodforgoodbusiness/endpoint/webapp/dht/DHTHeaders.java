@@ -11,10 +11,11 @@ import org.apache.http.NameValuePair;
 
 import com.goodforgoodbusiness.model.Link;
 import com.goodforgoodbusiness.model.Link.RelType;
+import com.goodforgoodbusiness.model.SubmittableContainer.SubmitMode;
 
 import io.vertx.ext.web.RoutingContext;
 
-class DHTCustodyChain {
+class DHTHeaders {
 	public static final String CUSTODY_CHAIN_HEADER = "X-Custody-Chain";
 	
 	/**
@@ -40,7 +41,7 @@ class DHTCustodyChain {
 			return Stream.<String>of(header.split(";"))
 				.map(String::trim)
 				.map(str -> parse(str, defaultCharset()))
-				.map(DHTCustodyChain::toLink)
+				.map(DHTHeaders::toLink)
 				.flatMap(Optional::stream)
 				
 			;
@@ -71,6 +72,26 @@ class DHTCustodyChain {
 		
 		if (ref.isPresent() && rel.isPresent()) {
 			return Optional.of(new Link(ref.get(), rel.get()));
+		}
+		else {
+			return Optional.empty();
+		}
+	}
+	
+	public static final String PUBLISH_MODE_HEADER = "X-Publish-Mode";
+	
+	public static Optional<SubmitMode> processSubmitModeHeader(RoutingContext ctx) {
+		return processSubmitModeHeader(ctx.request().getHeader(PUBLISH_MODE_HEADER));
+	}
+
+	public static Optional<SubmitMode> processSubmitModeHeader(String header) {
+		if (header != null) {
+			try {
+				return Optional.of(SubmitMode.valueOf(header.toUpperCase()));
+			}
+			catch (IllegalArgumentException e) {
+				return Optional.empty();
+			}
 		}
 		else {
 			return Optional.empty();

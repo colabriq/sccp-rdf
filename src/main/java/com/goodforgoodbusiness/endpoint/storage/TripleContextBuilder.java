@@ -24,6 +24,7 @@ public class TripleContextBuilder {
 	private final byte [] id = new byte[16];
 	private Type type = null;
 	private String containerID = null;
+	private String reasoner = null;
 	
 	TripleContextBuilder(Triple triple, TripleContextStore store) {
 		this.triple = triple;
@@ -50,6 +51,14 @@ public class TripleContextBuilder {
 	}
 	
 	/**
+	 * Record the reasoner that created this triple
+	 */
+	public TripleContextBuilder withReasoner(String _reasoner) {
+		this.reasoner = _reasoner;
+		return this;
+	}
+	
+	/**
 	 * Create the new TripleContext object
 	 */
 	public TripleContext save() {
@@ -57,7 +66,7 @@ public class TripleContextBuilder {
 			throw new IllegalArgumentException("Type is not set");
 		}
 		
-		var tc = new TripleContext(id, type, containerID);
+		var tc = new TripleContext(id, type, containerID, reasoner);
 		store.addContext(triple, tc);
 		return tc;
 	}

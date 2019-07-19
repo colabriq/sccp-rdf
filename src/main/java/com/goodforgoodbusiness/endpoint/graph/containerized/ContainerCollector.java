@@ -20,14 +20,13 @@ import io.vertx.core.Future;
  * Collect triples and links up preparing them to form a container
  */
 @Singleton
-public class ContainerCollector {
+public class ContainerCollector {	
 	private final ThreadLocal<SubmittableContainer> containerLocal = new ThreadLocal<>();
 	
 	private final DHT dht;
 	private final ContainerBuilder builder;
 	private final ContainerListenerManager listenerManager;
 	private final ExecutorService service;
-	
 	
 	@Inject
 	public ContainerCollector(DHT dht, ContainerListenerManager listMan, ContainerBuilder builder, ExecutorService service) {
@@ -41,24 +40,25 @@ public class ContainerCollector {
 		if (containerLocal.get() == null) {
 			var container = new SubmittableContainer() {
 				@Override
-				public void submit(Future<StorableContainer> future) {
-					// publish this new container
-					service.submit(
-						new DHTPublishTask(dht, builder, this, Future.<StorableContainer>future().setHandler(
-							result -> {
-								if (result.succeeded()) {
-									// trigger listeners for reasoning etc
-									listenerManager.trigger(result.result());
-									
-									// pass back to outer future
-									future.complete(result.result());
-								}
-								else {
-									future.fail(result.cause());
-								}
-							}
-						)
-					));
+				public void submit(Future<StorableContainer> future, SubmitMode mode) {
+					// create & publish StorableContainer
+					var storeableContainer = builder.buildFrom(this);
+					
+					switch (mode) {
+					case SYNCHRONOUS:
+						publishSynchronously(storeableContainer, future);
+						break;
+						
+					case ASYNCHRONOUS:
+						publishAsynchronously(storeableContainer, future);
+						break;
+						
+					case NONE:
+						publishNone(storeableContainer, future);
+						break;
+					}
+					
+					
 				}
 			};
 			
@@ -88,5 +88,52 @@ public class ContainerCollector {
 	
 	public void linked(Link link) {
 		current().ifPresent(container -> container.linked(link));
+	}
+	
+	// various publish methods
+	
+	private void publishSynchronously(StorableContainer container, Future<StorableContainer> future) {
+		service.submit(
+			new DHTPublishTask(dht, container, Future.<StorableContainer>future().setHandler(
+				result -> {
+					if (result.succeeded()) {
+						// trigger listeners for reasoning etc
+						listenerManager.trigger(result.result());
+						
+						// pass back to outer future
+						future.complete(container); 
+					}
+					else {
+						future.fail(result.cause());
+					}
+				}
+			)
+		));
+	}
+	
+	public void publishAsynchronously(StorableContainer container, Future<StorableContainer> future) {
+		// publish this new container
+		service.submit(
+			new DHTPublishTask(dht, container, Future.<StorableContainer>future().setHandler(
+				result -> {
+					if (result.succeeded()) {
+						// trigger listeners for reasoning etc
+						listenerManager.trigger(result.result());
+					}
+					else {
+						// XXX do something if this fails async
+					}
+				}
+			)
+		));
+		
+		// immediately complete!
+		future.complete(container);
+	}
+	
+	public void publishNone(StorableContainer container, Future<StorableContainer> future) {
+		// XXX rather than submitting, create context for the triples that marks them as local only.
+		// be careful if they already have other context.
+		future.complete(container);
 	}
 }

@@ -10,7 +10,7 @@ public class DHTRequestUtilTest {
 		;
 		
 		System.out.println(
-			DHTCustodyChain.processCustodyChainHeader(header).collect(toList())
+			DHTHeaders.processCustodyChainHeader(header).collect(toList())
 		);
 	}
 }

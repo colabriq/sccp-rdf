@@ -87,7 +87,7 @@ public class DHTTripleStore implements TripleStore {
 						
 						// new triples being saved get context
 						contexts.create(t)
-							.withType(Type.CONTAINER_ID)
+							.withType(Type.CONTAINER)
 							.withContainerID(container.getId())
 							.save()
 						;

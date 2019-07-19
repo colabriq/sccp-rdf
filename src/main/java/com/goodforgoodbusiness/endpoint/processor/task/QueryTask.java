@@ -11,7 +11,7 @@ import org.apache.log4j.Logger;
 
 import com.goodforgoodbusiness.endpoint.MIMEMappings;
 import com.goodforgoodbusiness.endpoint.processor.PrioritizedTask;
-import com.goodforgoodbusiness.webapp.stream.OutputWriteStream;
+import com.goodforgoodbusiness.webapp.stream.OutputStreamToWriteStream;
 
 import io.vertx.core.Future;
 import io.vertx.core.buffer.Buffer;
@@ -51,7 +51,7 @@ public class QueryTask implements Runnable, PrioritizedTask {
 				var resultSet = exe.execSelect();
 
 				ResultSetFormatter.output(
-					new OutputWriteStream(writeStream),
+					new OutputStreamToWriteStream(writeStream),
 					resultSet,
 					format
 				);
@@ -72,7 +72,7 @@ public class QueryTask implements Runnable, PrioritizedTask {
 					writer.setProperty("allowBadURIs", true);
 					writer.write(
 						result,
-						new OutputWriteStream(writeStream),
+						new OutputStreamToWriteStream(writeStream),
 						"PREFIX:"
 					);
 					

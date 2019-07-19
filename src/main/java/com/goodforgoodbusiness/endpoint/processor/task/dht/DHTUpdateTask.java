@@ -5,11 +5,12 @@ import java.util.stream.Stream;
 import org.apache.jena.query.Dataset;
 
 import com.goodforgoodbusiness.endpoint.graph.containerized.ContainerCollector;
-import com.goodforgoodbusiness.endpoint.processor.PrioritizedTask;
 import com.goodforgoodbusiness.endpoint.processor.ModelTaskResult;
+import com.goodforgoodbusiness.endpoint.processor.PrioritizedTask;
 import com.goodforgoodbusiness.endpoint.processor.task.UpdateTask;
 import com.goodforgoodbusiness.model.Link;
 import com.goodforgoodbusiness.model.StorableContainer;
+import com.goodforgoodbusiness.model.SubmittableContainer.SubmitMode;
 
 import io.vertx.core.Future;
 
@@ -21,14 +22,16 @@ public class DHTUpdateTask implements Runnable, PrioritizedTask {
 	private final Dataset dataset;
 	
 	private final Stream<Link> custodyChainHeader;
+	private final SubmitMode mode;
 	private final String stmt;
 	private final Future<DHTPublishResult> future;
 
 	public DHTUpdateTask(ContainerCollector collector, Dataset dataset, 
-		Stream<Link> custodyChainHeader, String stmt, Future<DHTPublishResult> future) {
+		SubmitMode mode, Stream<Link> custodyChainHeader, String stmt, Future<DHTPublishResult> future) {
 		
 		this.collector = collector;
 		this.dataset = dataset;
+		this.mode = mode;
 		this.custodyChainHeader = custodyChainHeader;
 		this.stmt = stmt;
 		this.future = future;
@@ -52,17 +55,18 @@ public class DHTUpdateTask implements Runnable, PrioritizedTask {
 					if (updateResult.succeeded()) {
 						// now submit
 						container.submit(
-							Future.<StorableContainer>future().setHandler(storeResult -> {
-								if (storeResult.succeeded()) {
+							Future.<StorableContainer>future().setHandler(submitResult -> {
+								if (submitResult.succeeded()) {
 									future.complete(new DHTPublishResult(
-										storeResult.result(),
+										submitResult.result(),
 										dataset.getDefaultModel().size()
 									));
 								}
 								else {
-									future.fail(storeResult.cause());
+									future.fail(submitResult.cause());
 								}
-							})
+							}),
+							mode
 						);
 					}
 					else {

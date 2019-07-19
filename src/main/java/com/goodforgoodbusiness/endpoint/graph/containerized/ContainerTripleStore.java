@@ -76,7 +76,7 @@ public class ContainerTripleStore<UNDERLYING_TYPE extends TripleStore> implement
 		}
 		
 		return underlying.find(trup).mapWith(t -> {
-			contexts.getContexts(t, EnumSet.of(Type.CONTAINER_ID))
+			contexts.getContexts(t, EnumSet.of(Type.CONTAINER))
 				.forEach(ctx -> {
 					collector.linked(new Link(ctx.getContainerID().get(), RelType.CAUSED_BY));
 				});

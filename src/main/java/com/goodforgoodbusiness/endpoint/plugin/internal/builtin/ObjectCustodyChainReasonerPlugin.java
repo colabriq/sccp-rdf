@@ -107,7 +107,13 @@ public class ObjectCustodyChainReasonerPlugin implements InternalPlugin {
 		
 		// add the new triples to the graph and record their context
 		newTriples.forEach(triple -> {
-			contexts.create(triple).withType(REASONER).withContainerID(container.getId()).save();
+			contexts.create(triple)
+				.withType(REASONER)
+				.withReasoner(ObjectCustodyChainReasonerPlugin.class.getName())
+				.withContainerID(container.getId())
+				.save()
+			;
+			
 			graph.add(triple);
 		});
 	}

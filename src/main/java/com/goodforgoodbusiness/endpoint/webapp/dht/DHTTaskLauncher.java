@@ -1,5 +1,8 @@
 package com.goodforgoodbusiness.endpoint.webapp.dht;
 
+import static com.goodforgoodbusiness.endpoint.webapp.dht.DHTHeaders.processCustodyChainHeader;
+import static com.goodforgoodbusiness.endpoint.webapp.dht.DHTHeaders.processSubmitModeHeader;
+
 import java.util.concurrent.ExecutorService;
 
 import org.apache.jena.query.Dataset;
@@ -10,8 +13,9 @@ import com.goodforgoodbusiness.endpoint.processor.task.dht.DHTImportTask;
 import com.goodforgoodbusiness.endpoint.processor.task.dht.DHTPublishResult;
 import com.goodforgoodbusiness.endpoint.processor.task.dht.DHTUpdateTask;
 import com.goodforgoodbusiness.endpoint.webapp.SparqlTaskLauncher;
+import com.goodforgoodbusiness.model.SubmittableContainer.SubmitMode;
 import com.goodforgoodbusiness.webapp.ContentType;
-import com.goodforgoodbusiness.webapp.stream.InputReadStream;
+import com.goodforgoodbusiness.webapp.stream.ReadStreamToInputStream;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 
@@ -42,12 +46,16 @@ public class DHTTaskLauncher extends SparqlTaskLauncher {
 	public void update(RoutingContext ctx, Buffer stmt) {
 		ctx.response().putHeader(HttpHeaders.CONTENT_TYPE, ContentType.JSON.getContentTypeString());
 		
+		// get the publish mode
+		var publishMode = processSubmitModeHeader(ctx).orElse(SubmitMode.getDefault());
+		
 		// process custody chain header
-		var custodyChainFromHeader = DHTCustodyChain.processCustodyChainHeader(ctx);
+		var custodyChainFromHeader = processCustodyChainHeader(ctx);
 		
 		service.submit(new DHTUpdateTask(
 			collector,
 			dataset,
+			publishMode,
 			custodyChainFromHeader,
 			stmt.toString(),
 			Future.<DHTPublishResult>future().setHandler(result -> {
@@ -56,7 +64,6 @@ public class DHTTaskLauncher extends SparqlTaskLauncher {
 				}
 				else {
 					ctx.response().end(result.result().toJson());
-//					ctx.next();
 				}
 			})
 		));
@@ -70,15 +77,19 @@ public class DHTTaskLauncher extends SparqlTaskLauncher {
 	public void importFile(RoutingContext ctx, String lang, AsyncFile file) {
 		ctx.response().putHeader(HttpHeaders.CONTENT_TYPE, ContentType.JSON.getContentTypeString());
 		
+		// get the publish mode
+		var publishMode = processSubmitModeHeader(ctx).orElse(SubmitMode.getDefault());
+		
 		// process custody chain header
-		var custodyChainFromHeader = DHTCustodyChain.processCustodyChainHeader(ctx);
+		var custodyChainFromHeader = DHTHeaders.processCustodyChainHeader(ctx);
 		
 		service.submit(
 			new DHTImportTask(
 				collector,
 			    importer,
+			    publishMode,
 			    custodyChainFromHeader,
-			    new InputReadStream(file),
+			    new ReadStreamToInputStream(file),
 			    lang,
 				Future.<DHTPublishResult>future().setHandler(result -> {
 					file.close();

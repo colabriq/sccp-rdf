@@ -14,7 +14,7 @@ import com.goodforgoodbusiness.endpoint.processor.task.QueryTask;
 import com.goodforgoodbusiness.endpoint.processor.task.UpdateTask;
 import com.goodforgoodbusiness.webapp.ContentType;
 import com.goodforgoodbusiness.webapp.error.BadRequestException;
-import com.goodforgoodbusiness.webapp.stream.InputReadStream;
+import com.goodforgoodbusiness.webapp.stream.ReadStreamToInputStream;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 
@@ -119,7 +119,7 @@ public class SparqlTaskLauncher {
 		service.submit(
 			new ImportStreamTask(
 			    importer,
-			    new InputReadStream(file),
+			    new ReadStreamToInputStream(file),
 			    lang,
 			    false,
 				Future.<ModelTaskResult>future().setHandler(result -> {
