@@ -9,6 +9,7 @@ import org.apache.jena.graph.Node;
 import org.apache.jena.graph.Triple;
 
 import com.goodforgoodbusiness.endpoint.graph.containerized.ContainerPatterns;
+import com.goodforgoodbusiness.endpoint.storage.ShareManager;
 import com.goodforgoodbusiness.kpabe.KPABEKeyManager;
 import com.goodforgoodbusiness.model.TriTuple;
 

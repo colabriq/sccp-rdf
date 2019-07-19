@@ -4,10 +4,10 @@ import java.util.ArrayList;
 
 import org.apache.log4j.Logger;
 
-import com.goodforgoodbusiness.endpoint.ShareManager;
 import com.goodforgoodbusiness.endpoint.crypto.EncryptionException;
 import com.goodforgoodbusiness.endpoint.graph.containerized.ContainerAttributes;
 import com.goodforgoodbusiness.endpoint.graph.containerized.ContainerPatterns;
+import com.goodforgoodbusiness.endpoint.storage.ShareManager;
 import com.goodforgoodbusiness.endpoint.storage.TripleContexts;
 import com.goodforgoodbusiness.endpoint.storage.TripleContext.Type;
 import com.goodforgoodbusiness.model.StorableContainer;

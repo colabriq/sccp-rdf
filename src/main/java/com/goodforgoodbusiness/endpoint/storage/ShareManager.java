@@ -1,4 +1,4 @@
-package com.goodforgoodbusiness.endpoint;
+package com.goodforgoodbusiness.endpoint.storage;
 
 import java.time.ZonedDateTime;
 import java.util.Optional;

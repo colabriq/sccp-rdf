@@ -6,7 +6,6 @@ import java.util.concurrent.ExecutorService;
 import org.apache.jena.query.Dataset;
 import org.apache.log4j.Logger;
 
-import com.goodforgoodbusiness.endpoint.MIMEMappings;
 import com.goodforgoodbusiness.endpoint.processor.ModelTaskResult;
 import com.goodforgoodbusiness.endpoint.processor.task.Importer;
 import com.goodforgoodbusiness.endpoint.processor.task.ImportStreamTask;

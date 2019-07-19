@@ -11,12 +11,12 @@ import java.util.stream.Stream;
 
 import org.apache.log4j.Logger;
 
-import com.goodforgoodbusiness.endpoint.ShareManager;
 import com.goodforgoodbusiness.endpoint.crypto.key.EncodeableSecretKey;
 import com.goodforgoodbusiness.endpoint.crypto.key.EncodeableShareKey;
 import com.goodforgoodbusiness.endpoint.dht.backend.DHTBackend;
 import com.goodforgoodbusiness.endpoint.dht.keys.ShareKeyStore;
 import com.goodforgoodbusiness.endpoint.graph.containerized.ContainerPatterns;
+import com.goodforgoodbusiness.endpoint.storage.ShareManager;
 import com.goodforgoodbusiness.kpabe.KPABEDecryption;
 import com.goodforgoodbusiness.kpabe.KPABEEncryption;
 import com.goodforgoodbusiness.kpabe.KPABEException;

@@ -1,4 +1,4 @@
-package com.goodforgoodbusiness.endpoint;
+package com.goodforgoodbusiness.endpoint.webapp;
 
 import java.util.List;
 import java.util.Map;

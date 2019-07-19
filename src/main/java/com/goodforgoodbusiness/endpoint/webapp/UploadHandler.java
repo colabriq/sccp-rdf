@@ -4,7 +4,6 @@ import static org.apache.commons.io.FilenameUtils.getExtension;
 
 import org.apache.log4j.Logger;
 
-import com.goodforgoodbusiness.endpoint.MIMEMappings;
 import com.goodforgoodbusiness.webapp.ContentType;
 import com.goodforgoodbusiness.webapp.error.BadRequestException;
 import com.google.inject.Inject;

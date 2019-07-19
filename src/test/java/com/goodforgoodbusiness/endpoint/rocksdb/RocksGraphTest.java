@@ -1,6 +1,6 @@
 package com.goodforgoodbusiness.endpoint.rocksdb;
 
-import static com.goodforgoodbusiness.endpoint.MIMEMappings.FILE_TYPES;
+import static com.goodforgoodbusiness.endpoint.webapp.MIMEMappings.FILE_TYPES;
 import static com.goodforgoodbusiness.shared.FileLoader.scan;
 import static org.apache.commons.io.FilenameUtils.getExtension;
 

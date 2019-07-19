@@ -11,6 +11,7 @@ import com.goodforgoodbusiness.endpoint.processor.task.dht.DHTPublishTask;
 import com.goodforgoodbusiness.model.Link;
 import com.goodforgoodbusiness.model.StorableContainer;
 import com.goodforgoodbusiness.model.SubmittableContainer;
+import com.goodforgoodbusiness.model.SubmittableContainer.SubmitMode;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 
@@ -45,20 +46,18 @@ public class ContainerCollector {
 					var storeableContainer = builder.buildFrom(this);
 					
 					switch (mode) {
-					case SYNCHRONOUS:
-						publishSynchronously(storeableContainer, future);
+					case SYNC:
+						publishSync(storeableContainer, future);
 						break;
 						
-					case ASYNCHRONOUS:
-						publishAsynchronously(storeableContainer, future);
+					case ASYNC:
+						publishAsync(storeableContainer, future);
 						break;
 						
 					case NONE:
 						publishNone(storeableContainer, future);
 						break;
 					}
-					
-					
 				}
 			};
 			
@@ -92,9 +91,9 @@ public class ContainerCollector {
 	
 	// various publish methods
 	
-	private void publishSynchronously(StorableContainer container, Future<StorableContainer> future) {
+	private void publishSync(StorableContainer container, Future<StorableContainer> future) {
 		service.submit(
-			new DHTPublishTask(dht, container, Future.<StorableContainer>future().setHandler(
+			new DHTPublishTask(dht, container, SubmitMode.SYNC, Future.<StorableContainer>future().setHandler(
 				result -> {
 					if (result.succeeded()) {
 						// trigger listeners for reasoning etc
@@ -111,10 +110,10 @@ public class ContainerCollector {
 		));
 	}
 	
-	public void publishAsynchronously(StorableContainer container, Future<StorableContainer> future) {
+	public void publishAsync(StorableContainer container, Future<StorableContainer> future) {
 		// publish this new container
 		service.submit(
-			new DHTPublishTask(dht, container, Future.<StorableContainer>future().setHandler(
+			new DHTPublishTask(dht, container, SubmitMode.ASYNC, Future.<StorableContainer>future().setHandler(
 				result -> {
 					if (result.succeeded()) {
 						// trigger listeners for reasoning etc

@@ -6,6 +6,7 @@ import com.goodforgoodbusiness.endpoint.crypto.EncryptionException;
 import com.goodforgoodbusiness.endpoint.dht.DHT;
 import com.goodforgoodbusiness.endpoint.processor.PrioritizedTask;
 import com.goodforgoodbusiness.model.StorableContainer;
+import com.goodforgoodbusiness.model.SubmittableContainer.SubmitMode;
 
 import io.vertx.core.Future;
 
@@ -17,11 +18,15 @@ public class DHTPublishTask implements Runnable, PrioritizedTask {
 	
 	private final DHT dht;
 	private final StorableContainer container;
+	private final SubmitMode mode;
+	
 	private final Future<StorableContainer> future;
 	
-	public DHTPublishTask(DHT dht, StorableContainer container, Future<StorableContainer> future) {
+	public DHTPublishTask(DHT dht, StorableContainer container, SubmitMode mode, Future<StorableContainer> future) {
 		this.dht = dht;
 		this.container = container;
+		this.mode = mode;
+		
 		this.future = future;
 	}
 	
@@ -30,7 +35,6 @@ public class DHTPublishTask implements Runnable, PrioritizedTask {
 		try {
 			log.info("Publishing container " + container.getId());
 			
-			// can we make this async?
 			dht.publish(container, Future.<Void>future().setHandler(publishResult -> {
 				if (publishResult.succeeded()) {
 					future.complete(container);
@@ -48,6 +52,6 @@ public class DHTPublishTask implements Runnable, PrioritizedTask {
 	
 	@Override
 	public Priority getPriority() {
-		return Priority.REAL;
+		return (mode == SubmitMode.ASYNC) ? Priority.NICED : Priority.REAL;
 	}
 }

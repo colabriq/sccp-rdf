@@ -44,6 +44,7 @@ import com.goodforgoodbusiness.endpoint.processor.ModelTaskResult;
 import com.goodforgoodbusiness.endpoint.processor.task.ImportPathTask;
 import com.goodforgoodbusiness.endpoint.processor.task.Importer;
 import com.goodforgoodbusiness.endpoint.storage.PersistentGraph;
+import com.goodforgoodbusiness.endpoint.storage.ShareManager;
 import com.goodforgoodbusiness.endpoint.storage.TripleContexts;
 import com.goodforgoodbusiness.endpoint.storage.rocks.RocksManager;
 import com.goodforgoodbusiness.endpoint.storage.rocks.context.TripleContextStore;
@@ -117,12 +118,6 @@ public class EndpointModule extends AbstractModule {
 			
 			bind(Identity.class);
 			bind(ContainerBuilder.class);
-			
-			// dht comms
-//			bind(DHTBlacklist.class);
-//			bind(DHTEngineClient.class);
-//			bind(DHTContainerSubmitter.class);
-//			bind(DHTAccessGovernor.class);
 			
 			bind(ShareManager.class);
 			bind(ShareKeyStore.class).to(MemKeyStore.class);

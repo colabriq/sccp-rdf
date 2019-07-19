@@ -2,7 +2,7 @@ package com.goodforgoodbusiness.endpoint.graph.containerized;
 
 import java.util.stream.Stream;
 
-import com.goodforgoodbusiness.endpoint.ShareManager;
+import com.goodforgoodbusiness.endpoint.storage.ShareManager;
 import com.goodforgoodbusiness.kpabe.key.KPABEPublicKey;
 import com.goodforgoodbusiness.model.TriTuple;
 import com.goodforgoodbusiness.shared.Rounds;
