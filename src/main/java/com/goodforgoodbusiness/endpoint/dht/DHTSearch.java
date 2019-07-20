@@ -34,16 +34,6 @@ public class DHTSearch {
 		this.weft = weft;
 	}
 	
-//							try {
-//								// attempt fetch & decrypt
-//								return .stream(); // stream so it's just non-empty Optionals
-//							}
-//							catch (EncryptionException e) {
-//								log.error("Couldn not decrypt container", e);
-//								return Stream.empty();
-//							}
-
-	
 	/**
 	 * Search the warp + weft for a triple pattern
 	 */
