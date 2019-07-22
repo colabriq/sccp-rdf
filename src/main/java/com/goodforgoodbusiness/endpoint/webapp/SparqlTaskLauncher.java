@@ -1,5 +1,6 @@
 package com.goodforgoodbusiness.endpoint.webapp;
 
+import java.io.IOException;
 import java.util.Optional;
 import java.util.concurrent.ExecutorService;
 
@@ -11,9 +12,9 @@ import com.goodforgoodbusiness.endpoint.processor.task.Importer;
 import com.goodforgoodbusiness.endpoint.processor.task.ImportStreamTask;
 import com.goodforgoodbusiness.endpoint.processor.task.QueryTask;
 import com.goodforgoodbusiness.endpoint.processor.task.UpdateTask;
+import com.goodforgoodbusiness.rpclib.stream.InputWriteStream;
 import com.goodforgoodbusiness.webapp.ContentType;
 import com.goodforgoodbusiness.webapp.error.BadRequestException;
-import com.goodforgoodbusiness.webapp.stream.ReadStreamToInputStream;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 
@@ -98,7 +99,6 @@ public class SparqlTaskLauncher {
 				}
 				else {
 					ctx.response().end(result.result().toJson());
-//					ctx.next();
 				}
 			})
 		));
@@ -115,10 +115,22 @@ public class SparqlTaskLauncher {
 	 * Starts an import from an uploaded file
 	 */
 	public void importFile(RoutingContext ctx, String lang, AsyncFile file) {
+		// pipe the file into our InputWriteStream
+		InputWriteStream iws;
+		
+		try {
+			iws = new InputWriteStream();
+			file.pipeTo(iws);
+		}
+		catch (IOException e) {
+			ctx.fail(e);
+			return;
+		}
+		
 		service.submit(
 			new ImportStreamTask(
 			    importer,
-			    new ReadStreamToInputStream(file),
+			    iws.getInputStream(),
 			    lang,
 			    false,
 				Future.<ModelTaskResult>future().setHandler(result -> {
@@ -130,7 +142,6 @@ public class SparqlTaskLauncher {
 					else {
 						// standard JSON result
 						ctx.response().end(result.result().toJson());
-//						ctx.next();
 					}
 				})
 			)

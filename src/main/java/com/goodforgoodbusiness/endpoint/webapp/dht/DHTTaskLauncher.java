@@ -3,6 +3,7 @@ package com.goodforgoodbusiness.endpoint.webapp.dht;
 import static com.goodforgoodbusiness.endpoint.webapp.dht.DHTHeaders.processCustodyChainHeader;
 import static com.goodforgoodbusiness.endpoint.webapp.dht.DHTHeaders.processSubmitModeHeader;
 
+import java.io.IOException;
 import java.util.concurrent.ExecutorService;
 
 import org.apache.jena.query.Dataset;
@@ -14,8 +15,8 @@ import com.goodforgoodbusiness.endpoint.processor.task.dht.DHTPublishResult;
 import com.goodforgoodbusiness.endpoint.processor.task.dht.DHTUpdateTask;
 import com.goodforgoodbusiness.endpoint.webapp.SparqlTaskLauncher;
 import com.goodforgoodbusiness.model.SubmittableContainer.SubmitMode;
+import com.goodforgoodbusiness.rpclib.stream.InputWriteStream;
 import com.goodforgoodbusiness.webapp.ContentType;
-import com.goodforgoodbusiness.webapp.stream.ReadStreamToInputStream;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 
@@ -83,13 +84,25 @@ public class DHTTaskLauncher extends SparqlTaskLauncher {
 		// process custody chain header
 		var custodyChainFromHeader = DHTHeaders.processCustodyChainHeader(ctx);
 		
+		// pipe the file into our InputWriteStream
+		InputWriteStream iws;
+		
+		try {
+			iws = new InputWriteStream();
+			file.pipeTo(iws);
+		}
+		catch (IOException e) {
+			ctx.fail(e);
+			return;
+		}
+		
 		service.submit(
 			new DHTImportTask(
 				collector,
 			    importer,
 			    publishMode,
 			    custodyChainFromHeader,
-			    new ReadStreamToInputStream(file),
+			    iws.getInputStream(),
 			    lang,
 				Future.<DHTPublishResult>future().setHandler(result -> {
 					file.close();
@@ -100,7 +113,6 @@ public class DHTTaskLauncher extends SparqlTaskLauncher {
 					else {
 						// standard JSON result
 						ctx.response().end(result.result().toJson());
-//						ctx.next();
 					}
 				})
 			)
