@@ -15,7 +15,7 @@ import com.goodforgoodbusiness.endpoint.processor.task.dht.DHTPublishResult;
 import com.goodforgoodbusiness.endpoint.processor.task.dht.DHTUpdateTask;
 import com.goodforgoodbusiness.endpoint.webapp.SparqlTaskLauncher;
 import com.goodforgoodbusiness.model.SubmittableContainer.SubmitMode;
-import com.goodforgoodbusiness.rpclib.stream.InputWriteStream;
+import com.goodforgoodbusiness.vertx.stream.InputWriteStream;
 import com.goodforgoodbusiness.webapp.ContentType;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;

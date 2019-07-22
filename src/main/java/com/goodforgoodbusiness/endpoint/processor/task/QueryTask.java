@@ -11,7 +11,7 @@ import org.apache.log4j.Logger;
 
 import com.goodforgoodbusiness.endpoint.processor.PrioritizedTask;
 import com.goodforgoodbusiness.endpoint.webapp.MIMEMappings;
-import com.goodforgoodbusiness.rpclib.stream.WriteOutputStream;
+import com.goodforgoodbusiness.vertx.stream.WriteOutputStream;
 
 import io.vertx.core.Future;
 import io.vertx.core.buffer.Buffer;
