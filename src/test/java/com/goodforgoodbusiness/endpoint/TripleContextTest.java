@@ -4,10 +4,10 @@ import static org.apache.jena.graph.NodeFactory.createLiteral;
 
 import org.apache.jena.graph.Triple;
 
-import com.goodforgoodbusiness.endpoint.storage.TripleContexts;
 import com.goodforgoodbusiness.endpoint.storage.TripleContext.Type;
-import com.goodforgoodbusiness.endpoint.storage.rocks.RocksManager;
+import com.goodforgoodbusiness.endpoint.storage.TripleContexts;
 import com.goodforgoodbusiness.endpoint.storage.rocks.context.TripleContextStore;
+import com.goodforgoodbusiness.rocks.RocksManager;
 
 public class TripleContextTest {
 	public static void main(String[] args) throws Exception {

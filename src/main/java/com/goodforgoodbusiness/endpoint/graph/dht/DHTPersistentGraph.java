@@ -6,7 +6,7 @@ import com.goodforgoodbusiness.endpoint.graph.containerized.ContainerTripleStore
 import com.goodforgoodbusiness.endpoint.graph.rocks.RocksTripleStore;
 import com.goodforgoodbusiness.endpoint.plugin.ContainerListenerManager;
 import com.goodforgoodbusiness.endpoint.storage.TripleContexts;
-import com.goodforgoodbusiness.endpoint.storage.rocks.RocksManager;
+import com.goodforgoodbusiness.rocks.RocksManager;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 

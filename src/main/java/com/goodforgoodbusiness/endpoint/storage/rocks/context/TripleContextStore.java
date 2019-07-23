@@ -9,9 +9,9 @@ import org.apache.jena.graph.Triple;
 import org.rocksdb.RocksDBException;
 
 import com.goodforgoodbusiness.endpoint.storage.TripleContext;
-import com.goodforgoodbusiness.endpoint.storage.rocks.RocksManager;
 import com.goodforgoodbusiness.endpoint.storage.rocks.triples.PrefixIterator;
 import com.goodforgoodbusiness.endpoint.storage.rocks.triples.PrefixIterator.Row;
+import com.goodforgoodbusiness.rocks.RocksManager;
 import com.goodforgoodbusiness.shared.encode.JSON;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;

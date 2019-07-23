@@ -27,8 +27,6 @@ import com.goodforgoodbusiness.endpoint.dht.DHTWarpDriver;
 import com.goodforgoodbusiness.endpoint.dht.DHTWeftDriver;
 import com.goodforgoodbusiness.endpoint.dht.backend.DHTBackend;
 import com.goodforgoodbusiness.endpoint.dht.backend.impl.DHTMemBackend;
-import com.goodforgoodbusiness.endpoint.dht.backend.impl.DHTRPCBackend;
-import com.goodforgoodbusiness.endpoint.dht.backend.impl.DHTRPCWebClientProvider;
 import com.goodforgoodbusiness.endpoint.dht.keys.ShareKeyStore;
 import com.goodforgoodbusiness.endpoint.dht.keys.impl.MemKeyStore;
 import com.goodforgoodbusiness.endpoint.graph.base.BaseDatasetProvider;
@@ -48,7 +46,6 @@ import com.goodforgoodbusiness.endpoint.processor.task.Importer;
 import com.goodforgoodbusiness.endpoint.storage.PersistentGraph;
 import com.goodforgoodbusiness.endpoint.storage.ShareManager;
 import com.goodforgoodbusiness.endpoint.storage.TripleContexts;
-import com.goodforgoodbusiness.endpoint.storage.rocks.RocksManager;
 import com.goodforgoodbusiness.endpoint.storage.rocks.context.TripleContextStore;
 import com.goodforgoodbusiness.endpoint.webapp.SparqlGetHandler;
 import com.goodforgoodbusiness.endpoint.webapp.SparqlPostHandler;
@@ -56,6 +53,7 @@ import com.goodforgoodbusiness.endpoint.webapp.SparqlTaskLauncher;
 import com.goodforgoodbusiness.endpoint.webapp.UploadHandler;
 import com.goodforgoodbusiness.endpoint.webapp.admin.StopHandler;
 import com.goodforgoodbusiness.endpoint.webapp.dht.DHTTaskLauncher;
+import com.goodforgoodbusiness.rocks.RocksManager;
 import com.goodforgoodbusiness.shared.LogConfigurer;
 import com.goodforgoodbusiness.webapp.BaseServer;
 import com.goodforgoodbusiness.webapp.BaseVerticle;
@@ -69,7 +67,6 @@ import com.google.inject.name.Names;
 import io.vertx.core.Future;
 import io.vertx.core.Verticle;
 import io.vertx.core.Vertx;
-import io.vertx.ext.web.client.WebClient;
 
 /**
  * Main module for launching the RDF endpoint.
@@ -102,6 +99,7 @@ public class EndpointModule extends AbstractModule {
 			// create and start the database 
 			var rocksManager = new RocksManager(props.getProperty("storage.path"));
 			rocksManager.start();
+			
 			bind(RocksManager.class).toInstance(rocksManager);
 		}
 		catch (RocksDBException e) {

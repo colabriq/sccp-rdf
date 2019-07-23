@@ -21,7 +21,7 @@ import org.apache.jena.sparql.resultset.ResultsFormat;
 import org.apache.log4j.Logger;
 
 import com.goodforgoodbusiness.endpoint.graph.rocks.RocksTripleStore;
-import com.goodforgoodbusiness.endpoint.storage.rocks.RocksManager;
+import com.goodforgoodbusiness.rocks.RocksManager;
 import com.goodforgoodbusiness.shared.Skolemizer;
 
 public class RocksGraphTest {

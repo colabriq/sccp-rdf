@@ -12,8 +12,8 @@ import org.apache.jena.graph.impl.TripleStore;
 import org.apache.jena.util.iterator.ExtendedIterator;
 import org.rocksdb.RocksDBException;
 
-import com.goodforgoodbusiness.endpoint.storage.rocks.RocksManager;
 import com.goodforgoodbusiness.endpoint.storage.rocks.triples.PrefixIterator;
+import com.goodforgoodbusiness.rocks.RocksManager;
 
 /**
  * A triple store backed by RocksDB

@@ -43,6 +43,12 @@
 		
 		<dependency>
 			<groupId>org.goodforgoodbusiness</groupId>
+			<artifactId>rocks</artifactId>
+			<version>0.2-SNAPSHOT</version>
+		</dependency>
+		
+		<dependency>
+			<groupId>org.goodforgoodbusiness</groupId>
 			<artifactId>rpclib</artifactId>
 			<version>0.2-SNAPSHOT</version>
 		</dependency>
@@ -57,24 +63,6 @@
 			<groupId>org.goodforgoodbusiness</groupId>
 			<artifactId>vertx</artifactId>
 			<version>0.2-SNAPSHOT</version>
-		</dependency>
-		
-		<dependency>
-		 	<groupId>org.rocksdb</groupId>
-		  	<artifactId>rocksdbjni</artifactId>
-		  	<version>5.5.1</version>
-		</dependency>
-		
-		<dependency>
-		    <groupId>io.vertx</groupId>
-		    <artifactId>vertx-web</artifactId>
-		    <version>3.7.1</version>
-		</dependency>
-		
-		<dependency>
- 			<groupId>io.vertx</groupId>
-			<artifactId>vertx-web-client</artifactId>
- 			<version>3.7.1</version>
 		</dependency>
 		
 		<dependency>
