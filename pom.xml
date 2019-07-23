@@ -5,62 +5,61 @@
 	<modelVersion>4.0.0</modelVersion>
 
 	<parent>
-		<groupId>org.goodforgoodbusiness</groupId>
+		<groupId>com.colabriq</groupId>
 		<artifactId>sccp</artifactId>
 		<version>0.2-SNAPSHOT</version>
 		<relativePath>../pom.xml</relativePath>
 	</parent>
 
 	<artifactId>rdfendpoint</artifactId>
-	<version>0.2-SNAPSHOT</version>
 	<packaging>jar</packaging>
 	<name>SCCP RDF Endpoint</name>
 
 	<dependencies>
 		<dependency>
-			<groupId>org.goodforgoodbusiness</groupId>
+			<groupId>com.colabriq</groupId>
 			<artifactId>shared</artifactId>
 			<version>0.2-SNAPSHOT</version>
 		</dependency>
 		
 		<dependency>
-			<groupId>org.goodforgoodbusiness</groupId>
+			<groupId>com.colabriq</groupId>
 			<artifactId>model</artifactId>
 			<version>0.2-SNAPSHOT</version>
 		</dependency>
 		
 		<dependency>
-			<groupId>org.goodforgoodbusiness</groupId>
+			<groupId>com.colabriq</groupId>
 			<artifactId>kpabe</artifactId>
 			<version>0.2-SNAPSHOT</version>
 		</dependency>
 		
 		<dependency>
-			<groupId>org.goodforgoodbusiness</groupId>
+			<groupId>com.colabriq</groupId>
 			<artifactId>webapp</artifactId>
 			<version>0.2-SNAPSHOT</version>
 		</dependency>
 		
 		<dependency>
-			<groupId>org.goodforgoodbusiness</groupId>
+			<groupId>com.colabriq</groupId>
 			<artifactId>rocks</artifactId>
 			<version>0.2-SNAPSHOT</version>
 		</dependency>
 		
 		<dependency>
-			<groupId>org.goodforgoodbusiness</groupId>
+			<groupId>com.colabriq</groupId>
 			<artifactId>rpclib</artifactId>
 			<version>0.2-SNAPSHOT</version>
 		</dependency>
 		
 		<dependency>
-			<groupId>org.goodforgoodbusiness</groupId>
+			<groupId>com.colabriq</groupId>
 			<artifactId>proto</artifactId>
 			<version>0.2-SNAPSHOT</version>
 		</dependency>
 		
 		<dependency>
-			<groupId>org.goodforgoodbusiness</groupId>
+			<groupId>com.colabriq</groupId>
 			<artifactId>vertx</artifactId>
 			<version>0.2-SNAPSHOT</version>
 		</dependency>
@@ -121,7 +120,7 @@
 		<dependency>
 		    <groupId>com.google.inject</groupId>
 		    <artifactId>guice</artifactId>
-		    <version>4.2.2</version>
+		    <version>${guice.version}</version>
 		</dependency>
 		
 		<dependency>
@@ -150,68 +149,28 @@
 		<testOutputDirectory>target/test-classes</testOutputDirectory>
 		<sourceDirectory>src/main/java</sourceDirectory>
 		<testSourceDirectory>src/test/java</testSourceDirectory>
+		
 		<resources>
 			<resource>
 				<directory>src/main/resources</directory>
 			</resource>
 		</resources>
+		
 		<testResources>
 			<testResource>
 				<directory>src/test/resources</directory>
 			</testResource>
 		</testResources>
+		
 		<plugins>
-			<plugin>
-				<artifactId>maven-jar-plugin</artifactId>
-				<configuration>
-					<archive>
-						<manifest>
-							<addClasspath>true</addClasspath>
-							<classpathPrefix>lib/</classpathPrefix>
-							<mainClass>com.goodforgoodbusiness.endpoint.EndpointModule</mainClass>
-						</manifest>
-					</archive>
-				</configuration>
-			</plugin>
-<!-- 			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-assembly-plugin</artifactId>
-				<version>2.4</version>
-				<configuration>
-					<descriptors>
-						<descriptor>assembly.xml</descriptor>
-					</descriptors>
-				</configuration>
-				<executions>
-					<execution>
-						<id>make-assembly</id>
-						<phase>package</phase>
-						<goals>
-							<goal>single</goal>
-						</goals>
-					</execution>
-				</executions>
-			</plugin> -->
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-compiler-plugin</artifactId>
-				<version>3.3</version>
-				<configuration>
-					<source>${jdk.version}</source>
-					<target>${jdk.version}</target>
-					<encoding>${project.build.sourceEncoding}</encoding>
-				</configuration>
 			</plugin>
+			
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-eclipse-plugin</artifactId>
-				<version>2.9</version>
-				<configuration>
-					<buildOutputDirectory>${project.build.directory}/classes</buildOutputDirectory>
-					<downloadSources>true</downloadSources>
-					<downloadJavadocs>false</downloadJavadocs>
-					<useProjectReferences>false</useProjectReferences>
-				</configuration>
 			</plugin>
 		</plugins>
 	</build>
