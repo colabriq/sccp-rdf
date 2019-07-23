@@ -70,23 +70,6 @@ public final class PrefixPattern {
 		return dest;
 	}
 	
-	/**
-	 * Check if one array starts with the contents of another
-	 */
-	public static boolean startsWith(byte [] bytes, byte [] prefix) {
-		if (bytes.length >= prefix.length) {
-			for (var x = 0; x < prefix.length; x++) {
-				if (bytes[x] != prefix[x]) {
-					return false;
-				}
-			}
-			
-			return true;
-		}
-		
-		return false;
-	}
-	
 	private PrefixPattern() {
 	}
 }

@@ -13,7 +13,7 @@ import com.goodforgoodbusiness.endpoint.graph.base.store.iterator.functional.Con
 import com.goodforgoodbusiness.endpoint.graph.base.store.iterator.functional.FilteredExtendedIterator;
 import com.goodforgoodbusiness.endpoint.graph.base.store.iterator.functional.MappedExtendedIterator;
 import com.goodforgoodbusiness.endpoint.graph.base.store.iterator.functional.WrappedExtendedIterator;
-import com.goodforgoodbusiness.endpoint.storage.rocks.triples.PrefixIterator;
+import com.goodforgoodbusiness.rocks.PrefixIterator;
 import com.goodforgoodbusiness.shared.encode.RDFBinary;
 
 /**
