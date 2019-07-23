@@ -12,7 +12,6 @@ import static org.apache.commons.configuration2.ConfigurationConverter.getProper
 import java.io.File;
 import java.util.Properties;
 import java.util.concurrent.ExecutorService;
-import java.util.concurrent.TimeUnit;
 
 import org.apache.commons.configuration2.Configuration;
 import org.apache.jena.graph.Graph;
@@ -55,6 +54,7 @@ import com.goodforgoodbusiness.endpoint.webapp.dht.DHTTaskLauncher;
 import com.goodforgoodbusiness.rocks.RocksManager;
 import com.goodforgoodbusiness.shared.LogConfigurer;
 import com.goodforgoodbusiness.shared.executor.ExecutorProvider;
+import com.goodforgoodbusiness.shared.executor.PrioritizedExecutor;
 import com.goodforgoodbusiness.webapp.BaseServer;
 import com.goodforgoodbusiness.webapp.BaseVerticle;
 import com.goodforgoodbusiness.webapp.BaseVerticle.HandlerProvider;
@@ -241,20 +241,8 @@ public class EndpointModule extends AbstractModule {
 			vx.close(voidResult -> {
 				log.info("Vert.x closed");
 				
-				var es = injector.getInstance(ExecutorService.class);
-				es.shutdown();
-				
-				// flush + await safe stop 
-				while (!es.isTerminated()) {
-					try {
-						log.info("Awaiting ExecutorService termination...");
-						es.awaitTermination(1, TimeUnit.SECONDS);
-					}
-					catch (InterruptedException e) {
-					}
-				}
-				
-				log.info("ExecutorService has terminated");
+				var es = injector.getInstance(PrioritizedExecutor.class);
+				es.safeStop();
 				
 				var rm = injector.getInstance(RocksManager.class);
 				rm.close();
