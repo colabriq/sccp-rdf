@@ -4,9 +4,9 @@ import org.apache.log4j.Logger;
 
 import com.goodforgoodbusiness.endpoint.crypto.EncryptionException;
 import com.goodforgoodbusiness.endpoint.dht.DHT;
-import com.goodforgoodbusiness.endpoint.processor.PrioritizedTask;
 import com.goodforgoodbusiness.model.StorableContainer;
 import com.goodforgoodbusiness.model.SubmittableContainer.SubmitMode;
+import com.goodforgoodbusiness.shared.executor.PrioritizedTask;
 
 import io.vertx.core.Future;
 

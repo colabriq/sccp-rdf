@@ -5,12 +5,12 @@ import java.util.stream.Stream;
 
 import com.goodforgoodbusiness.endpoint.graph.containerized.ContainerCollector;
 import com.goodforgoodbusiness.endpoint.processor.ModelTaskResult;
-import com.goodforgoodbusiness.endpoint.processor.PrioritizedTask;
 import com.goodforgoodbusiness.endpoint.processor.task.ImportStreamTask;
 import com.goodforgoodbusiness.endpoint.processor.task.Importer;
 import com.goodforgoodbusiness.model.Link;
 import com.goodforgoodbusiness.model.StorableContainer;
 import com.goodforgoodbusiness.model.SubmittableContainer.SubmitMode;
+import com.goodforgoodbusiness.shared.executor.PrioritizedTask;
 
 import io.vertx.core.Future;
 

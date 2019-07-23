@@ -4,8 +4,8 @@ import java.io.InputStream;
 
 import org.apache.log4j.Logger;
 
-import com.goodforgoodbusiness.endpoint.processor.PrioritizedTask;
 import com.goodforgoodbusiness.endpoint.processor.ModelTaskResult;
+import com.goodforgoodbusiness.shared.executor.PrioritizedTask;
 
 import io.vertx.core.Future;
 

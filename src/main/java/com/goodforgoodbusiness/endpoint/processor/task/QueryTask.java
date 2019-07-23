@@ -9,8 +9,8 @@ import org.apache.jena.query.QueryFactory;
 import org.apache.jena.query.ResultSetFormatter;
 import org.apache.log4j.Logger;
 
-import com.goodforgoodbusiness.endpoint.processor.PrioritizedTask;
 import com.goodforgoodbusiness.endpoint.webapp.MIMEMappings;
+import com.goodforgoodbusiness.shared.executor.PrioritizedTask;
 import com.goodforgoodbusiness.vertx.stream.WriteOutputStream;
 
 import io.vertx.core.Future;

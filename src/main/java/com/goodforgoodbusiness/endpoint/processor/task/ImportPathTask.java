@@ -11,7 +11,7 @@ import java.io.IOException;
 import org.apache.log4j.Logger;
 
 import com.goodforgoodbusiness.endpoint.processor.ModelTaskResult;
-import com.goodforgoodbusiness.endpoint.processor.PrioritizedTask;
+import com.goodforgoodbusiness.shared.executor.PrioritizedTask;
 
 import io.vertx.core.Future;
 

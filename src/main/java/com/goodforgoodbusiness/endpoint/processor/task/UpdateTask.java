@@ -7,8 +7,8 @@ import org.apache.jena.query.Dataset;
 import org.apache.jena.update.UpdateExecutionFactory;
 import org.apache.jena.update.UpdateFactory;
 
-import com.goodforgoodbusiness.endpoint.processor.PrioritizedTask;
 import com.goodforgoodbusiness.endpoint.processor.ModelTaskResult;
+import com.goodforgoodbusiness.shared.executor.PrioritizedTask;
 
 import io.vertx.core.Future;
 

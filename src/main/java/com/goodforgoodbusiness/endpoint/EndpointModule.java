@@ -39,7 +39,6 @@ import com.goodforgoodbusiness.endpoint.plugin.internal.InternalPlugin;
 import com.goodforgoodbusiness.endpoint.plugin.internal.InternalPluginManager;
 import com.goodforgoodbusiness.endpoint.plugin.internal.builtin.ObjectCustodyChainReasonerPlugin;
 import com.goodforgoodbusiness.endpoint.plugin.internal.builtin.reasoner.HermitReasonerPlugin;
-import com.goodforgoodbusiness.endpoint.processor.ExecutorProvider;
 import com.goodforgoodbusiness.endpoint.processor.ModelTaskResult;
 import com.goodforgoodbusiness.endpoint.processor.task.ImportPathTask;
 import com.goodforgoodbusiness.endpoint.processor.task.Importer;
@@ -55,6 +54,7 @@ import com.goodforgoodbusiness.endpoint.webapp.admin.StopHandler;
 import com.goodforgoodbusiness.endpoint.webapp.dht.DHTTaskLauncher;
 import com.goodforgoodbusiness.rocks.RocksManager;
 import com.goodforgoodbusiness.shared.LogConfigurer;
+import com.goodforgoodbusiness.shared.executor.ExecutorProvider;
 import com.goodforgoodbusiness.webapp.BaseServer;
 import com.goodforgoodbusiness.webapp.BaseVerticle;
 import com.goodforgoodbusiness.webapp.BaseVerticle.HandlerProvider;
@@ -259,8 +259,6 @@ public class EndpointModule extends AbstractModule {
 				var rm = injector.getInstance(RocksManager.class);
 				rm.close();
 			});
-			
-//			Thread.getAllStackTraces().keySet().forEach(thread -> thread.interrupt());
 		}
 	}
 	

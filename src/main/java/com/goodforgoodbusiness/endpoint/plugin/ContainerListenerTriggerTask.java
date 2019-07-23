@@ -1,6 +1,6 @@
 package com.goodforgoodbusiness.endpoint.plugin;
 
-import com.goodforgoodbusiness.endpoint.processor.PrioritizedTask;
+import com.goodforgoodbusiness.shared.executor.PrioritizedTask;
 
 /**
  * Task that runs a particular graph listener against a container
