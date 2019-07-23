@@ -26,9 +26,11 @@ import com.goodforgoodbusiness.endpoint.dht.DHT;
 import com.goodforgoodbusiness.endpoint.dht.DHTWarpDriver;
 import com.goodforgoodbusiness.endpoint.dht.DHTWeftDriver;
 import com.goodforgoodbusiness.endpoint.dht.backend.DHTBackend;
-import com.goodforgoodbusiness.endpoint.dht.backend.DHTMemBackend;
-import com.goodforgoodbusiness.endpoint.dht.keys.MemKeyStore;
+import com.goodforgoodbusiness.endpoint.dht.backend.impl.DHTMemBackend;
+import com.goodforgoodbusiness.endpoint.dht.backend.impl.DHTRPCBackend;
+import com.goodforgoodbusiness.endpoint.dht.backend.impl.DHTRPCWebClientProvider;
 import com.goodforgoodbusiness.endpoint.dht.keys.ShareKeyStore;
+import com.goodforgoodbusiness.endpoint.dht.keys.impl.MemKeyStore;
 import com.goodforgoodbusiness.endpoint.graph.base.BaseDatasetProvider;
 import com.goodforgoodbusiness.endpoint.graph.containerized.ContainerBuilder;
 import com.goodforgoodbusiness.endpoint.graph.containerized.ContainerCollector;
@@ -67,6 +69,7 @@ import com.google.inject.name.Names;
 import io.vertx.core.Future;
 import io.vertx.core.Verticle;
 import io.vertx.core.Vertx;
+import io.vertx.ext.web.client.WebClient;
 
 /**
  * Main module for launching the RDF endpoint.
@@ -127,6 +130,7 @@ public class EndpointModule extends AbstractModule {
 			bind(DHTWeftDriver.class);
 			
 			bind(DHTBackend.class).to(DHTMemBackend.class);
+//			bind(WebClient.class).toProvider(DHTRPCWebClientProvider.class); // might want to annotate this.
 		}
 		else {
 			log.info("Standalone data store");

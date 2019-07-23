@@ -10,7 +10,7 @@ import org.apache.jena.graph.Node;
 import org.apache.jena.graph.Triple;
 
 import com.goodforgoodbusiness.endpoint.crypto.key.EncodeableShareKey;
-import com.goodforgoodbusiness.endpoint.dht.keys.MemKeyStore;
+import com.goodforgoodbusiness.endpoint.dht.keys.impl.MemKeyStore;
 import com.goodforgoodbusiness.kpabe.KPABEEncryption;
 import com.goodforgoodbusiness.kpabe.KPABEKeyManager;
 import com.goodforgoodbusiness.model.TriTuple;

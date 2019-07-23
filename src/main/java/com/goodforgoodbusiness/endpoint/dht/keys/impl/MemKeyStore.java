@@ -1,4 +1,4 @@
-package com.goodforgoodbusiness.endpoint.dht.keys;
+package com.goodforgoodbusiness.endpoint.dht.keys.impl;
 
 import static java.util.Collections.emptySet;
 import static java.util.stream.Collectors.toSet;
@@ -10,6 +10,7 @@ import java.util.Set;
 import java.util.stream.Stream;
 
 import com.goodforgoodbusiness.endpoint.crypto.key.EncodeableShareKey;
+import com.goodforgoodbusiness.endpoint.dht.keys.ShareKeyStore;
 import com.goodforgoodbusiness.kpabe.key.KPABEPublicKey;
 import com.goodforgoodbusiness.model.TriTuple;
 import com.goodforgoodbusiness.shared.encode.JSON;

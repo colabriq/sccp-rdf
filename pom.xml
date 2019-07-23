@@ -49,6 +49,12 @@
 		
 		<dependency>
 			<groupId>org.goodforgoodbusiness</groupId>
+			<artifactId>proto</artifactId>
+			<version>0.2-SNAPSHOT</version>
+		</dependency>
+		
+		<dependency>
+			<groupId>org.goodforgoodbusiness</groupId>
 			<artifactId>vertx</artifactId>
 			<version>0.2-SNAPSHOT</version>
 		</dependency>
