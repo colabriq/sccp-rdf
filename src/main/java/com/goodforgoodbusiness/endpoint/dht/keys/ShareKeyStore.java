@@ -2,23 +2,24 @@ package com.goodforgoodbusiness.endpoint.dht.keys;
 
 import java.util.stream.Stream;
 
+import org.apache.jena.graph.Triple;
+
 import com.goodforgoodbusiness.endpoint.crypto.key.EncodeableShareKey;
 import com.goodforgoodbusiness.kpabe.key.KPABEPublicKey;
-import com.goodforgoodbusiness.model.TriTuple;
 
 public interface ShareKeyStore {
 	/**
 	 * Find any public key identities who shared something with us
 	 */
-	public Stream<KPABEPublicKey> knownContainerCreators(TriTuple tuple);
+	public Stream<KPABEPublicKey> knownContainerCreators(Triple pattern);
 	
 	/**
 	 * Retrieve all keys shared with us by a particular MPK (public key).
 	 */
-	public Stream<EncodeableShareKey> keysForDecrypt(KPABEPublicKey publicKey, TriTuple tuple);
+	public Stream<EncodeableShareKey> keysForDecrypt(KPABEPublicKey publicKey, Triple triple);
 
 	/**
 	 * Save a key for future retrieval via the find... methods
 	 */
-	public void saveKey(TriTuple tuple, EncodeableShareKey key);
+	public void saveKey(Triple triple, EncodeableShareKey key);
 }

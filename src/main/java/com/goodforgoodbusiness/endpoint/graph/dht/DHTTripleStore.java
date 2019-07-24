@@ -22,7 +22,6 @@ import com.goodforgoodbusiness.endpoint.plugin.ContainerListenerManager;
 import com.goodforgoodbusiness.endpoint.storage.TripleContext.Type;
 import com.goodforgoodbusiness.endpoint.storage.TripleContexts;
 import com.goodforgoodbusiness.model.StorableContainer;
-import com.goodforgoodbusiness.model.TriTuple;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 
@@ -64,7 +63,7 @@ public class DHTTripleStore implements TripleStore {
 		var block = new CompletableFuture<AsyncResult<Stream<StorableContainer>>>();
 		
 		search.search(
-			TriTuple.from(pattern),
+			pattern,
 			Future.<Stream<StorableContainer>>future().setHandler(result -> block.complete(result))
 		);
 		

@@ -9,6 +9,7 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+import org.apache.jena.graph.Triple;
 import org.apache.log4j.Logger;
 
 import com.goodforgoodbusiness.endpoint.crypto.key.EncodeableSecretKey;
@@ -22,7 +23,6 @@ import com.goodforgoodbusiness.kpabe.KPABEEncryption;
 import com.goodforgoodbusiness.kpabe.KPABEException;
 import com.goodforgoodbusiness.kpabe.key.KPABEPublicKey;
 import com.goodforgoodbusiness.model.Pointer;
-import com.goodforgoodbusiness.model.TriTuple;
 import com.goodforgoodbusiness.shared.encode.JSON;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
@@ -104,7 +104,7 @@ public class DHTWarpDriver {
 	 * Search for pointers with a particular triple signature
 	 * This will lead to containers with results in them
 	 */
-	public void search(TriTuple tuple, Future<Stream<Pointer>> future) {
+	public void search(Triple tuple, Future<Stream<Pointer>> future) {
 		log.debug("Searching warp for triple " + tuple);
 		
 		// look for anyone who's ever shared a key matching these triples with us
@@ -151,7 +151,7 @@ public class DHTWarpDriver {
 	/**
 	 * Search for containers by a specific creator
 	 */
-	private void search(KPABEPublicKey creator, TriTuple tuple, Future<Stream<Pointer>> future) {
+	private void search(KPABEPublicKey creator, Triple tuple, Future<Stream<Pointer>> future) {
 		var patternHash = ContainerPatterns.forSearch(creator, tuple);
 		log.debug("Searching warp for containers from " + creator.toString().substring(0, 10) + 
 			"... with patterns " + patternHash.substring(0,  10) + "...");
@@ -178,7 +178,7 @@ public class DHTWarpDriver {
 	 * Attempt to decrypt a pointer.
 	 * Specify publicKey so we know which keys to try against the data
 	 */
-	private Optional<Pointer> decrypt(KPABEPublicKey creator, TriTuple pattern, byte[] data) {
+	private Optional<Pointer> decrypt(KPABEPublicKey creator, Triple pattern, byte[] data) {
 		log.info("Got data for " + pattern + " from " + creator.toString().substring(0, 10) + "...");
 		
 		return

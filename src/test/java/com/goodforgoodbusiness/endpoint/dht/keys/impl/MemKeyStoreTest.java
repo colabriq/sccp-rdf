@@ -1,19 +1,15 @@
-package com.goodforgoodbusiness.endpoint;
+package com.goodforgoodbusiness.endpoint.dht.keys.impl;
 
 import static java.util.stream.Collectors.toList;
 import static org.apache.jena.graph.NodeFactory.createURI;
 import static org.apache.jena.sparql.util.NodeFactoryExtra.createLiteralNode;
 
-import java.util.Optional;
-
 import org.apache.jena.graph.Node;
 import org.apache.jena.graph.Triple;
 
 import com.goodforgoodbusiness.endpoint.crypto.key.EncodeableShareKey;
-import com.goodforgoodbusiness.endpoint.dht.keys.impl.MemKeyStore;
 import com.goodforgoodbusiness.kpabe.KPABEEncryption;
 import com.goodforgoodbusiness.kpabe.KPABEKeyManager;
-import com.goodforgoodbusiness.model.TriTuple;
 
 public class MemKeyStoreTest {
 	public static void main(String[] args) throws Exception {
@@ -27,10 +23,10 @@ public class MemKeyStoreTest {
 		
 		// save a key that would cover both tuples
 		store.saveKey(
-			new TriTuple(
-				Optional.of("https://twitter.com/ijmad8x"),
-				Optional.empty(),
-				Optional.empty()
+			new Triple(
+				createURI("https://twitter.com/ijmad8x"),
+				Node.ANY,
+				Node.ANY
 			),
 			encShareKey
 		);
@@ -38,12 +34,10 @@ public class MemKeyStoreTest {
 		System.out.println("----------------------------------------");
 		
 		// check share key is returned when searching for right things
-		var tt1 = TriTuple.from(
-			new Triple(
-				createURI("https://twitter.com/ijmad8x"),
-				createURI("http://xmlns.com/foaf/0.1/name"),
-				createLiteralNode("Ian Maddison", null, "http://www.w3.org/2001/XMLSchema/string")
-			)
+		var tt1 = new Triple(
+			createURI("https://twitter.com/ijmad8x"),
+			createURI("http://xmlns.com/foaf/0.1/name"),
+			createLiteralNode("Ian Maddison", null, "http://www.w3.org/2001/XMLSchema/string")
 		);
 		
 		store.knownContainerCreators(tt1).forEach(r -> {
@@ -53,12 +47,10 @@ public class MemKeyStoreTest {
 		
 		System.out.println("----------------------------------------");
 		
-		var tt2 = TriTuple.from(
-			new Triple(
-				createURI("https://twitter.com/ijmad9x"),
-				createURI("http://xmlns.com/foaf/0.1/age"),
-				createLiteralNode("35", null, "http://www.w3.org/2001/XMLSchema/integer")
-			)
+		var tt2 = new Triple(
+			createURI("https://twitter.com/ijmad9x"),
+			createURI("http://xmlns.com/foaf/0.1/age"),
+			createLiteralNode("35", null, "http://www.w3.org/2001/XMLSchema/integer")
 		);
 		
 		// check key is not returned when searching for wrong things
@@ -69,12 +61,10 @@ public class MemKeyStoreTest {
 		
 		System.out.println("----------------------------------------");
 		
-		var tt3 = TriTuple.from(
-			new Triple(
-				createURI("https://twitter.com/ijmad8x"),
-				createURI("http://xmlns.com/foaf/0.1/name"),
-				Node.ANY
-			)
+		var tt3 = new Triple(
+			createURI("https://twitter.com/ijmad8x"),
+			createURI("http://xmlns.com/foaf/0.1/name"),
+			Node.ANY
 		);
 		
 		// check narrower but partial searches
@@ -85,12 +75,10 @@ public class MemKeyStoreTest {
 		
 		System.out.println("----------------------------------------");
 		
-		var tt4 = TriTuple.from(
-			new Triple(
-				createURI("https://twitter.com/ijmad8x"),
-				Node.ANY,
-				Node.ANY
-			)
+		var tt4 = new Triple(
+			createURI("https://twitter.com/ijmad8x"),
+			Node.ANY,
+			Node.ANY
 		);
 		
 		store.knownContainerCreators(tt4).forEach(r -> {

@@ -6,12 +6,12 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+import org.apache.jena.graph.Triple;
 import org.apache.log4j.Logger;
 
 import com.goodforgoodbusiness.endpoint.crypto.key.EncodeableSecretKey;
 import com.goodforgoodbusiness.model.Pointer;
 import com.goodforgoodbusiness.model.StorableContainer;
-import com.goodforgoodbusiness.model.TriTuple;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 
@@ -37,7 +37,7 @@ public class DHTSearch {
 	/**
 	 * Search the warp + weft for a triple pattern
 	 */
-	public void search(TriTuple tuple, Future<Stream<StorableContainer>> future) {
+	public void search(Triple tuple, Future<Stream<StorableContainer>> future) {
 		if (log.isDebugEnabled()) {
 			log.debug("Searching DHT for " + tuple);
 		}

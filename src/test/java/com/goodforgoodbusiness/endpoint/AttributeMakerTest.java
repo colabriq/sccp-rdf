@@ -12,7 +12,6 @@ import org.apache.jena.graph.Triple;
 
 import com.goodforgoodbusiness.endpoint.graph.containerized.ContainerAttributes;
 import com.goodforgoodbusiness.kpabe.KPABEKeyManager;
-import com.goodforgoodbusiness.model.TriTuple;
 
 public class AttributeMakerTest {
 	public static void main(String[] args) throws Exception {
@@ -21,20 +20,16 @@ public class AttributeMakerTest {
 		String attributes = ContainerAttributes.forPublish(
 			keys.getPublic(),
 			Stream.of(
-				TriTuple.from(
-					new Triple(
-						createURI("https://twitter.com/ijmad8x"),
-						createURI("http://xmlns.com/foaf/0.1/name"),
-						createLiteralNode("Ian Maddison", null, "http://www.w3.org/2001/XMLSchema/string")
-					)
+				new Triple(
+					createURI("https://twitter.com/ijmad8x"),
+					createURI("http://xmlns.com/foaf/0.1/name"),
+					createLiteralNode("Ian Maddison", null, "http://www.w3.org/2001/XMLSchema/string")					
 				),
 				
-				TriTuple.from(
-					new Triple(
-						createURI("https://twitter.com/ijmad8x"),
-						createURI("http://xmlns.com/foaf/0.1/age"),
-						createLiteralNode("35", null, "http://www.w3.org/2001/XMLSchema/integer")
-					)
+				new Triple(
+					createURI("https://twitter.com/ijmad8x"),
+					createURI("http://xmlns.com/foaf/0.1/age"),
+					createLiteralNode("35", null, "http://www.w3.org/2001/XMLSchema/integer")
 				)
 			)
 		);
@@ -43,12 +38,10 @@ public class AttributeMakerTest {
 		
 		var share1 = ContainerAttributes.forShare(
 			keys.getPublic(),
-			TriTuple.from(
-				new Triple(
-					createURI("https://twitter.com/ijmad8x"),
-					createURI("http://xmlns.com/foaf/0.1/name"),
-					createLiteralNode("Ian Maddison", null, "http://www.w3.org/2001/XMLSchema/string")
-				)
+			new Triple(
+				createURI("https://twitter.com/ijmad8x"),
+				createURI("http://xmlns.com/foaf/0.1/name"),
+				createLiteralNode("Ian Maddison", null, "http://www.w3.org/2001/XMLSchema/string")
 			), 
 			Optional.empty(), 
 			Optional.empty()
@@ -58,12 +51,10 @@ public class AttributeMakerTest {
 		
 		var share2 = ContainerAttributes.forShare(
 			keys.getPublic(),
-			TriTuple.from(
-				new Triple(
-					createURI("https://twitter.com/ijmad8x"),
-					createURI("http://xmlns.com/foaf/0.1/name"),
-					Node.ANY
-				)
+			new Triple(
+				createURI("https://twitter.com/ijmad8x"),
+				createURI("http://xmlns.com/foaf/0.1/name"),
+				Node.ANY
 			), 
 			Optional.empty(), 
 			Optional.empty()
@@ -73,12 +64,10 @@ public class AttributeMakerTest {
 		
 		var share3 = ContainerAttributes.forShare(
 			keys.getPublic(),
-			TriTuple.from(
-				new Triple(
-					createURI("https://twitter.com/ijmad8x"),
-					createURI("http://xmlns.com/foaf/0.1/name"),
-					Node.ANY
-				)
+			new Triple(
+				createURI("https://twitter.com/ijmad8x"),
+				createURI("http://xmlns.com/foaf/0.1/name"),
+				Node.ANY
 			), 
 			Optional.of(ZonedDateTime.now()), 
 			Optional.of(ZonedDateTime.now().plusDays(1))

@@ -8,10 +8,9 @@ import com.goodforgoodbusiness.endpoint.crypto.EncryptionException;
 import com.goodforgoodbusiness.endpoint.graph.containerized.ContainerAttributes;
 import com.goodforgoodbusiness.endpoint.graph.containerized.ContainerPatterns;
 import com.goodforgoodbusiness.endpoint.storage.ShareManager;
-import com.goodforgoodbusiness.endpoint.storage.TripleContexts;
 import com.goodforgoodbusiness.endpoint.storage.TripleContext.Type;
+import com.goodforgoodbusiness.endpoint.storage.TripleContexts;
 import com.goodforgoodbusiness.model.StorableContainer;
-import com.goodforgoodbusiness.model.TriTuple;
 import com.google.inject.Inject;
 
 import io.vertx.core.CompositeFuture;
@@ -63,15 +62,12 @@ public class DHT {
 					var key = weftPublishResult.result().getKey();
 					
 					// pointer should be encrypted with _all_ the possible patterns + other attributes
-					var attributes = ContainerAttributes.forPublish(
-						keyManager.getCreatorKey(),
-						container.getTriples().map(t -> TriTuple.from(t))
-					);
+					var attributes = ContainerAttributes.forPublish(keyManager.getCreatorKey(), container.getTriples());
 						
 					// patterns to publish are all possible triple combinations
 					// create + publish a pointer for each generated pattern
 					var patterns = container.getTriples()
-						.flatMap(t -> ContainerPatterns.forPublish(keyManager, TriTuple.from(t)))
+						.flatMap(t -> ContainerPatterns.forPublish(keyManager, t))
 					;
 					
 					// async publish, collect futures

@@ -1,5 +1,6 @@
 package com.goodforgoodbusiness.endpoint.graph.containerized;
 
+import static com.goodforgoodbusiness.shared.TripleUtil.isConcrete;
 import static java.time.ZonedDateTime.now;
 import static java.util.stream.Collectors.toList;
 
@@ -8,14 +9,16 @@ import java.util.Optional;
 import java.util.stream.Stream;
 
 import org.apache.commons.lang.StringUtils;
+import org.apache.jena.graph.Triple;
 import org.apache.log4j.Logger;
 
 import com.goodforgoodbusiness.kpabe.key.KPABEPublicKey;
-import com.goodforgoodbusiness.model.TriTuple;
 import com.goodforgoodbusiness.shared.Rounds;
+import com.goodforgoodbusiness.shared.TripleUtil;
 import com.goodforgoodbusiness.shared.encode.CBOR;
 import com.goodforgoodbusiness.shared.encode.Hash;
 import com.goodforgoodbusiness.shared.encode.Hex;
+import com.goodforgoodbusiness.shared.encode.RDFBinary;
 import com.google.inject.Singleton;
 
 /**
@@ -27,13 +30,8 @@ public final class ContainerAttributes {
 	
 	private static final String PREFIX = "a";
 	
-	private static String hash(KPABEPublicKey key, TriTuple tt) {
-		var cbor = CBOR.forObject(new Object [] { 
-			tt.getSubject().orElse(null),
-			tt.getPredicate().orElse(null),
-			tt.getObject().orElse(null) 
-		});
-		
+	private static String hash(KPABEPublicKey key, Triple tt) {
+		var cbor = CBOR.forObject(RDFBinary.encodeTriple(tt));
 		return PREFIX + Hex.encode(Rounds.apply(Hash::sha512, cbor, 3)); // three rounds
 	}
 	
@@ -45,12 +43,12 @@ public final class ContainerAttributes {
 	 * 
 	 * Put a prefix on each attribute to avoid issues with OpenABE (which doesn't like attributes beginning with numbers).
 	 */
-	public static String forPublish(KPABEPublicKey key, Stream<TriTuple> tuples) {
+	public static String forPublish(KPABEPublicKey key, Stream<Triple> tuples) {
 		var attributeList = tuples
 			.parallel()
-			.flatMap(TriTuple::matchingCombinations)
+			.flatMap(TripleUtil::matchingCombinations)
 			// for DHT publish, tuple pattern must have either defined subject or defined object
-			.filter(tt -> tt.getSubject().isPresent() || tt.getObject().isPresent())
+			.filter(tt -> isConcrete(tt.getSubject()) || isConcrete(tt.getObject()))
 			.map(tt -> hash(key, tt))
 			.collect(toList())
 		;
@@ -69,10 +67,10 @@ public final class ContainerAttributes {
 		return attributes;
 	}
 	
-	public static String forShare(KPABEPublicKey key, TriTuple tuple, Optional<ZonedDateTime> start, Optional<ZonedDateTime> end) {
+	public static String forShare(KPABEPublicKey key, Triple tuple, Optional<ZonedDateTime> start, Optional<ZonedDateTime> end) {
 		var pattern = "";
 		
-		if (tuple.getSubject().isPresent() || tuple.getPredicate().isPresent() || tuple.getObject().isPresent()) {
+		if (isConcrete(tuple.getSubject()) || isConcrete(tuple.getPredicate()) || isConcrete(tuple.getObject())) {
 			pattern += hash(key, tuple);
 		}
 		else {

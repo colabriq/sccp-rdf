@@ -1,11 +1,13 @@
 package com.goodforgoodbusiness.endpoint.dht;
 
 import static com.goodforgoodbusiness.shared.encode.Hash.sha512;
+import static org.apache.jena.graph.NodeFactory.createURI;
 
 import java.util.Arrays;
 import java.util.List;
 import java.util.Random;
-import java.util.stream.Stream;
+
+import org.apache.jena.graph.Triple;
 
 import com.goodforgoodbusiness.endpoint.crypto.SymmetricEncryption;
 import com.goodforgoodbusiness.endpoint.graph.containerized.ContainerAttributes;
@@ -14,7 +16,6 @@ import com.goodforgoodbusiness.endpoint.storage.ShareManager;
 import com.goodforgoodbusiness.kpabe.KPABEEncryption;
 import com.goodforgoodbusiness.kpabe.KPABEKeyManager;
 import com.goodforgoodbusiness.model.Pointer;
-import com.goodforgoodbusiness.model.TriTuple;
 import com.goodforgoodbusiness.shared.encode.CBOR;
 import com.goodforgoodbusiness.shared.encode.Hex;
 import com.goodforgoodbusiness.shared.encode.JSON;
@@ -35,10 +36,10 @@ public class PointerTest {
 		var keys = KPABEKeyManager.newKeys();
 		
 		var tts = List.of(
-			TriTuple.from("A", "H", "I"),
-			TriTuple.from("B", "G", "J"),
-			TriTuple.from("C", "F", "K"),
-			TriTuple.from("D", "E", "L")
+			new Triple(createURI("A"), createURI("H"), createURI("I")),
+			new Triple(createURI("B"), createURI("G"), createURI("J")),
+			new Triple(createURI("C"), createURI("F"), createURI("K")),
+			new Triple(createURI("D"), createURI("E"), createURI("L"))
 		);
 		
 		var attributes = ContainerAttributes.forPublish(keys.getPublic(), tts.stream());		
@@ -53,7 +54,7 @@ public class PointerTest {
 		
 		tts.stream().forEach(tt -> {
 			ContainerPatterns.forPublish(shareManager, tt).forEach(pattern -> {
-				System.out.println(pattern);
+				System.out.println("Pattern: " + pattern);
 			});;
 		});
 	}

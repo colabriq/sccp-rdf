@@ -3,6 +3,8 @@ package com.goodforgoodbusiness.endpoint.storage;
 import java.time.ZonedDateTime;
 import java.util.Optional;
 
+import org.apache.jena.graph.Triple;
+
 import com.goodforgoodbusiness.endpoint.crypto.key.EncodeableShareKey;
 import com.goodforgoodbusiness.endpoint.graph.containerized.ContainerAttributes;
 import com.goodforgoodbusiness.kpabe.KPABEEncryption;
@@ -11,7 +13,6 @@ import com.goodforgoodbusiness.kpabe.KPABEKeyManager;
 import com.goodforgoodbusiness.kpabe.key.KPABEKeyPair;
 import com.goodforgoodbusiness.kpabe.key.KPABEPublicKey;
 import com.goodforgoodbusiness.kpabe.key.KPABESecretKey;
-import com.goodforgoodbusiness.model.TriTuple;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import com.google.inject.name.Named;
@@ -51,7 +52,7 @@ public class ShareManager {
 	 * Create a share key.
 	 * beg/end may be null for no enforced limits on date/time.
 	 */
-	public EncodeableShareKey newShareKey(TriTuple pattern, Optional<ZonedDateTime> start, Optional<ZonedDateTime> end)
+	public EncodeableShareKey newShareKey(Triple pattern, Optional<ZonedDateTime> start, Optional<ZonedDateTime> end)
 		throws KPABEException {
 		
 		// XXX: will need to work out what key was in use during the time range?
