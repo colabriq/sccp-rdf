@@ -15,7 +15,6 @@ import org.apache.jena.graph.Triple;
 import com.goodforgoodbusiness.endpoint.crypto.key.EncodeableShareKey;
 import com.goodforgoodbusiness.endpoint.dht.keys.ShareKeyStore;
 import com.goodforgoodbusiness.kpabe.key.KPABEPublicKey;
-import com.goodforgoodbusiness.shared.TripleUtil;
 import com.goodforgoodbusiness.shared.encode.JSON;
 import com.google.inject.Singleton;
 

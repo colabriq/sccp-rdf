@@ -16,6 +16,7 @@ import com.goodforgoodbusiness.endpoint.crypto.key.EncodeableSecretKey;
 import com.goodforgoodbusiness.endpoint.crypto.key.EncodeableShareKey;
 import com.goodforgoodbusiness.endpoint.dht.backend.DHTBackend;
 import com.goodforgoodbusiness.endpoint.dht.keys.ShareKeyStore;
+import com.goodforgoodbusiness.endpoint.dht.keys.ShareKeyStoreException;
 import com.goodforgoodbusiness.endpoint.graph.containerized.ContainerPatterns;
 import com.goodforgoodbusiness.endpoint.storage.ShareManager;
 import com.goodforgoodbusiness.kpabe.KPABEDecryption;
@@ -111,17 +112,25 @@ public class DHTWarpDriver {
 		// (possibly more than one) and fetch containers for each of them from the DHT
 		
 		@SuppressWarnings("rawtypes") // because CompositeFuture isn't genericised properly
-		List<Future> creators = keyStore
-			.knownContainerCreators(tuple)
-			.distinct()
-			.map(creator -> {
-				// kick off a search per creator
-				var searchFuture = Future.<Stream<Pointer>>future();
-				search(creator, tuple, searchFuture);
-				return searchFuture;
-			})
-			.collect(Collectors.toList())
-		;
+		List<Future> creators;
+		
+		try {
+			creators = keyStore
+				.knownContainerCreators(tuple)
+				.distinct()
+				.map(creator -> {
+					// kick off a search per creator
+					var searchFuture = Future.<Stream<Pointer>>future();
+					search(creator, tuple, searchFuture);
+					return searchFuture;
+				})
+				.collect(Collectors.toList())
+			;
+		}
+		catch (ShareKeyStoreException e) {
+			future.fail(e);
+			return;
+		}
 		
 		if (creators.isEmpty()) {
 			log.info("No known creators found for tuple");
@@ -181,8 +190,8 @@ public class DHTWarpDriver {
 	private Optional<Pointer> decrypt(KPABEPublicKey creator, Triple pattern, byte[] data) {
 		log.info("Got data for " + pattern + " from " + creator.toString().substring(0, 10) + "...");
 		
-		return
-			keyStore.keysForDecrypt(creator, pattern) // XXX think about expiry?
+		try {
+			return keyStore.keysForDecrypt(creator, pattern) // XXX think about expiry?
 				.parallel()
 				.map(EncodeableShareKey::toKeyPair)
 				.map(keyPair -> {
@@ -207,5 +216,10 @@ public class DHTWarpDriver {
 				.findFirst()
 				.map(json -> JSON.decode(json, Pointer.class))
 			;
+		}
+		catch (ShareKeyStoreException e) {
+			log.error(e);
+			return Optional.empty();
+		}
 	}
 }

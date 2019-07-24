@@ -51,11 +51,12 @@ public class TripleContextStore {
 			var cfh = manager.getOrCreateColFH(CONTEXT_CFH);
 			
 			// contexts are stored with the encoded triple as a prefix and the ID of the context (random)
-			try (var it = new PrefixIterator(manager.newIterator(cfh), enc)) {
-				var ctxSet = new HashSet<TripleContext>();
-				it.forEachRemaining(row -> ctxSet.add(decodeContext(row)));
-				return ctxSet;
-			}
+			var it = new PrefixIterator(manager.newIterator(cfh), enc);
+			var ctxSet = new HashSet<TripleContext>();
+			it.forEachRemaining(row -> ctxSet.add(decodeContext(row)));
+			it.close();
+			
+			return ctxSet;
 		}
 		catch (RocksDBException e) {
 			throw new RuntimeException(e);
