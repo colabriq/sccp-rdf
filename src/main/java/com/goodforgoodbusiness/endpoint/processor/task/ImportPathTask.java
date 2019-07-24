@@ -60,6 +60,7 @@ public class ImportPathTask implements Runnable, PrioritizedTask {
 			future.complete(new ModelTaskResult(sizeAfter - sizeBefore, 0, sizeAfter));
 		}
 		catch (Exception e) {
+			log.error("Import error", e);
 			future.fail(e);
 		}
 	}

@@ -64,29 +64,34 @@ public class DHTSearch {
 							.collect(Collectors.toList())
 					;
 					
-					// wait for futures, process results
-					CompositeFuture.all(fetchFutures).setHandler(fetchResults -> {
-						var containers = new ArrayList<StorableContainer>(fetchFutures.size());
-						
-						if (fetchResults.succeeded()) {
-							for (var x = 0; x < fetchResults.result().size(); x++) {
-								Optional<StorableContainer> container = fetchResults.result().resultAt(x);
-								if (container.isPresent()) {
-									containers.add(container.get());
+					if (fetchFutures.isEmpty()) {
+						future.complete(Stream.empty());
+					}
+					else {
+						// wait for futures, process results
+						CompositeFuture.all(fetchFutures).setHandler(fetchResults -> {
+							var containers = new ArrayList<StorableContainer>(fetchFutures.size());
+							
+							if (fetchResults.succeeded()) {
+								for (var x = 0; x < fetchResults.result().size(); x++) {
+									Optional<StorableContainer> container = fetchResults.result().resultAt(x);
+									if (container.isPresent()) {
+										containers.add(container.get());
+									}
 								}
+								
+								if (log.isDebugEnabled()) {
+									log.debug("Containers found = " + containers.size());
+								}
+								
+								// return containers we've found
+								future.complete(containers.parallelStream());
 							}
-							
-							if (log.isDebugEnabled()) {
-								log.debug("Containers found = " + containers.size());
+							else {
+								future.fail(fetchResults.cause());
 							}
-							
-							// return containers we've found
-							future.complete(containers.parallelStream());
-						}
-						else {
-							future.fail(fetchResults.cause());
-						}
-					});
+						});
+					}
 				}
 				else {
 					future.fail(warpResults.cause());

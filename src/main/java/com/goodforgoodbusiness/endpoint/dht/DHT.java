@@ -84,16 +84,21 @@ public class DHT {
 						wpfs.add(wpf);
 					});
 					
-					// success iff they all succeed
-					CompositeFuture.all(wpfs)
-						.setHandler(cfResult -> {
-							if (cfResult.succeeded()) {
-								future.complete();
-							}
-							else {
-								future.fail(cfResult.cause());
-							}
-						});
+					if (wpfs.isEmpty()) {
+						future.complete();
+					}
+					else {
+						// success iff they all succeed
+						CompositeFuture.all(wpfs)
+							.setHandler(cfResult -> {
+								if (cfResult.succeeded()) {
+									future.complete();
+								}
+								else {
+									future.fail(cfResult.cause());
+								}
+							});
+					}
 				}
 				else {
 					future.fail(weftPublishResult.cause());

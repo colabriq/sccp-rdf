@@ -1,5 +1,6 @@
 package com.goodforgoodbusiness.endpoint.graph.dht;
 
+import com.goodforgoodbusiness.endpoint.dht.DHTSearch;
 import com.goodforgoodbusiness.endpoint.graph.base.BaseGraph;
 import com.goodforgoodbusiness.endpoint.graph.containerized.ContainerCollector;
 import com.goodforgoodbusiness.endpoint.graph.containerized.ContainerTripleStore;
@@ -16,11 +17,12 @@ import com.google.inject.Singleton;
 @Singleton
 public class DHTPersistentGraph extends BaseGraph<DHTTripleStore> {
 	@Inject
-	public DHTPersistentGraph(ContainerCollector collector, ContainerListenerManager glManager, TripleContexts tctx, RocksManager dbManager) {
+	public DHTPersistentGraph(DHTSearch search, ContainerCollector cc, ContainerListenerManager lm, TripleContexts tctx, RocksManager db) {
 		super(new DHTTripleStore(
+			search,
 			tctx, 
-			glManager,
-			new ContainerTripleStore<>(new RocksTripleStore(dbManager), tctx, collector)
+			lm,
+			new ContainerTripleStore<>(new RocksTripleStore(db), tctx, cc)
 		));
 	}
 	

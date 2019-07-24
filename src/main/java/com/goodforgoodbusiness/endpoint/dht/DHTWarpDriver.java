@@ -123,23 +123,29 @@ public class DHTWarpDriver {
 			.collect(Collectors.toList())
 		;
 		
-		// wait for all futures to complete, then return
-		CompositeFuture.all(creators).setHandler(results -> {
-			if (results.succeeded()) {
-				// create a concatenated stream
-				Stream<Pointer> stream = Stream.empty();
-				
-				for (var x = 0; x < results.result().size(); x++) {
-					results.result().resultAt(x);
-					stream = Stream.concat(results.result().resultAt(x), stream);
+		if (creators.isEmpty()) {
+			log.info("No known creators found for tuple");
+			future.complete(Stream.<Pointer>empty());
+		}
+		else {
+			// wait for all futures to complete, then return
+			CompositeFuture.all(creators).setHandler(results -> {
+				if (results.succeeded()) {
+					// create a concatenated stream
+					Stream<Pointer> stream = Stream.empty();
+					
+					for (var x = 0; x < results.result().size(); x++) {
+						results.result().resultAt(x);
+						stream = Stream.concat(results.result().resultAt(x), stream);
+					}
+					
+					future.complete(stream);
 				}
-				
-				future.complete(stream);
-			}
-			else {
-				future.fail(results.cause());
-			}
-		});
+				else {
+					future.fail(results.cause());
+				}
+			});
+		}
 	}
 	
 	/**

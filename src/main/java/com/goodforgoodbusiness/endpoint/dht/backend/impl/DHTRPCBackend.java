@@ -4,8 +4,8 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.Objects;
 import java.util.Optional;
-import java.util.concurrent.SynchronousQueue;
-import java.util.concurrent.atomic.AtomicReference;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ExecutionException;
 import java.util.stream.Stream;
 
 import org.apache.log4j.Logger;
@@ -55,7 +55,7 @@ public class DHTRPCBackend implements DHTBackend {
 	
 	@Override
 	public void publishPointer(String pattern, byte[] data, Future<Void> future) {
-		var blocker = new SynchronousQueue<AsyncResult<RPCResponse<PointerPublishResponse>>>();
+		var blocker = new CompletableFuture<AsyncResult<RPCResponse<PointerPublishResponse>>>();
 		
 		client.send(
 			PointerPublishRequest.newBuilder()
@@ -66,22 +66,22 @@ public class DHTRPCBackend implements DHTBackend {
 			new RPCSingleResponseHandler<>(
 				vertx,
 				PointerPublishResponse.class,
-				Future.<RPCResponse<PointerPublishResponse>>future().setHandler(result -> blocker.offer(result))
+				Future.<RPCResponse<PointerPublishResponse>>future().setHandler(result -> blocker.complete(result))
 			)
 		);
 		
 		try {
-			blocker.take();
+			blocker.get();
 			future.complete();
 		}
-		catch (InterruptedException e) {
+		catch (ExecutionException | InterruptedException e) {
 			future.fail(e);
 		}
 	}
 
 	@Override
 	public void searchForPointers(String pattern, Future<Stream<byte[]>> future) {
-		var blocker = new AtomicReference<AsyncResult<Stream<RPCResponse<PointerSearchResponse>>>>();
+		var blocker = new CompletableFuture<AsyncResult<Stream<RPCResponse<PointerSearchResponse>>>>();
 		
 		client.send(
 			PointerSearchRequest.newBuilder()
@@ -91,48 +91,35 @@ public class DHTRPCBackend implements DHTBackend {
 			new RPCStreamResponseHandler<>(
 				vertx,
 				PointerSearchResponse.class,
-				Future.<Stream<RPCResponse<PointerSearchResponse>>>future().setHandler(result -> {
-					synchronized (blocker) {
-						blocker.set(result);
-						blocker.notifyAll();
-					}
-				})
+				Future.<Stream<RPCResponse<PointerSearchResponse>>>future().setHandler(result -> blocker.complete(result))
 			)
 		);
 		
-		synchronized (blocker) {
-			while (blocker.get() == null) {
-				try {
-					blocker.wait();
-				}
-				catch (InterruptedException e) {
-					future.fail(e);
-				}
+		try {
+			var result = blocker.get();
+			if (result.succeeded()) {
+				future.complete(result.result().map(rr -> {
+					try {
+						return rr.get().getResponse().toByteArray();
+					}
+					catch (RPCClientException e) {
+						log.error(e);
+						return null;
+					}
+				}).filter(Objects::nonNull));
+			}
+			else {
+				future.fail(result.cause());
 			}
 		}
-		
-		var result = blocker.get();
-		
-		if (result.succeeded()) {
-			future.complete(result.result().map(rr -> {
-				try {
-					return rr.get().getResponse().toByteArray();
-				}
-				catch (RPCClientException e) {
-					log.error(e);
-					return null;
-				}
-			}).filter(Objects::nonNull));
-		}
-		else {
-			future.fail(result.cause());
-		}
-		
+		catch (ExecutionException | InterruptedException e) {
+			future.fail(e);
+		}		
 	}
 
 	@Override
 	public void publishContainer(String id, byte[] data, Future<String> future) {
-		var blocker = new SynchronousQueue<AsyncResult<RPCResponse<ContainerPublishResponse>>>();
+		var blocker = new CompletableFuture<AsyncResult<RPCResponse<ContainerPublishResponse>>>();
 		
 		client.send(
 			ContainerPublishRequest.newBuilder()
@@ -143,12 +130,12 @@ public class DHTRPCBackend implements DHTBackend {
 			new RPCSingleResponseHandler<>(
 				vertx,
 				ContainerPublishResponse.class,
-				Future.<RPCResponse<ContainerPublishResponse>>future().setHandler(result -> blocker.offer(result))
+				Future.<RPCResponse<ContainerPublishResponse>>future().setHandler(result -> blocker.complete(result))
 			)
 		);
 
 		try {
-			var result = blocker.take();
+			var result = blocker.get();
 			if (result.succeeded()) {
 				future.complete(result.result().get().getLocation());
 			}
@@ -156,17 +143,14 @@ public class DHTRPCBackend implements DHTBackend {
 				future.fail(result.cause());
 			}
 		}
-		catch (RPCClientException e) {
-			future.fail(e);
-		}
-		catch (InterruptedException e) {
+		catch (RPCClientException | ExecutionException | InterruptedException e) {
 			future.fail(e);
 		}
 	}
 
 	@Override
 	public void searchForContainer(String id, Future<Stream<String>> future) {
-		var blocker = new SynchronousQueue<AsyncResult<Stream<RPCResponse<ContainerSearchResponse>>>>();
+		var blocker = new CompletableFuture<AsyncResult<Stream<RPCResponse<ContainerSearchResponse>>>>();
 		
 		client.send(
 			ContainerSearchRequest.newBuilder()
@@ -176,12 +160,12 @@ public class DHTRPCBackend implements DHTBackend {
 			new RPCStreamResponseHandler<>(
 				vertx,
 				ContainerSearchResponse.class,
-				Future.<Stream<RPCResponse<ContainerSearchResponse>>>future().setHandler(result -> blocker.offer(result))
+				Future.<Stream<RPCResponse<ContainerSearchResponse>>>future().setHandler(result -> blocker.complete(result))
 			)
 		);
 		
 		try {
-			var result = blocker.take();
+			var result = blocker.get();
 			if (result.succeeded()) {
 				future.complete(result.result().map(rr -> {
 					try {
@@ -197,14 +181,14 @@ public class DHTRPCBackend implements DHTBackend {
 				future.fail(result.cause());
 			}
 		}
-		catch (InterruptedException e) {
+		catch (ExecutionException | InterruptedException e) {
 			future.fail(e);
 		}
 	}
 
 	@Override
 	public void fetchContainer(String location, Future<Optional<byte[]>> future) {
-		var blocker = new SynchronousQueue<AsyncResult<RPCResponse<ContainerFetchResponse>>>();
+		var blocker = new CompletableFuture<AsyncResult<RPCResponse<ContainerFetchResponse>>>();
 		
 		client.send(
 			ContainerFetchRequest.newBuilder()
@@ -214,12 +198,12 @@ public class DHTRPCBackend implements DHTBackend {
 			new RPCSingleResponseHandler<>(
 				vertx,
 				ContainerFetchResponse.class,
-				Future.<RPCResponse<ContainerFetchResponse>>future().setHandler(result -> blocker.offer(result))
+				Future.<RPCResponse<ContainerFetchResponse>>future().setHandler(result -> blocker.complete(result))
 			)
 		);
 		
 		try {
-			var result = blocker.take();
+			var result = blocker.get();
 			if (result.succeeded()) {
 				future.complete(Optional.of(result.result().get().getData().toByteArray()));
 			}
@@ -227,15 +211,9 @@ public class DHTRPCBackend implements DHTBackend {
 				future.fail(result.cause());
 			}
 		}
-		catch (RPCClientException e) {
+		catch (RPCClientException | ExecutionException | InterruptedException e) {
 			future.fail(e);
 		}
-		catch (InterruptedException e) {
-			future.fail(e);
-		}
-	}
-
-	public void close() {
 	}
 }
 
