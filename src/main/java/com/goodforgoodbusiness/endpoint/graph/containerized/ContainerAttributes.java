@@ -12,13 +12,13 @@ import org.apache.commons.lang.StringUtils;
 import org.apache.jena.graph.Triple;
 import org.apache.log4j.Logger;
 
+import com.goodforgoodbusiness.endpoint.dht.share.ShareRequest;
 import com.goodforgoodbusiness.kpabe.key.KPABEPublicKey;
 import com.goodforgoodbusiness.shared.Rounds;
 import com.goodforgoodbusiness.shared.TripleUtil;
 import com.goodforgoodbusiness.shared.encode.CBOR;
 import com.goodforgoodbusiness.shared.encode.Hash;
 import com.goodforgoodbusiness.shared.encode.Hex;
-import com.goodforgoodbusiness.shared.encode.RDFBinary;
 import com.google.inject.Singleton;
 
 /**
@@ -30,8 +30,13 @@ public final class ContainerAttributes {
 	
 	private static final String PREFIX = "a";
 	
-	private static String hash(KPABEPublicKey key, Triple tt) {
-		var cbor = CBOR.forObject(RDFBinary.encodeTriple(tt));
+	private static String hash(KPABEPublicKey key, Optional<String> subject, Optional<String> predicate, Optional<String> object) {
+		var cbor = CBOR.forObject(new Object [] { 
+			subject.orElse(null),
+			predicate.orElse(null),
+			object.orElse(null) 
+		});
+		
 		return PREFIX + Hex.encode(Rounds.apply(Hash::sha512, cbor, 3)); // three rounds
 	}
 	
@@ -49,7 +54,12 @@ public final class ContainerAttributes {
 			.flatMap(TripleUtil::matchingCombinations)
 			// for DHT publish, tuple pattern must have either defined subject or defined object
 			.filter(tt -> isConcrete(tt.getSubject()) || isConcrete(tt.getObject()))
-			.map(tt -> hash(key, tt))
+			.map(tt -> hash(
+				key, 
+				TripleUtil.valueOf(tt.getSubject()),
+				TripleUtil.valueOf(tt.getPredicate()),
+				TripleUtil.valueOf(tt.getObject())
+			))
 			.collect(toList())
 		;
 		
@@ -67,22 +77,30 @@ public final class ContainerAttributes {
 		return attributes;
 	}
 	
-	public static String forShare(KPABEPublicKey key, Triple tuple, Optional<ZonedDateTime> start, Optional<ZonedDateTime> end) {
+	public static String forShare(KPABEPublicKey key, ShareRequest request) {
 		var pattern = "";
 		
-		if (isConcrete(tuple.getSubject()) || isConcrete(tuple.getPredicate()) || isConcrete(tuple.getObject())) {
-			pattern += hash(key, tuple);
+		if (request.getSubject().isPresent() || request.getPredicate().isPresent() || request.getObject().isPresent()) {
+			pattern += hash(key, request.getSubject(), request.getPredicate(), request.getObject());
 		}
 		else {
 			pattern += "all";
 		}
 		
-		if (start.isPresent()) {
-			pattern += start.map(ContainerAttributes::toTimeRepresentation).map(epochsec -> " AND time >= " + epochsec).get();
+		if (request.getStart().isPresent()) {
+			pattern += request.getStart()
+				.map(ContainerAttributes::toTimeRepresentation)
+				.map(epochsec -> " AND time >= " + epochsec)
+				.get()
+			;
 		}
 		
-		if (end.isPresent()) {
-			pattern += end.map(ContainerAttributes::toTimeRepresentation).map(epochsec -> " AND time < " + epochsec).get();
+		if (request.getEnd().isPresent()) {
+			pattern += request.getEnd()
+				.map(ContainerAttributes::toTimeRepresentation)
+				.map(epochsec -> " AND time < " + epochsec)
+				.get()
+			;
 		}
 		
 		return pattern;

@@ -4,12 +4,12 @@ import static org.apache.jena.graph.NodeFactory.createURI;
 import static org.apache.jena.sparql.util.NodeFactoryExtra.createLiteralNode;
 
 import java.time.ZonedDateTime;
-import java.util.Optional;
 import java.util.stream.Stream;
 
 import org.apache.jena.graph.Node;
 import org.apache.jena.graph.Triple;
 
+import com.goodforgoodbusiness.endpoint.dht.share.ShareRequest;
 import com.goodforgoodbusiness.endpoint.graph.containerized.ContainerAttributes;
 import com.goodforgoodbusiness.kpabe.KPABEKeyManager;
 
@@ -36,43 +36,45 @@ public class AttributeMakerTest {
 		
 		System.out.println(attributes);
 		
-		var share1 = ContainerAttributes.forShare(
-			keys.getPublic(),
+		var r1 = new ShareRequest();
+		r1.setTriple(
 			new Triple(
 				createURI("https://twitter.com/ijmad8x"),
 				createURI("http://xmlns.com/foaf/0.1/name"),
 				createLiteralNode("Ian Maddison", null, "http://www.w3.org/2001/XMLSchema/string")
-			), 
-			Optional.empty(), 
-			Optional.empty()
+			)
 		);
 		
+		var share1 = ContainerAttributes.forShare(keys.getPublic(), r1);
 		System.out.println(share1);
 		
-		var share2 = ContainerAttributes.forShare(
-			keys.getPublic(),
+		var r2 = new ShareRequest();
+		r2.setTriple(
 			new Triple(
 				createURI("https://twitter.com/ijmad8x"),
 				createURI("http://xmlns.com/foaf/0.1/name"),
 				Node.ANY
-			), 
-			Optional.empty(), 
-			Optional.empty()
+			)
 		);
 		
+		var share2 = ContainerAttributes.forShare(keys.getPublic(), r2);
 		System.out.println(share2);
 		
-		var share3 = ContainerAttributes.forShare(
-			keys.getPublic(),
+		
+		var r3 = new ShareRequest();
+		
+		r3.setTriple(
 			new Triple(
 				createURI("https://twitter.com/ijmad8x"),
 				createURI("http://xmlns.com/foaf/0.1/name"),
 				Node.ANY
-			), 
-			Optional.of(ZonedDateTime.now()), 
-			Optional.of(ZonedDateTime.now().plusDays(1))
+			)
 		);
 		
+		r3.setStart(ZonedDateTime.now());
+		r3.setEnd(ZonedDateTime.now().plusDays(1));
+		
+		var share3 = ContainerAttributes.forShare(keys.getPublic(), r3);
 		System.out.println(share3);
 	}
 }

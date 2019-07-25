@@ -1,4 +1,4 @@
-package com.goodforgoodbusiness.endpoint.dht.keys.impl;
+package com.goodforgoodbusiness.endpoint.dht.share.impl;
 
 import static com.goodforgoodbusiness.shared.TripleUtil.matchingCombinations;
 import static java.util.Collections.emptySet;
@@ -13,7 +13,8 @@ import java.util.stream.Stream;
 import org.apache.jena.graph.Triple;
 
 import com.goodforgoodbusiness.endpoint.crypto.key.EncodeableShareKey;
-import com.goodforgoodbusiness.endpoint.dht.keys.ShareKeyStore;
+import com.goodforgoodbusiness.endpoint.dht.share.ShareKeyStore;
+import com.goodforgoodbusiness.endpoint.dht.share.ShareResponse;
 import com.goodforgoodbusiness.kpabe.key.KPABEPublicKey;
 import com.goodforgoodbusiness.shared.encode.JSON;
 import com.google.inject.Singleton;
@@ -23,13 +24,22 @@ import com.google.inject.Singleton;
  */
 @Singleton
 public class MemKeyStore implements ShareKeyStore {
-	private Map<Triple, Set<String>> sharers = new HashMap<>();
+	private Map<ShareResponse, Set<String>> sharers = new HashMap<>();
 	private Map<KPABEPublicKey, Set<String>> shareKeys = new HashMap<>();
 	
 	@Override
 	public Stream<KPABEPublicKey> knownContainerCreators(Triple pattern) {
 		return matchingCombinations(pattern)
-			.flatMap(tuple -> sharers.getOrDefault(tuple, emptySet()).stream())
+			.map(
+				c -> {
+					return new ShareResponse().setTriple(c);
+				}
+			)
+			.flatMap(
+				sr -> {
+					return sharers.getOrDefault(sr, emptySet()).stream();
+				}
+			)
 			.map(storedKey -> new KPABEPublicKey(storedKey))
 			.collect(toSet())
 			.stream()
@@ -46,11 +56,11 @@ public class MemKeyStore implements ShareKeyStore {
 	}
 	
 	@Override
-	public void saveKey(Triple tuple, EncodeableShareKey shareKey) {
-		sharers.computeIfAbsent(tuple, key -> new HashSet<>());
-		sharers.get(tuple).add(shareKey.getPublic().toString());
+	public void saveKey(ShareResponse request) {
+		sharers.computeIfAbsent(request, key -> new HashSet<>());
+		sharers.get(request).add(request.getKey().getPublic().toString());
 		
-		shareKeys.computeIfAbsent(shareKey.getPublic(), key -> new HashSet<>());
-		shareKeys.get(shareKey.getPublic()).add(JSON.encodeToString(shareKey));
+		shareKeys.computeIfAbsent(request.getKey().getPublic(), key -> new HashSet<>());
+		shareKeys.get(request.getKey().getPublic()).add(JSON.encodeToString(request.getKey()));
 	}
 }

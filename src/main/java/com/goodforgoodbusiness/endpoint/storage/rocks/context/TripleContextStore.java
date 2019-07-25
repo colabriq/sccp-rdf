@@ -52,6 +52,7 @@ public class TripleContextStore {
 			
 			// contexts are stored with the encoded triple as a prefix and the ID of the context (random)
 			var it = new PrefixIterator(manager.newIterator(cfh), enc);
+			
 			var ctxSet = new HashSet<TripleContext>();
 			it.forEachRemaining(row -> ctxSet.add(decodeContext(row)));
 			it.close();

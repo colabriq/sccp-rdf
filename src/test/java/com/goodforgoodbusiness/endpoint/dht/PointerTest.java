@@ -10,9 +10,9 @@ import java.util.Random;
 import org.apache.jena.graph.Triple;
 
 import com.goodforgoodbusiness.endpoint.crypto.SymmetricEncryption;
+import com.goodforgoodbusiness.endpoint.dht.share.ShareManager;
 import com.goodforgoodbusiness.endpoint.graph.containerized.ContainerAttributes;
 import com.goodforgoodbusiness.endpoint.graph.containerized.ContainerPatterns;
-import com.goodforgoodbusiness.endpoint.storage.ShareManager;
 import com.goodforgoodbusiness.kpabe.KPABEEncryption;
 import com.goodforgoodbusiness.kpabe.KPABEKeyManager;
 import com.goodforgoodbusiness.model.Pointer;

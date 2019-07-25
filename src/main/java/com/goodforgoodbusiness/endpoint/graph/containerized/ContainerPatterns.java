@@ -7,7 +7,7 @@ import java.util.stream.Stream;
 
 import org.apache.jena.graph.Triple;
 
-import com.goodforgoodbusiness.endpoint.storage.ShareManager;
+import com.goodforgoodbusiness.endpoint.dht.share.ShareManager;
 import com.goodforgoodbusiness.kpabe.key.KPABEPublicKey;
 import com.goodforgoodbusiness.shared.Rounds;
 import com.goodforgoodbusiness.shared.encode.CBOR;

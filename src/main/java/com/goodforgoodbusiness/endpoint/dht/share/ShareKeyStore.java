@@ -1,4 +1,4 @@
-package com.goodforgoodbusiness.endpoint.dht.keys;
+package com.goodforgoodbusiness.endpoint.dht.share;
 
 import java.util.stream.Stream;
 
@@ -20,6 +20,15 @@ public interface ShareKeyStore {
 
 	/**
 	 * Save a key for future retrieval via the find... methods
+	 * {@link ShareResponse} version.
 	 */
-	public void saveKey(Triple triple, EncodeableShareKey key) throws ShareKeyStoreException;
+	public void saveKey(ShareResponse response) throws ShareKeyStoreException;
+	
+	/**
+	 * Save a key for future retrieval via the find... methods
+	 * {@link Triple} version.
+	 */
+	public default void saveKey(Triple triple, EncodeableShareKey key) throws ShareKeyStoreException {
+		saveKey(new ShareResponse().setTriple(triple).setKey(key));
+	}
 }

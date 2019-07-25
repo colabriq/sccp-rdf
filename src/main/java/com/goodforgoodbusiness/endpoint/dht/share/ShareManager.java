@@ -1,9 +1,4 @@
-package com.goodforgoodbusiness.endpoint.storage;
-
-import java.time.ZonedDateTime;
-import java.util.Optional;
-
-import org.apache.jena.graph.Triple;
+package com.goodforgoodbusiness.endpoint.dht.share;
 
 import com.goodforgoodbusiness.endpoint.crypto.key.EncodeableShareKey;
 import com.goodforgoodbusiness.endpoint.graph.containerized.ContainerAttributes;
@@ -52,16 +47,13 @@ public class ShareManager {
 	 * Create a share key.
 	 * beg/end may be null for no enforced limits on date/time.
 	 */
-	public EncodeableShareKey newShareKey(Triple pattern, Optional<ZonedDateTime> start, Optional<ZonedDateTime> end)
-		throws KPABEException {
-		
+	public ShareResponse newShareKey(ShareRequest request) throws KPABEException {
 		// XXX: will need to work out what key was in use during the time range?
 		var kpabe = KPABEEncryption.getInstance(getCurrentKeys());
 		
-		return new EncodeableShareKey(
-			kpabe.shareKey(
-				ContainerAttributes.forShare(keyPair.getPublic(), pattern, start, end)
-			)
+		return ShareResponse.createFrom(
+			request,
+			new EncodeableShareKey(kpabe.shareKey(ContainerAttributes.forShare(keyPair.getPublic(), request)))
 		);
 	}
 }

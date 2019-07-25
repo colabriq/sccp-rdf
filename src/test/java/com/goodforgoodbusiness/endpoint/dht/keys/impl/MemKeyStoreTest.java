@@ -8,6 +8,7 @@ import org.apache.jena.graph.Node;
 import org.apache.jena.graph.Triple;
 
 import com.goodforgoodbusiness.endpoint.crypto.key.EncodeableShareKey;
+import com.goodforgoodbusiness.endpoint.dht.share.impl.MemKeyStore;
 import com.goodforgoodbusiness.kpabe.KPABEEncryption;
 import com.goodforgoodbusiness.kpabe.KPABEKeyManager;
 
