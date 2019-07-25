@@ -22,6 +22,8 @@ import org.rocksdb.RocksDBException;
 
 import com.goodforgoodbusiness.endpoint.crypto.Identity;
 import com.goodforgoodbusiness.endpoint.dht.DHT;
+import com.goodforgoodbusiness.endpoint.dht.DHTBlacklist;
+import com.goodforgoodbusiness.endpoint.dht.DHTGovernor;
 import com.goodforgoodbusiness.endpoint.dht.DHTWarpDriver;
 import com.goodforgoodbusiness.endpoint.dht.DHTWeftDriver;
 import com.goodforgoodbusiness.endpoint.dht.backend.DHTBackend;
@@ -134,6 +136,8 @@ public class EndpointModule extends AbstractModule {
 			bind(DHT.class);
 			bind(DHTWarpDriver.class);
 			bind(DHTWeftDriver.class);
+			bind(DHTGovernor.class);
+			bind(DHTBlacklist.class);
 			
 			bind(DHTBackend.class).to(DHTRPCBackend.class);
 			bind(WebClient.class).toProvider(DHTRPCWebClientProvider.class); // might want to annotate this.

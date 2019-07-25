@@ -9,7 +9,6 @@ import org.apache.jena.graph.Triple;
 import org.apache.log4j.Logger;
 
 import com.google.inject.Inject;
-import com.google.inject.name.Named;
 
 /**
  * Stops certain problematic searches going to the DHT (for now).
@@ -24,11 +23,8 @@ public class DHTBlacklist {
 		uri -> uri.startsWith("http://www.w3.org/2003/11/swrl")
 	);
 
-	private final boolean allowTestQueries;
-
 	@Inject
-	public DHTBlacklist(@Named("allow.test.queries") boolean allowTestQueries) {
-		this.allowTestQueries = allowTestQueries;
+	public DHTBlacklist() {
 	}
 	
 	/**
@@ -36,19 +32,16 @@ public class DHTBlacklist {
 	 * Return if the blacklist includes these patterns (will not be fetched from the DHT).
 	 * Eventually this should become a properties file or similar.
 	 */
-	public boolean includes(Triple t) {
-		// skip blacklist check in test mode
-		if (!allowTestQueries) {
-			// reasoner makes open predicate queries
-			// for now, suppress these going to the DHT:
-			if (isAny(t.getSubject()) && !isAny(t.getPredicate()) && isAny(t.getObject())) {			
-				if (t.getPredicate().isURI()) {
-					var uri = t.getPredicate().getURI();
-					
-					if (BLACKLIST.stream().map(fn -> fn.apply(uri)).anyMatch(x -> x)) {
-						log.info(uri + " is blacklisted");
-						return true;
-					}
+	public boolean includes(Triple t) {		
+		// reasoner makes open predicate queries
+		// for now, suppress these going to the DHT:
+		if (isAny(t.getSubject()) && !isAny(t.getPredicate()) && isAny(t.getObject())) {			
+			if (t.getPredicate().isURI()) {
+				var uri = t.getPredicate().getURI();
+				
+				if (BLACKLIST.stream().map(fn -> fn.apply(uri)).anyMatch(x -> x)) {
+					log.info(uri + " is blacklisted");
+					return true;
 				}
 			}
 		}
