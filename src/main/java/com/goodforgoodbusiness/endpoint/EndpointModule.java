@@ -53,6 +53,8 @@ import com.goodforgoodbusiness.endpoint.webapp.SparqlTaskLauncher;
 import com.goodforgoodbusiness.endpoint.webapp.UploadHandler;
 import com.goodforgoodbusiness.endpoint.webapp.admin.StopHandler;
 import com.goodforgoodbusiness.endpoint.webapp.dht.DHTTaskLauncher;
+import com.goodforgoodbusiness.endpoint.webapp.share.ShareAcceptHandler;
+import com.goodforgoodbusiness.endpoint.webapp.share.ShareRequestHandler;
 import com.goodforgoodbusiness.rocks.RocksManager;
 import com.goodforgoodbusiness.shared.LogConfigurer;
 import com.goodforgoodbusiness.shared.executor.ExecutorProvider;
@@ -70,6 +72,7 @@ import io.vertx.core.Future;
 import io.vertx.core.Verticle;
 import io.vertx.core.Vertx;
 import io.vertx.ext.web.client.WebClient;
+import io.vertx.ext.web.handler.BodyHandler;
 
 /**
  * Main module for launching the RDF endpoint.
@@ -182,6 +185,8 @@ public class EndpointModule extends AbstractModule {
 		bind(SparqlGetHandler.class);
 		bind(SparqlPostHandler.class);
 		bind(UploadHandler.class);
+		bind(ShareAcceptHandler.class);
+		bind(ShareRequestHandler.class);
 		
 		// configure route mappings
 		// fine to use getProvider here because it won't be called until the injector is created
@@ -192,6 +197,12 @@ public class EndpointModule extends AbstractModule {
 			// body handler that can do file uploads
 			router.post("/upload").handler(createBodyHandler());
 			router.post("/upload").handler(o(injector, UploadHandler.class));
+			
+			router.get ("/share").handler(o(injector, ShareRequestHandler.class));
+			
+			var bh = BodyHandler.create();
+			router.post("/share").handler(bh);
+			router.post("/share").handler(o(injector, ShareAcceptHandler.class));
 			
 			router.post("/admin/stop").handler(new StopHandler(EndpointModule.this));
 		});
