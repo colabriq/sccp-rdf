@@ -1,6 +1,5 @@
 package com.goodforgoodbusiness.endpoint.graph.containerized;
 
-import static com.goodforgoodbusiness.shared.TripleUtil.isConcrete;
 import static java.time.ZonedDateTime.now;
 import static java.util.stream.Collectors.toList;
 
@@ -27,8 +26,9 @@ import com.google.inject.Singleton;
 @Singleton
 public final class ContainerAttributes {
 	private static final Logger log = Logger.getLogger(ContainerAttributes.class);
-	
 	private static final String PREFIX = "a";
+	
+	public static final String SHARE_ALL = "all";
 	
 	private static String hash(KPABEPublicKey key, Optional<String> subject, Optional<String> predicate, Optional<String> object) {
 		var cbor = CBOR.forObject(new Object [] { 
@@ -52,8 +52,6 @@ public final class ContainerAttributes {
 		var attributeList = tuples
 			.parallel()
 			.flatMap(TripleUtil::matchingCombinations)
-			// for DHT publish, tuple pattern must have either defined subject or defined object
-			.filter(tt -> isConcrete(tt.getSubject()) || isConcrete(tt.getObject()))
 			.map(tt -> hash(
 				key, 
 				TripleUtil.valueOf(tt.getSubject()),
@@ -77,33 +75,37 @@ public final class ContainerAttributes {
 		return attributes;
 	}
 	
-	public static String forShare(KPABEPublicKey key, ShareRequest request) {
-		var pattern = "";
+	/**
+	 * Generate a sharing policy matching a {@link ShareRequest}
+	 */
+	public static String forShare(KPABEPublicKey key, ShareRequest req) {
+		var pattern = req.getPattern();
+		var policy = "";
 		
-		if (request.getSubject().isPresent() || request.getPredicate().isPresent() || request.getObject().isPresent()) {
-			pattern += hash(key, request.getSubject(), request.getPredicate(), request.getObject());
+		if (pattern.getSubject().isPresent() || pattern.getPredicate().isPresent() || pattern.getObject().isPresent()) {
+			policy += hash(key, pattern.getSubject(), pattern.getPredicate(), pattern.getObject());
 		}
 		else {
-			pattern += "all";
+			policy += SHARE_ALL;
 		}
 		
-		if (request.getStart().isPresent()) {
-			pattern += request.getStart()
+		if (req.getStart().isPresent()) {
+			policy += req.getStart()
 				.map(ContainerAttributes::toTimeRepresentation)
 				.map(epochsec -> " AND time >= " + epochsec)
 				.get()
 			;
 		}
 		
-		if (request.getEnd().isPresent()) {
-			pattern += request.getEnd()
+		if (req.getEnd().isPresent()) {
+			policy += req.getEnd()
 				.map(ContainerAttributes::toTimeRepresentation)
 				.map(epochsec -> " AND time < " + epochsec)
 				.get()
 			;
 		}
 		
-		return pattern;
+		return policy;
 	}
 	
 	private static long toTimeRepresentation(ZonedDateTime datetime) {

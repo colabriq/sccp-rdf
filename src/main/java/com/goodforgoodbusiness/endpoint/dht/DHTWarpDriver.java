@@ -17,7 +17,6 @@ import com.goodforgoodbusiness.endpoint.crypto.key.EncodeableShareKey;
 import com.goodforgoodbusiness.endpoint.dht.backend.DHTBackend;
 import com.goodforgoodbusiness.endpoint.dht.share.ShareKeyStore;
 import com.goodforgoodbusiness.endpoint.dht.share.ShareKeyStoreException;
-import com.goodforgoodbusiness.endpoint.dht.share.ShareManager;
 import com.goodforgoodbusiness.endpoint.graph.containerized.ContainerPatterns;
 import com.goodforgoodbusiness.kpabe.KPABEDecryption;
 import com.goodforgoodbusiness.kpabe.KPABEEncryption;
@@ -49,15 +48,14 @@ public class DHTWarpDriver {
 		}
 	}
 	
+	private final DHTGovernor governor;
 	private final DHTBackend backend;
-	
-	private final ShareManager shareManager;
 	private final ShareKeyStore keyStore;
 	
 	@Inject
-	public DHTWarpDriver(DHTBackend backend, ShareManager shareManager, ShareKeyStore keyStore) {
+	public DHTWarpDriver(DHTGovernor governor, DHTBackend backend, ShareKeyStore keyStore) {
+		this.governor = governor;
 		this.backend = backend;
-		this.shareManager = shareManager;
 		this.keyStore = keyStore;
 	}
 	
@@ -65,7 +63,7 @@ public class DHTWarpDriver {
 	 * Publish data against a new pattern to the Warp
 	 * Data is already on the weft, provide the ID
 	 */
-	public void publish(String id, String pattern, String policy, EncodeableSecretKey key, Future<DHTWarpPublish> future) {
+	public void publish(String id, String pattern, String policy, EncodeableSecretKey key, Future<DHTWarpPublishResult> future) {
 		log.debug("Publishing warp pattern: " + pattern);
 			
 		try {
@@ -79,7 +77,7 @@ public class DHTWarpDriver {
 			backend.publishPointer(pattern, data, Future.<Void>future().setHandler(
 				result -> {
 					if (result.succeeded()) {
-						future.complete(new DHTWarpPublish(pointer, data));
+						future.complete(new DHTWarpPublishResult(pointer, data));
 					}
 					else {
 						future.fail(result.cause());
@@ -97,8 +95,8 @@ public class DHTWarpDriver {
 	 * Encrypt a pointer using KP-ABE
 	 */
 	private byte[] encrypt(Pointer pointer, String accessPolicy) throws KPABEException {
-		return KPABEEncryption.getInstance(shareManager.getCurrentKeys())
-			.encrypt(JSON.encodeToString(pointer), accessPolicy).getBytes();
+		var kpabe = KPABEEncryption.getInstance(keyStore.getCurrentKeyPair());
+		return kpabe.encrypt(JSON.encodeToString(pointer), accessPolicy).getBytes();
 	}
 	
 	/**
@@ -116,7 +114,7 @@ public class DHTWarpDriver {
 		
 		try {
 			creators = keyStore
-				.knownContainerCreators(tuple)
+				.getCreators(tuple)
 				.distinct()
 				.map(creator -> {
 					// kick off a search per creator
@@ -160,18 +158,20 @@ public class DHTWarpDriver {
 	/**
 	 * Search for containers by a specific creator
 	 */
-	private void search(KPABEPublicKey creator, Triple tuple, Future<Stream<Pointer>> future) {
-		var patternHash = ContainerPatterns.forSearch(creator, tuple);
-		log.debug("Searching warp for containers from " + creator.toString().substring(0, 10) + 
-			"... with patterns " + patternHash.substring(0,  10) + "...");
+	private void search(KPABEPublicKey creator, Triple tp, Future<Stream<Pointer>> future) {
+		log.debug("Searching warp for " + tp + " from " + creator.toString().substring(0, 10));
+		
+		governor.checkRevise(tp);
+		
+		var pattern = ContainerPatterns.forSearch(creator, tp);
 		
 		// have to process this stream because state is changed
-		backend.searchForPointers(patternHash, Future.<Stream<byte[]>>future().setHandler(
+		backend.searchForPointers(pattern, Future.<Stream<byte[]>>future().setHandler(
 			results -> {
 				if (results.succeeded()) {
 					future.complete(
 						results.result()
-							.map(data -> decrypt(creator, tuple, data))
+							.map(data -> decrypt(creator, tp, data))
 								.filter(Optional::isPresent)
 								.map(Optional::get)
 					);
@@ -187,11 +187,11 @@ public class DHTWarpDriver {
 	 * Attempt to decrypt a pointer.
 	 * Specify publicKey so we know which keys to try against the data
 	 */
-	private Optional<Pointer> decrypt(KPABEPublicKey creator, Triple pattern, byte[] data) {
-		log.info("Got data for " + pattern + " from " + creator.toString().substring(0, 10) + "...");
+	private Optional<Pointer> decrypt(KPABEPublicKey creator, Triple pattern, byte [] data) {
+		log.info("Got pointer data for " + pattern + " from " + creator.toString().substring(0, 10) + "...");
 		
 		try {
-			return keyStore.keysForDecrypt(creator, pattern) // XXX think about expiry?
+			return keyStore.getKeys(creator, pattern) // XXX think about expiry?
 				.parallel()
 				.map(EncodeableShareKey::toKeyPair)
 				.map(keyPair -> {

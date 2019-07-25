@@ -1,13 +1,11 @@
 package com.goodforgoodbusiness.endpoint.graph.containerized;
 
-import static com.goodforgoodbusiness.shared.TripleUtil.isConcrete;
 import static com.goodforgoodbusiness.shared.TripleUtil.matchingCombinations;
 
 import java.util.stream.Stream;
 
 import org.apache.jena.graph.Triple;
 
-import com.goodforgoodbusiness.endpoint.dht.share.ShareManager;
 import com.goodforgoodbusiness.kpabe.key.KPABEPublicKey;
 import com.goodforgoodbusiness.shared.Rounds;
 import com.goodforgoodbusiness.shared.encode.CBOR;
@@ -35,11 +33,9 @@ public final class ContainerPatterns {
 	 * Generate all possible pattern hashes.
 	 * These also include the public key of the publishing party.
 	 */
-	public static Stream<String> forPublish(ShareManager keyManager, Triple tuple) {
+	public static Stream<String> forPublish(KPABEPublicKey creator, Triple tuple) {
 		return matchingCombinations(tuple)
-			// for DHT publish, tuple pattern must have either defined subject or defined object
-			.filter(tt -> isConcrete(tt.getSubject()) || isConcrete(tt.getObject()))
-			.map(tt -> hash(keyManager.getCreatorKey(), tt))
+			.map(tt -> hash(creator, tt))
 			.parallel()
 		;
 	}

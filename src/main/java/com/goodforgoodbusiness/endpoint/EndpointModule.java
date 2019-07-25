@@ -22,15 +22,15 @@ import org.rocksdb.RocksDBException;
 
 import com.goodforgoodbusiness.endpoint.crypto.Identity;
 import com.goodforgoodbusiness.endpoint.dht.DHT;
-import com.goodforgoodbusiness.endpoint.dht.DHTSearch;
 import com.goodforgoodbusiness.endpoint.dht.DHTWarpDriver;
 import com.goodforgoodbusiness.endpoint.dht.DHTWeftDriver;
 import com.goodforgoodbusiness.endpoint.dht.backend.DHTBackend;
-import com.goodforgoodbusiness.endpoint.dht.backend.impl.DHTMemBackend;
+import com.goodforgoodbusiness.endpoint.dht.backend.impl.DHTRPCBackend;
 import com.goodforgoodbusiness.endpoint.dht.backend.impl.DHTRPCWebClientProvider;
+import com.goodforgoodbusiness.endpoint.dht.share.ShareKeyPairProvider;
 import com.goodforgoodbusiness.endpoint.dht.share.ShareKeyStore;
-import com.goodforgoodbusiness.endpoint.dht.share.ShareManager;
-import com.goodforgoodbusiness.endpoint.dht.share.impl.MemKeyStore;
+import com.goodforgoodbusiness.endpoint.dht.share.backend.KeyStoreBackend;
+import com.goodforgoodbusiness.endpoint.dht.share.backend.impl.RocksKeyStore;
 import com.goodforgoodbusiness.endpoint.graph.base.BaseDatasetProvider;
 import com.goodforgoodbusiness.endpoint.graph.containerized.ContainerBuilder;
 import com.goodforgoodbusiness.endpoint.graph.containerized.ContainerCollector;
@@ -55,6 +55,7 @@ import com.goodforgoodbusiness.endpoint.webapp.admin.StopHandler;
 import com.goodforgoodbusiness.endpoint.webapp.dht.DHTTaskLauncher;
 import com.goodforgoodbusiness.endpoint.webapp.share.ShareAcceptHandler;
 import com.goodforgoodbusiness.endpoint.webapp.share.ShareRequestHandler;
+import com.goodforgoodbusiness.kpabe.key.KPABEKeyPair;
 import com.goodforgoodbusiness.rocks.RocksManager;
 import com.goodforgoodbusiness.shared.LogConfigurer;
 import com.goodforgoodbusiness.shared.executor.ExecutorProvider;
@@ -126,15 +127,15 @@ public class EndpointModule extends AbstractModule {
 			bind(Identity.class);
 			bind(ContainerBuilder.class);
 			
-			bind(ShareManager.class);
-			bind(ShareKeyStore.class).to(MemKeyStore.class);
+			bind(ShareKeyStore.class);
+			bind(KPABEKeyPair.class).toProvider(ShareKeyPairProvider.class);
+			bind(KeyStoreBackend.class).to(RocksKeyStore.class);
 			
 			bind(DHT.class);
 			bind(DHTWarpDriver.class);
 			bind(DHTWeftDriver.class);
-			bind(DHTSearch.class);
 			
-			bind(DHTBackend.class).to(DHTMemBackend.class);
+			bind(DHTBackend.class).to(DHTRPCBackend.class);
 			bind(WebClient.class).toProvider(DHTRPCWebClientProvider.class); // might want to annotate this.
 		}
 		else {

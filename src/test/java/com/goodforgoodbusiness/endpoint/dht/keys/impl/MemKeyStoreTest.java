@@ -8,7 +8,8 @@ import org.apache.jena.graph.Node;
 import org.apache.jena.graph.Triple;
 
 import com.goodforgoodbusiness.endpoint.crypto.key.EncodeableShareKey;
-import com.goodforgoodbusiness.endpoint.dht.share.impl.MemKeyStore;
+import com.goodforgoodbusiness.endpoint.dht.share.SharePattern;
+import com.goodforgoodbusiness.endpoint.dht.share.backend.impl.MemKeyStore;
 import com.goodforgoodbusiness.kpabe.KPABEEncryption;
 import com.goodforgoodbusiness.kpabe.KPABEKeyManager;
 
@@ -24,10 +25,12 @@ public class MemKeyStoreTest {
 		
 		// save a key that would cover both tuples
 		store.saveKey(
-			new Triple(
-				createURI("https://twitter.com/ijmad8x"),
-				Node.ANY,
-				Node.ANY
+			new SharePattern(
+				new Triple(
+					createURI("https://twitter.com/ijmad8x"),
+					Node.ANY,
+					Node.ANY
+				)
 			),
 			encShareKey
 		);
@@ -41,9 +44,9 @@ public class MemKeyStoreTest {
 			createLiteralNode("Ian Maddison", null, "http://www.w3.org/2001/XMLSchema/string")
 		);
 		
-		store.knownContainerCreators(tt1).forEach(r -> {
+		store.getCreators(tt1).forEach(r -> {
 			System.out.println(r);
-			System.out.println("⇒" + store.keysForDecrypt(r, tt1).collect(toList()));
+			System.out.println("⇒" + store.getKeys(r, tt1).collect(toList()));
 		});
 		
 		System.out.println("----------------------------------------");
@@ -55,9 +58,9 @@ public class MemKeyStoreTest {
 		);
 		
 		// check key is not returned when searching for wrong things
-		store.knownContainerCreators(tt2).forEach(r -> {
+		store.getCreators(tt2).forEach(r -> {
 			System.out.println(r);
-			System.out.println("⇒" + store.keysForDecrypt(r, tt2).collect(toList()));
+			System.out.println("⇒" + store.getKeys(r, tt2).collect(toList()));
 		});
 		
 		System.out.println("----------------------------------------");
@@ -69,9 +72,9 @@ public class MemKeyStoreTest {
 		);
 		
 		// check narrower but partial searches
-		store.knownContainerCreators(tt3).forEach(r -> {
+		store.getCreators(tt3).forEach(r -> {
 			System.out.println(r);
-			System.out.println("⇒" + store.keysForDecrypt(r, tt3).collect(toList()));
+			System.out.println("⇒" + store.getKeys(r, tt3).collect(toList()));
 		});
 		
 		System.out.println("----------------------------------------");
@@ -82,9 +85,9 @@ public class MemKeyStoreTest {
 			Node.ANY
 		);
 		
-		store.knownContainerCreators(tt4).forEach(r -> {
+		store.getCreators(tt4).forEach(r -> {
 			System.out.println(r);
-			System.out.println("⇒" + store.keysForDecrypt(r, tt4).collect(toList()));
+			System.out.println("⇒" + store.getKeys(r, tt4).collect(toList()));
 		});
 		
 		System.out.println("----------------------------------------");

@@ -12,13 +12,13 @@ public interface DHTBackend {
 	/**
 	 * Publish a pointer to the index against a pattern.
 	 */
-	public void publishPointer(String hashPattern, byte[] data, Future<Void> future);
+	public void publishPointer(String pattern, byte[] data, Future<Void> future);
 	
 	/**
 	 * Searches for pointers with a specific pattern.
 	 * Returns a Set of pointers that have been retrieved.
 	 */
-	public void searchForPointers(String hashPattern, Future<Stream<byte[]>> future);
+	public void searchForPointers(String pattern, Future<Stream<byte[]>> future);
 	
 	/**
 	 * Publish a container so others may access it.

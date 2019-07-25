@@ -39,7 +39,7 @@ public class DHTWeftDriver {
 	/** 
 	 * Push a container on to the {@link DHTWeftDriver}.
 	 */
-	public void publish(StorableContainer container, Future<DHTWeftPublish> future) throws EncryptionException {
+	public void publish(StorableContainer container, Future<DHTWeftPublishResult> future) throws EncryptionException {
 		var secretKey = SymmetricEncryption.createKey();
 			
 		var encryptedContainer = encrypt(container, secretKey);
@@ -49,7 +49,7 @@ public class DHTWeftDriver {
 			weftLocationResult -> {
 				if (weftLocationResult.succeeded()) {
 					future.complete(
-						new DHTWeftPublish(
+						new DHTWeftPublishResult(
 							secretKey,
 							encryptedContainer,
 							weftLocationResult.result(),

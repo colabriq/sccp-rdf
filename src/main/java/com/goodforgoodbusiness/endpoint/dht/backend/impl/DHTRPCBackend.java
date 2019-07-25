@@ -48,9 +48,9 @@ public class DHTRPCBackend implements DHTBackend {
 	private final RPCClient client;
 	
 	@Inject
-	public DHTRPCBackend(Vertx vertx, WebClient client, @Named("dht.url") String dhtURL) throws URISyntaxException {
+	public DHTRPCBackend(Vertx vertx, WebClient client, @Named("dht.uri") String dhtURI) throws URISyntaxException {
 		this.vertx = vertx;
-		this.client = new RPCClient(vertx, client, URIModifier.from(new URI(dhtURL)).appendPath("/rpc").build());
+		this.client = new RPCClient(vertx, client, URIModifier.from(new URI(dhtURI)).appendPath("/rpc").build());
 	}
 	
 	@Override

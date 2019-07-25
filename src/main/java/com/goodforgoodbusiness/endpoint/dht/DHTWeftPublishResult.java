@@ -6,14 +6,14 @@ import com.goodforgoodbusiness.model.EncryptedContainer;
 /**
  * Result of Weft publish.
  */
-public final class DHTWeftPublish {
+public final class DHTWeftPublishResult {
 	private final EncodeableSecretKey key;
 	private final EncryptedContainer container;
 	
 	private final byte[] publishedData;
 	private final String publishedLocation;
 	
-	public DHTWeftPublish(EncodeableSecretKey key, EncryptedContainer container, String publishedLocation, byte[] publishedData) {
+	public DHTWeftPublishResult(EncodeableSecretKey key, EncryptedContainer container, String publishedLocation, byte[] publishedData) {
 		this.key = key;
 		this.container = container;
 		

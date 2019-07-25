@@ -1,15 +1,22 @@
 package com.goodforgoodbusiness.endpoint.dht;
 
 import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
+import org.apache.jena.graph.Triple;
 import org.apache.log4j.Logger;
 
 import com.goodforgoodbusiness.endpoint.crypto.EncryptionException;
-import com.goodforgoodbusiness.endpoint.dht.share.ShareManager;
+import com.goodforgoodbusiness.endpoint.crypto.key.EncodeableSecretKey;
+import com.goodforgoodbusiness.endpoint.dht.share.ShareKeyStore;
 import com.goodforgoodbusiness.endpoint.graph.containerized.ContainerAttributes;
 import com.goodforgoodbusiness.endpoint.graph.containerized.ContainerPatterns;
 import com.goodforgoodbusiness.endpoint.storage.TripleContext.Type;
 import com.goodforgoodbusiness.endpoint.storage.TripleContexts;
+import com.goodforgoodbusiness.model.Pointer;
 import com.goodforgoodbusiness.model.StorableContainer;
 import com.google.inject.Inject;
 
@@ -26,14 +33,14 @@ public class DHT {
 	private final TripleContexts contexts;
 	private final DHTWarpDriver warp;
 	private final DHTWeftDriver weft;
-	private final ShareManager keyManager;
+	private final ShareKeyStore keyStore;
 	
 	@Inject
-	public DHT(TripleContexts contexts, DHTWeftDriver weft, DHTWarpDriver warp, ShareManager keyManager) {
+	public DHT(TripleContexts contexts, DHTWeftDriver weft, DHTWarpDriver warp, ShareKeyStore keyStore) {
 		this.contexts = contexts;
 		this.weft = weft;
 		this.warp = warp;
-		this.keyManager = keyManager;
+		this.keyStore = keyStore;
 	}
 	
 	/**
@@ -49,7 +56,7 @@ public class DHT {
 		// encrypt with secret key + publish to weft
 		weft.publish(
 			container,
-			Future.<DHTWeftPublish>future().setHandler(weftPublishResult -> {
+			Future.<DHTWeftPublishResult>future().setHandler(weftPublishResult -> {
 				if (weftPublishResult.succeeded()) {
 					// record context for all the triples
 					container.getTriples().forEach(triple ->
@@ -62,12 +69,15 @@ public class DHT {
 					var key = weftPublishResult.result().getKey();
 					
 					// pointer should be encrypted with _all_ the possible patterns + other attributes
-					var attributes = ContainerAttributes.forPublish(keyManager.getCreatorKey(), container.getTriples());
-						
+					var attributes = ContainerAttributes.forPublish(
+						keyStore.getCurrentKeyPair().getPublic(),
+						container.getTriples()
+					);
+					
 					// patterns to publish are all possible triple combinations
 					// create + publish a pointer for each generated pattern
 					var patterns = container.getTriples()
-						.flatMap(t -> ContainerPatterns.forPublish(keyManager, t))
+						.flatMap(t -> ContainerPatterns.forPublish(keyStore.getCurrentKeyPair().getPublic(), t))
 					;
 					
 					// async publish, collect futures
@@ -75,7 +85,7 @@ public class DHT {
 					var wpfs = new ArrayList<Future>(); 
 					
 					patterns.forEach(pattern -> {
-						var wpf = Future.<DHTWarpPublish>future();
+						var wpf = Future.<DHTWarpPublishResult>future();
 						warp.publish(container.getId(), pattern, attributes, key, wpf);
 						wpfs.add(wpf);
 					});
@@ -101,5 +111,71 @@ public class DHT {
 				}
 			})
 		);
+	}
+	
+	/**
+	 * Search the warp + weft for a triple pattern
+	 */
+	public void search(Triple tuple, Future<Stream<StorableContainer>> future) {
+		if (log.isDebugEnabled()) {
+			log.debug("Searching DHT for " + tuple);
+		}
+
+		// process the stream because these operations have side effects
+		warp.search(tuple, Future.<Stream<Pointer>>future().setHandler(
+			warpResults -> {
+				if (warpResults.succeeded()) {
+					@SuppressWarnings("rawtypes") // CompositeFuture's generics are broken
+					List<Future> fetchFutures = 
+						warpResults.result()
+							.map(ptr -> {
+								// fetch from warp, collect futures
+								var fetchFuture = Future.<Optional<StorableContainer>>future();
+								
+								weft.fetch(
+									ptr.getContainerId(),
+									new EncodeableSecretKey(ptr.getContainerKey()),
+									fetchFuture
+								);
+								
+								return fetchFuture;
+							})
+							.collect(Collectors.toList())
+					;
+					
+					if (fetchFutures.isEmpty()) {
+						future.complete(Stream.empty());
+					}
+					else {
+						// wait for futures, process results
+						CompositeFuture.all(fetchFutures).setHandler(fetchResults -> {
+							var containers = new ArrayList<StorableContainer>(fetchFutures.size());
+							
+							if (fetchResults.succeeded()) {
+								for (var x = 0; x < fetchResults.result().size(); x++) {
+									Optional<StorableContainer> container = fetchResults.result().resultAt(x);
+									if (container.isPresent()) {
+										containers.add(container.get());
+									}
+								}
+								
+								if (log.isDebugEnabled()) {
+									log.debug("Containers found = " + containers.size());
+								}
+								
+								// return containers we've found
+								future.complete(containers.parallelStream());
+							}
+							else {
+								future.fail(fetchResults.cause());
+							}
+						});
+					}
+				}
+				else {
+					future.fail(warpResults.cause());
+				}
+			}
+		));
 	}
 }

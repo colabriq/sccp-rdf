@@ -10,7 +10,7 @@ import java.util.Random;
 import org.apache.jena.graph.Triple;
 
 import com.goodforgoodbusiness.endpoint.crypto.SymmetricEncryption;
-import com.goodforgoodbusiness.endpoint.dht.share.ShareManager;
+import com.goodforgoodbusiness.endpoint.dht.share.backend.impl.MemKeyStore;
 import com.goodforgoodbusiness.endpoint.graph.containerized.ContainerAttributes;
 import com.goodforgoodbusiness.endpoint.graph.containerized.ContainerPatterns;
 import com.goodforgoodbusiness.kpabe.KPABEEncryption;
@@ -50,10 +50,8 @@ public class PointerTest {
 		System.out.println(Arrays.toString(bytes));
 		System.out.println(bytes.length);
 		
-		var shareManager = new ShareManager(keys.getPublic(), keys.getSecret());
-		
 		tts.stream().forEach(tt -> {
-			ContainerPatterns.forPublish(shareManager, tt).forEach(pattern -> {
+			ContainerPatterns.forPublish(keys.getPublic(), tt).forEach(pattern -> {
 				System.out.println("Pattern: " + pattern);
 			});;
 		});

@@ -1,7 +1,5 @@
 package com.goodforgoodbusiness.endpoint.dht.share;
 
-import org.apache.jena.graph.Triple;
-
 import com.goodforgoodbusiness.endpoint.crypto.key.EncodeableShareKey;
 import com.google.common.base.Objects;
 import com.google.gson.annotations.Expose;
@@ -14,11 +12,9 @@ public class ShareResponse extends ShareRequest {
 	public static ShareResponse createFrom(ShareRequest request, EncodeableShareKey key) {
 		var response = new ShareResponse();
 		
+		response.setPattern(request.getPattern());
 		response.setStart(request.getStart().orElse(null));
 		response.setEnd(request.getEnd().orElse(null));
-		response.setSubject(request.getSubject().orElse(null));
-		response.setPredicate(request.getPredicate().orElse(null));
-		response.setObject(request.getObject().orElse(null));
 		response.setKey(key);
 		
 		return response;
@@ -29,15 +25,6 @@ public class ShareResponse extends ShareRequest {
 	private EncodeableShareKey key;
 	
 	public ShareResponse() {
-	}	
-	
-	/**
-	 * Set s/p/o from {@link Triple}
-	 */
-	@Override
-	public ShareResponse setTriple(Triple triple) {
-		super.setTriple(triple);
-		return this;
 	}
 
 	public EncodeableShareKey getKey() {
@@ -51,7 +38,7 @@ public class ShareResponse extends ShareRequest {
 	
 	@Override
 	public int hashCode() {
-		return Objects.hashCode(super.getSubject(), super.getObject(), super.getPredicate(), key);
+		return Objects.hashCode(super.getPattern(), key);
 	}
 	
 	@Override
@@ -70,7 +57,7 @@ public class ShareResponse extends ShareRequest {
 	
 	@Override
 	public String toString() {
-		return "ShareResponse(s=" + getSubject() + " p=" + getPredicate() + " o=" + getObject() + " key=" + key.toString() + ")";
+		return "ShareResponse(pattern=" + getPattern().toString() + " key=" + key.toString() + ")";
 	}
 }
 

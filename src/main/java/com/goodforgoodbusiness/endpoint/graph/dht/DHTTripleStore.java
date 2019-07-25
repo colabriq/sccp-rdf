@@ -15,7 +15,7 @@ import org.apache.jena.graph.impl.TripleStore;
 import org.apache.jena.util.iterator.ExtendedIterator;
 import org.apache.log4j.Logger;
 
-import com.goodforgoodbusiness.endpoint.dht.DHTSearch;
+import com.goodforgoodbusiness.endpoint.dht.DHT;
 import com.goodforgoodbusiness.endpoint.graph.containerized.ContainerTripleStore;
 import com.goodforgoodbusiness.endpoint.graph.rocks.RocksTripleStore;
 import com.goodforgoodbusiness.endpoint.plugin.ContainerListenerManager;
@@ -35,7 +35,7 @@ import io.vertx.core.Future;
 public class DHTTripleStore implements TripleStore {
 	private static final Logger log = Logger.getLogger(DHTTripleStore.class);
 	
-	private final DHTSearch search;
+	private final DHT dht;
 	private final TripleContexts contexts;
 	private final ContainerListenerManager listenerManager;
 	private final ContainerTripleStore<RocksTripleStore> baseStore;
@@ -43,10 +43,10 @@ public class DHTTripleStore implements TripleStore {
 	private final Set<DHTTripleIterator> openIterators = newSetFromMap(new ConcurrentHashMap<>());
 	
 	@Inject
-	public DHTTripleStore(DHTSearch search, TripleContexts contexts,
+	public DHTTripleStore(DHT dht, TripleContexts contexts,
 		ContainerListenerManager listenerManager, ContainerTripleStore<RocksTripleStore> baseStore) {
 		
-		this.search = search;
+		this.dht = dht;
 		this.contexts = contexts;
 		this.listenerManager = listenerManager;
 		this.baseStore = baseStore;
@@ -62,7 +62,7 @@ public class DHTTripleStore implements TripleStore {
 		// we have to wait if operating synchronously
 		var block = new CompletableFuture<AsyncResult<Stream<StorableContainer>>>();
 		
-		search.search(
+		dht.search(
 			pattern,
 			Future.<Stream<StorableContainer>>future().setHandler(result -> block.complete(result))
 		);

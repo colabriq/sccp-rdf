@@ -5,11 +5,11 @@ import com.goodforgoodbusiness.model.Pointer;
 /**
  * A result of publishing to the warp.
  */
-public class DHTWarpPublish {
+public class DHTWarpPublishResult {
 	private final Pointer pointer;
 	private final byte[] publishedData;
 	
-	public DHTWarpPublish(Pointer pointer, byte[] publishedData) {
+	public DHTWarpPublishResult(Pointer pointer, byte[] publishedData) {
 		this.pointer = pointer;
 		this.publishedData = publishedData;
 	}

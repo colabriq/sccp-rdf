@@ -1,4 +1,4 @@
-package com.goodforgoodbusiness.endpoint.dht.share.impl;
+package com.goodforgoodbusiness.endpoint.dht.share.backend.impl;
 
 import static com.goodforgoodbusiness.rocks.RocksUtils.createCompositeKey;
 import static com.goodforgoodbusiness.shared.TripleUtil.matchingCombinations;
@@ -13,7 +13,8 @@ import org.rocksdb.RocksDBException;
 import com.goodforgoodbusiness.endpoint.crypto.key.EncodeableShareKey;
 import com.goodforgoodbusiness.endpoint.dht.share.ShareKeyStore;
 import com.goodforgoodbusiness.endpoint.dht.share.ShareKeyStoreException;
-import com.goodforgoodbusiness.endpoint.dht.share.ShareResponse;
+import com.goodforgoodbusiness.endpoint.dht.share.SharePattern;
+import com.goodforgoodbusiness.endpoint.dht.share.backend.KeyStoreBackend;
 import com.goodforgoodbusiness.kpabe.key.KPABEPublicKey;
 import com.goodforgoodbusiness.rocks.PrefixIterator;
 import com.goodforgoodbusiness.rocks.RocksManager;
@@ -26,23 +27,23 @@ import com.google.inject.Singleton;
  * @author ijmad
  */
 @Singleton
-public class RocksKeyStore implements ShareKeyStore {
+public class RocksKeyStore implements KeyStoreBackend {
 	private final RocksManager dbm;
 	private final ColumnFamilyHandle tripleCFH;
 	private final ColumnFamilyHandle keyCFH;
 	
 	@Inject
-	public RocksKeyStore(RocksManager dbm) throws RocksDBException {
+	public RocksKeyStore(RocksManager dbm) throws RocksDBException {		
 		this.dbm = dbm;
 		this.tripleCFH = this.dbm.getOrCreateColFH("SK_TRIPLES".getBytes());
 		this.keyCFH = this.dbm.getOrCreateColFH("SK_KEYS".getBytes());
 	}
 	
 	@Override
-	public Stream<KPABEPublicKey> knownContainerCreators(Triple pattern) throws ShareKeyStoreException {
+	public Stream<KPABEPublicKey> getCreators(Triple pattern) throws ShareKeyStoreException {
 		// get: triple -- result: KPABEPublicKey
 		return matchingCombinations(pattern)
-			.map(c -> new ShareResponse().setTriple(c).toByteArray())
+			.map(c -> new SharePattern(c).toByteArray())
 			.flatMap(enc -> {
 				try {
 					return new PrefixIterator(dbm.newIterator(tripleCFH), enc).stream();
@@ -58,7 +59,7 @@ public class RocksKeyStore implements ShareKeyStore {
 	}
 	
 	@Override
-	public Stream<EncodeableShareKey> keysForDecrypt(KPABEPublicKey publicKey, Triple triple) throws ShareKeyStoreException {
+	public Stream<EncodeableShareKey> getKeys(KPABEPublicKey publicKey, Triple triple) throws ShareKeyStoreException {
 		// get: public (XXX + tuple?) -- result: share key
 		var pub = publicKey.getEncoded();
 //		var enc = encodeTriple(tuple);
@@ -73,13 +74,13 @@ public class RocksKeyStore implements ShareKeyStore {
 			return Stream.empty();
 		}
 	}
-	
+
 	@Override
-	public void saveKey(ShareResponse request) throws ShareKeyStoreException {
+	public void saveKey(SharePattern pattern, EncodeableShareKey key) throws ShareKeyStoreException {
 		try {
-			var enc = request.toByteArray();
-			var pub = request.getKey().getPublic().getEncoded();
-			var shk = JSON.encodeToString(request.getKey()); // XXX don't JSON encode 
+			var enc = pattern.toByteArray();
+			var pub = key.getPublic().getEncoded();
+			var shk = JSON.encodeToString(key); // XXX don't JSON encode 
 			
 			// store: tuple + RANDOM -> public
 			var key1 = createCompositeKey(enc);
@@ -92,5 +93,6 @@ public class RocksKeyStore implements ShareKeyStore {
 		catch (RocksDBException e) {
 			throw new ShareKeyStoreException(e);
 		}
+		
 	}
 }

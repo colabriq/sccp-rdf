@@ -8,18 +8,16 @@ import java.util.stream.Collectors;
 import org.apache.jena.graph.Node;
 import org.apache.jena.graph.Triple;
 
-import com.goodforgoodbusiness.endpoint.dht.share.ShareManager;
 import com.goodforgoodbusiness.endpoint.graph.containerized.ContainerPatterns;
 import com.goodforgoodbusiness.kpabe.KPABEKeyManager;
 
 public class PatternMakerTest {
 	public static void main(String[] args) throws Exception {
 		var keys = KPABEKeyManager.newKeys();
-		var keyManager = new ShareManager(keys.getPublic(), keys.getSecret());
 		
 		System.out.println(
 			ContainerPatterns.forPublish(
-				keyManager,
+				keys.getPublic(),
 				new Triple(
 					createURI("https://twitter.com/ijmad8x"),
 					createURI("http://xmlns.com/foaf/0.1/name"),
