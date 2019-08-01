@@ -1,10 +1,10 @@
-package com.goodforgoodbusiness.endpoint.dht.share;
+package com.colabriq.endpoint.dht.share;
 
 import java.util.Optional;
 
 import org.apache.jena.graph.Triple;
 
-import com.goodforgoodbusiness.shared.TripleUtil;
+import com.colabriq.shared.TripleUtil;
 import com.google.common.base.Objects;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;

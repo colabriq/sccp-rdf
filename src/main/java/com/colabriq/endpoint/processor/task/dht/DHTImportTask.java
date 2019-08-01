@@ -1,16 +1,16 @@
-package com.goodforgoodbusiness.endpoint.processor.task.dht;
+package com.colabriq.endpoint.processor.task.dht;
 
 import java.io.InputStream;
 import java.util.stream.Stream;
 
-import com.goodforgoodbusiness.endpoint.graph.containerized.ContainerCollector;
-import com.goodforgoodbusiness.endpoint.processor.ModelTaskResult;
-import com.goodforgoodbusiness.endpoint.processor.task.ImportStreamTask;
-import com.goodforgoodbusiness.endpoint.processor.task.Importer;
-import com.goodforgoodbusiness.model.Link;
-import com.goodforgoodbusiness.model.StorableContainer;
-import com.goodforgoodbusiness.model.SubmittableContainer.SubmitMode;
-import com.goodforgoodbusiness.shared.executor.PrioritizedTask;
+import com.colabriq.endpoint.graph.containerized.ContainerCollector;
+import com.colabriq.endpoint.processor.ModelTaskResult;
+import com.colabriq.endpoint.processor.task.ImportStreamTask;
+import com.colabriq.endpoint.processor.task.Importer;
+import com.colabriq.model.Link;
+import com.colabriq.model.StorableContainer;
+import com.colabriq.model.SubmittableContainer.SubmitMode;
+import com.colabriq.shared.executor.PrioritizedTask;
 
 import io.vertx.core.Future;
 

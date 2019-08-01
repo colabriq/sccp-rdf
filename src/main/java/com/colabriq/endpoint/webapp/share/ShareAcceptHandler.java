@@ -1,12 +1,12 @@
-package com.goodforgoodbusiness.endpoint.webapp.share;
+package com.colabriq.endpoint.webapp.share;
 
 import org.apache.log4j.Logger;
 
-import com.goodforgoodbusiness.endpoint.dht.share.ShareKeyStore;
-import com.goodforgoodbusiness.endpoint.dht.share.ShareKeyStoreException;
-import com.goodforgoodbusiness.endpoint.dht.share.ShareResponse;
-import com.goodforgoodbusiness.shared.encode.JSON;
-import com.goodforgoodbusiness.webapp.ContentType;
+import com.colabriq.endpoint.dht.share.ShareKeyStore;
+import com.colabriq.endpoint.dht.share.ShareKeyStoreException;
+import com.colabriq.endpoint.dht.share.ShareResponse;
+import com.colabriq.shared.encode.JSON;
+import com.colabriq.webapp.ContentType;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 

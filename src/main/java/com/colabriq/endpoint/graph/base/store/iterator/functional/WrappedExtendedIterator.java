@@ -1,4 +1,4 @@
-package com.goodforgoodbusiness.endpoint.graph.base.store.iterator.functional;
+package com.colabriq.endpoint.graph.base.store.iterator.functional;
 
 import java.util.Iterator;
 import java.util.List;

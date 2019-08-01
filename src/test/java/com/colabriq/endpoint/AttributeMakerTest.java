@@ -1,4 +1,4 @@
-package com.goodforgoodbusiness.endpoint;
+package com.colabriq.endpoint;
 
 import static org.apache.jena.graph.NodeFactory.createURI;
 import static org.apache.jena.sparql.util.NodeFactoryExtra.createLiteralNode;
@@ -9,10 +9,10 @@ import java.util.stream.Stream;
 import org.apache.jena.graph.Node;
 import org.apache.jena.graph.Triple;
 
-import com.goodforgoodbusiness.endpoint.dht.share.SharePattern;
-import com.goodforgoodbusiness.endpoint.dht.share.ShareRequest;
-import com.goodforgoodbusiness.endpoint.graph.containerized.ContainerAttributes;
-import com.goodforgoodbusiness.kpabe.KPABEKeyManager;
+import com.colabriq.endpoint.dht.share.SharePattern;
+import com.colabriq.endpoint.dht.share.ShareRequest;
+import com.colabriq.endpoint.graph.containerized.ContainerAttributes;
+import com.colabriq.kpabe.KPABEKeyManager;
 
 public class AttributeMakerTest {
 	public static void main(String[] args) throws Exception {

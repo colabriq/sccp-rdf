@@ -1,6 +1,6 @@
-package com.goodforgoodbusiness.endpoint.dht.share.backend.impl;
+package com.colabriq.endpoint.dht.share.backend.impl;
 
-import static com.goodforgoodbusiness.shared.TripleUtil.matchingCombinations;
+import static com.colabriq.shared.TripleUtil.matchingCombinations;
 import static java.util.Collections.emptySet;
 import static java.util.stream.Collectors.toSet;
 
@@ -12,11 +12,11 @@ import java.util.stream.Stream;
 
 import org.apache.jena.graph.Triple;
 
-import com.goodforgoodbusiness.endpoint.crypto.key.EncodeableShareKey;
-import com.goodforgoodbusiness.endpoint.dht.share.ShareKeyStore;
-import com.goodforgoodbusiness.endpoint.dht.share.SharePattern;
-import com.goodforgoodbusiness.endpoint.dht.share.backend.KeyStoreBackend;
-import com.goodforgoodbusiness.kpabe.key.KPABEPublicKey;
+import com.colabriq.endpoint.crypto.key.EncodeableShareKey;
+import com.colabriq.endpoint.dht.share.ShareKeyStore;
+import com.colabriq.endpoint.dht.share.SharePattern;
+import com.colabriq.endpoint.dht.share.backend.KeyStoreBackend;
+import com.colabriq.kpabe.key.KPABEPublicKey;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 

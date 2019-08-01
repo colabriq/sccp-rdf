@@ -1,10 +1,10 @@
-package com.goodforgoodbusiness.endpoint.crypto.key;
+package com.colabriq.endpoint.crypto.key;
 
 import java.lang.reflect.Type;
 import java.security.KeyPair;
 
-import com.goodforgoodbusiness.kpabe.key.KPABEPublicKey;
-import com.goodforgoodbusiness.kpabe.key.KPABEShareKey;
+import com.colabriq.kpabe.key.KPABEPublicKey;
+import com.colabriq.kpabe.key.KPABEShareKey;
 import com.google.gson.JsonDeserializationContext;
 import com.google.gson.JsonDeserializer;
 import com.google.gson.JsonElement;

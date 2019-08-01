@@ -1,4 +1,4 @@
-package com.goodforgoodbusiness.endpoint.dht.keys;
+package com.colabriq.endpoint.dht.keys;
 
 import static org.apache.jena.graph.NodeFactory.createURI;
 import static org.apache.jena.sparql.util.NodeFactoryExtra.createLiteralNode;
@@ -6,12 +6,12 @@ import static org.apache.jena.sparql.util.NodeFactoryExtra.createLiteralNode;
 import org.apache.jena.graph.Node;
 import org.apache.jena.graph.Triple;
 
-import com.goodforgoodbusiness.endpoint.crypto.key.EncodeableShareKey;
-import com.goodforgoodbusiness.endpoint.dht.share.SharePattern;
-import com.goodforgoodbusiness.endpoint.dht.share.ShareResponse;
-import com.goodforgoodbusiness.kpabe.KPABEEncryption;
-import com.goodforgoodbusiness.kpabe.KPABEKeyManager;
-import com.goodforgoodbusiness.shared.encode.JSON;
+import com.colabriq.endpoint.crypto.key.EncodeableShareKey;
+import com.colabriq.endpoint.dht.share.SharePattern;
+import com.colabriq.endpoint.dht.share.ShareResponse;
+import com.colabriq.kpabe.KPABEEncryption;
+import com.colabriq.kpabe.KPABEKeyManager;
+import com.colabriq.shared.encode.JSON;
 
 public class ShareRequestTest {
 	public static void main(String[] args) throws Exception {

@@ -1,27 +1,27 @@
-package com.goodforgoodbusiness.endpoint.graph.containerized;
+package com.colabriq.endpoint.graph.containerized;
 
-import static com.goodforgoodbusiness.endpoint.crypto.AsymmetricEncryption.sign;
-import static com.goodforgoodbusiness.shared.TimingRecorder.timer;
-import static com.goodforgoodbusiness.shared.TimingRecorder.TimingCategory.SIGNING;
+import static com.colabriq.endpoint.crypto.AsymmetricEncryption.sign;
+import static com.colabriq.shared.TimingRecorder.timer;
+import static com.colabriq.shared.TimingRecorder.TimingCategory.SIGNING;
 import static java.util.stream.Collectors.toList;
 
 import java.security.PrivateKey;
 import java.util.stream.Collectors;
 
-import com.goodforgoodbusiness.endpoint.crypto.AsymmetricEncryption;
-import com.goodforgoodbusiness.endpoint.crypto.EncryptionException;
-import com.goodforgoodbusiness.endpoint.crypto.Identity;
-import com.goodforgoodbusiness.model.Contents;
-import com.goodforgoodbusiness.model.Contents.ContentsType;
-import com.goodforgoodbusiness.model.Envelope;
-import com.goodforgoodbusiness.model.Link;
-import com.goodforgoodbusiness.model.LinkSecret;
-import com.goodforgoodbusiness.model.LinkVerifier;
-import com.goodforgoodbusiness.model.ProvenLink;
-import com.goodforgoodbusiness.model.Signature;
-import com.goodforgoodbusiness.model.StorableContainer;
-import com.goodforgoodbusiness.model.SubmittableContainer;
-import com.goodforgoodbusiness.shared.encode.CBOR;
+import com.colabriq.endpoint.crypto.AsymmetricEncryption;
+import com.colabriq.endpoint.crypto.EncryptionException;
+import com.colabriq.endpoint.crypto.Identity;
+import com.colabriq.model.Contents;
+import com.colabriq.model.Contents.ContentsType;
+import com.colabriq.model.Envelope;
+import com.colabriq.model.Link;
+import com.colabriq.model.LinkSecret;
+import com.colabriq.model.LinkVerifier;
+import com.colabriq.model.ProvenLink;
+import com.colabriq.model.Signature;
+import com.colabriq.model.StorableContainer;
+import com.colabriq.model.SubmittableContainer;
+import com.colabriq.shared.encode.CBOR;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 

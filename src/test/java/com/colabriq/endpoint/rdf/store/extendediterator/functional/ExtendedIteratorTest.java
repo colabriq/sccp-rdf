@@ -1,11 +1,11 @@
-package com.goodforgoodbusiness.endpoint.rdf.store.extendediterator.functional;
+package com.colabriq.endpoint.rdf.store.extendediterator.functional;
 
 import java.util.Arrays;
 import java.util.NoSuchElementException;
 import java.util.stream.Stream;
 
-import com.goodforgoodbusiness.endpoint.graph.base.store.iterator.DequeExtendedIterator;
-import com.goodforgoodbusiness.endpoint.graph.base.store.iterator.functional.WrappedExtendedIterator;
+import com.colabriq.endpoint.graph.base.store.iterator.DequeExtendedIterator;
+import com.colabriq.endpoint.graph.base.store.iterator.functional.WrappedExtendedIterator;
 
 public class ExtendedIteratorTest {
 	public static void main(String[] args) throws Exception {

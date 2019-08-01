@@ -1,13 +1,13 @@
-package com.goodforgoodbusiness.endpoint.graph.dht;
+package com.colabriq.endpoint.graph.dht;
 
-import com.goodforgoodbusiness.endpoint.dht.DHT;
-import com.goodforgoodbusiness.endpoint.graph.base.BaseGraph;
-import com.goodforgoodbusiness.endpoint.graph.containerized.ContainerCollector;
-import com.goodforgoodbusiness.endpoint.graph.containerized.ContainerTripleStore;
-import com.goodforgoodbusiness.endpoint.graph.rocks.RocksTripleStore;
-import com.goodforgoodbusiness.endpoint.plugin.ContainerListenerManager;
-import com.goodforgoodbusiness.endpoint.storage.TripleContexts;
-import com.goodforgoodbusiness.rocks.RocksManager;
+import com.colabriq.endpoint.dht.DHT;
+import com.colabriq.endpoint.graph.base.BaseGraph;
+import com.colabriq.endpoint.graph.containerized.ContainerCollector;
+import com.colabriq.endpoint.graph.containerized.ContainerTripleStore;
+import com.colabriq.endpoint.graph.rocks.RocksTripleStore;
+import com.colabriq.endpoint.plugin.ContainerListenerManager;
+import com.colabriq.endpoint.storage.TripleContexts;
+import com.colabriq.rocks.RocksManager;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 

@@ -1,6 +1,6 @@
-package com.goodforgoodbusiness.endpoint.webapp.admin;
+package com.colabriq.endpoint.webapp.admin;
 
-import com.goodforgoodbusiness.endpoint.EndpointModule;
+import com.colabriq.endpoint.EndpointModule;
 
 import io.vertx.core.Handler;
 import io.vertx.ext.web.RoutingContext;

@@ -1,7 +1,7 @@
-package com.goodforgoodbusiness.endpoint.processor.task;
+package com.colabriq.endpoint.processor.task;
 
-import static com.goodforgoodbusiness.endpoint.webapp.MIMEMappings.FILE_TYPES;
-import static com.goodforgoodbusiness.shared.FileLoader.scan;
+import static com.colabriq.endpoint.webapp.MIMEMappings.FILE_TYPES;
+import static com.colabriq.shared.FileLoader.scan;
 import static org.apache.commons.io.FilenameUtils.getExtension;
 
 import java.io.File;
@@ -10,8 +10,8 @@ import java.io.IOException;
 
 import org.apache.log4j.Logger;
 
-import com.goodforgoodbusiness.endpoint.processor.ModelTaskResult;
-import com.goodforgoodbusiness.shared.executor.PrioritizedTask;
+import com.colabriq.endpoint.processor.ModelTaskResult;
+import com.colabriq.shared.executor.PrioritizedTask;
 
 import io.vertx.core.Future;
 

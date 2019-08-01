@@ -1,12 +1,12 @@
-package com.goodforgoodbusiness.endpoint.plugin.internal;
+package com.colabriq.endpoint.plugin.internal;
 
 import java.util.Set;
 
 import org.apache.log4j.Logger;
 
-import com.goodforgoodbusiness.endpoint.plugin.ContainerListener;
-import com.goodforgoodbusiness.endpoint.plugin.ContainerListenerManager;
-import com.goodforgoodbusiness.endpoint.plugin.StorableGraphContainer;
+import com.colabriq.endpoint.plugin.ContainerListener;
+import com.colabriq.endpoint.plugin.ContainerListenerManager;
+import com.colabriq.endpoint.plugin.StorableGraphContainer;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 

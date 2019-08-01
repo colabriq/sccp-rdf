@@ -1,19 +1,19 @@
-package com.goodforgoodbusiness.endpoint.dht.share;
+package com.colabriq.endpoint.dht.share;
 
-import static com.goodforgoodbusiness.endpoint.graph.containerized.ContainerAttributes.SHARE_ALL;
+import static com.colabriq.endpoint.graph.containerized.ContainerAttributes.SHARE_ALL;
 import static java.util.stream.Stream.concat;
 
 import java.util.stream.Stream;
 
 import org.apache.jena.graph.Triple;
 
-import com.goodforgoodbusiness.endpoint.crypto.key.EncodeableShareKey;
-import com.goodforgoodbusiness.endpoint.dht.share.backend.KeyStoreBackend;
-import com.goodforgoodbusiness.endpoint.graph.containerized.ContainerAttributes;
-import com.goodforgoodbusiness.kpabe.KPABEEncryption;
-import com.goodforgoodbusiness.kpabe.KPABEException;
-import com.goodforgoodbusiness.kpabe.key.KPABEKeyPair;
-import com.goodforgoodbusiness.kpabe.key.KPABEPublicKey;
+import com.colabriq.endpoint.crypto.key.EncodeableShareKey;
+import com.colabriq.endpoint.dht.share.backend.KeyStoreBackend;
+import com.colabriq.endpoint.graph.containerized.ContainerAttributes;
+import com.colabriq.kpabe.KPABEEncryption;
+import com.colabriq.kpabe.KPABEException;
+import com.colabriq.kpabe.key.KPABEKeyPair;
+import com.colabriq.kpabe.key.KPABEPublicKey;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 

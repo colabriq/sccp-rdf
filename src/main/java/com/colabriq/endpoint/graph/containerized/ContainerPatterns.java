@@ -1,17 +1,17 @@
-package com.goodforgoodbusiness.endpoint.graph.containerized;
+package com.colabriq.endpoint.graph.containerized;
 
-import static com.goodforgoodbusiness.shared.TripleUtil.matchingCombinations;
+import static com.colabriq.shared.TripleUtil.matchingCombinations;
 
 import java.util.stream.Stream;
 
 import org.apache.jena.graph.Triple;
 
-import com.goodforgoodbusiness.kpabe.key.KPABEPublicKey;
-import com.goodforgoodbusiness.shared.Rounds;
-import com.goodforgoodbusiness.shared.encode.CBOR;
-import com.goodforgoodbusiness.shared.encode.Hash;
-import com.goodforgoodbusiness.shared.encode.Hex;
-import com.goodforgoodbusiness.shared.encode.RDFBinary;
+import com.colabriq.kpabe.key.KPABEPublicKey;
+import com.colabriq.shared.Rounds;
+import com.colabriq.shared.encode.CBOR;
+import com.colabriq.shared.encode.Hash;
+import com.colabriq.shared.encode.Hex;
+import com.colabriq.shared.encode.RDFBinary;
 
 /**
  * Build index patterns for publishing in to the warp.

@@ -1,7 +1,7 @@
-package com.goodforgoodbusiness.endpoint.processor.task;
+package com.colabriq.endpoint.processor.task;
 
-import static com.goodforgoodbusiness.shared.TimingRecorder.timer;
-import static com.goodforgoodbusiness.shared.TimingRecorder.TimingCategory.RDF_QUERYING;
+import static com.colabriq.shared.TimingRecorder.timer;
+import static com.colabriq.shared.TimingRecorder.TimingCategory.RDF_QUERYING;
 
 import org.apache.jena.query.Dataset;
 import org.apache.jena.query.QueryExecutionFactory;
@@ -9,9 +9,9 @@ import org.apache.jena.query.QueryFactory;
 import org.apache.jena.query.ResultSetFormatter;
 import org.apache.log4j.Logger;
 
-import com.goodforgoodbusiness.endpoint.webapp.MIMEMappings;
-import com.goodforgoodbusiness.shared.executor.PrioritizedTask;
-import com.goodforgoodbusiness.vertx.stream.WriteOutputStream;
+import com.colabriq.endpoint.webapp.MIMEMappings;
+import com.colabriq.shared.executor.PrioritizedTask;
+import com.colabriq.vertx.stream.WriteOutputStream;
 
 import io.vertx.core.Future;
 import io.vertx.core.buffer.Buffer;

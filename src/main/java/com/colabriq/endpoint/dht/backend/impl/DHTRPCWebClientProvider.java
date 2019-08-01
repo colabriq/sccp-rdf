@@ -1,6 +1,6 @@
-package com.goodforgoodbusiness.endpoint.dht.backend.impl;
+package com.colabriq.endpoint.dht.backend.impl;
 
-import com.goodforgoodbusiness.rpclib.client.RPCWebClientCreator;
+import com.colabriq.rpclib.client.RPCWebClientCreator;
 import com.google.inject.Inject;
 import com.google.inject.Provider;
 import com.google.inject.Singleton;

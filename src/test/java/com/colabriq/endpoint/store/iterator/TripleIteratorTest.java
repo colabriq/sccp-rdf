@@ -1,10 +1,10 @@
-package com.goodforgoodbusiness.endpoint.store.iterator;
+package com.colabriq.endpoint.store.iterator;
 
 import org.apache.jena.graph.Node;
 import org.apache.jena.graph.NodeFactory;
 import org.apache.jena.graph.Triple;
 
-import com.goodforgoodbusiness.endpoint.graph.base.store.AdvanceMapTripleStore;
+import com.colabriq.endpoint.graph.base.store.AdvanceMapTripleStore;
 
 public class TripleIteratorTest {
 	public static void main(String[] args) throws Exception {

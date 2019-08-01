@@ -1,9 +1,9 @@
-package com.goodforgoodbusiness.endpoint.dht.share;
+package com.colabriq.endpoint.dht.share;
 
-import com.goodforgoodbusiness.kpabe.KPABEKeyManager;
-import com.goodforgoodbusiness.kpabe.key.KPABEKeyPair;
-import com.goodforgoodbusiness.kpabe.key.KPABEPublicKey;
-import com.goodforgoodbusiness.kpabe.key.KPABESecretKey;
+import com.colabriq.kpabe.KPABEKeyManager;
+import com.colabriq.kpabe.key.KPABEKeyPair;
+import com.colabriq.kpabe.key.KPABEPublicKey;
+import com.colabriq.kpabe.key.KPABESecretKey;
 import com.google.inject.Inject;
 import com.google.inject.Provider;
 import com.google.inject.Singleton;

@@ -1,6 +1,6 @@
-package com.goodforgoodbusiness.endpoint.plugin.internal;
+package com.colabriq.endpoint.plugin.internal;
 
-import com.goodforgoodbusiness.endpoint.plugin.StorableGraphContainer;
+import com.colabriq.endpoint.plugin.StorableGraphContainer;
 
 /**
  * Harness for reasoner plugins

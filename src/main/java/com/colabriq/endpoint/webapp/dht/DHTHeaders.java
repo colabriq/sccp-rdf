@@ -1,4 +1,4 @@
-package com.goodforgoodbusiness.endpoint.webapp.dht;
+package com.colabriq.endpoint.webapp.dht;
 
 import static java.nio.charset.Charset.defaultCharset;
 import static org.apache.http.client.utils.URLEncodedUtils.parse;
@@ -9,9 +9,9 @@ import java.util.stream.Stream;
 
 import org.apache.http.NameValuePair;
 
-import com.goodforgoodbusiness.model.Link;
-import com.goodforgoodbusiness.model.Link.RelType;
-import com.goodforgoodbusiness.model.SubmittableContainer.SubmitMode;
+import com.colabriq.model.Link;
+import com.colabriq.model.Link.RelType;
+import com.colabriq.model.SubmittableContainer.SubmitMode;
 
 import io.vertx.ext.web.RoutingContext;
 

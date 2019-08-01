@@ -1,4 +1,4 @@
-package com.goodforgoodbusiness.endpoint.vertx;
+package com.colabriq.endpoint.vertx;
 
 import static io.vertx.core.Vertx.vertx;
 

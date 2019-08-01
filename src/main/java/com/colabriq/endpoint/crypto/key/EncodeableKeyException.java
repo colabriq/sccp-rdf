@@ -1,4 +1,4 @@
-package com.goodforgoodbusiness.endpoint.crypto.key;
+package com.colabriq.endpoint.crypto.key;
 
 public class EncodeableKeyException extends Exception {
 	private static final long serialVersionUID = 1L;

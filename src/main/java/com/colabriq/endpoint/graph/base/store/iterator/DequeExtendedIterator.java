@@ -1,4 +1,4 @@
-package com.goodforgoodbusiness.endpoint.graph.base.store.iterator;
+package com.colabriq.endpoint.graph.base.store.iterator;
 
 import java.util.Collection;
 import java.util.Deque;
@@ -14,8 +14,8 @@ import java.util.stream.Stream;
 
 import org.apache.jena.util.iterator.ExtendedIterator;
 
-import com.goodforgoodbusiness.endpoint.graph.base.store.iterator.functional.FilteredExtendedIterator;
-import com.goodforgoodbusiness.endpoint.graph.base.store.iterator.functional.MappedExtendedIterator;
+import com.colabriq.endpoint.graph.base.store.iterator.functional.FilteredExtendedIterator;
+import com.colabriq.endpoint.graph.base.store.iterator.functional.MappedExtendedIterator;
 
 /**
  * Iterator based on a deque.

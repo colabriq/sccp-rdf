@@ -1,4 +1,4 @@
-package com.goodforgoodbusiness.endpoint.graph.containerized;
+package com.colabriq.endpoint.graph.containerized;
 
 import java.util.EnumSet;
 
@@ -8,10 +8,10 @@ import org.apache.jena.graph.impl.TripleStore;
 import org.apache.jena.util.iterator.ExtendedIterator;
 import org.apache.log4j.Logger;
 
-import com.goodforgoodbusiness.endpoint.storage.TripleContexts;
-import com.goodforgoodbusiness.endpoint.storage.TripleContext.Type;
-import com.goodforgoodbusiness.model.Link;
-import com.goodforgoodbusiness.model.Link.RelType;
+import com.colabriq.endpoint.storage.TripleContexts;
+import com.colabriq.endpoint.storage.TripleContext.Type;
+import com.colabriq.model.Link;
+import com.colabriq.model.Link.RelType;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 

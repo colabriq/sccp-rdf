@@ -1,9 +1,9 @@
-package com.goodforgoodbusiness.endpoint.storage;
+package com.colabriq.endpoint.storage;
 
 import java.util.Arrays;
 import java.util.Optional;
 
-import com.goodforgoodbusiness.shared.encode.Hex;
+import com.colabriq.shared.encode.Hex;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 

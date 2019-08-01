@@ -1,6 +1,6 @@
-package com.goodforgoodbusiness.endpoint.crypto;
+package com.colabriq.endpoint.crypto;
 
-import com.goodforgoodbusiness.endpoint.crypto.Identity;
+import com.colabriq.endpoint.crypto.Identity;
 
 public class IdentityTest {
 	public static void main(String[] args) throws Exception {

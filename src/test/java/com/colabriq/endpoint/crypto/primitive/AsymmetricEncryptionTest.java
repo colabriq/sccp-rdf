@@ -1,8 +1,8 @@
-package com.goodforgoodbusiness.endpoint.crypto.primitive;
+package com.colabriq.endpoint.crypto.primitive;
 
-import com.goodforgoodbusiness.endpoint.crypto.AsymmetricEncryption;
-import com.goodforgoodbusiness.endpoint.crypto.key.EncodeablePrivateKey;
-import com.goodforgoodbusiness.endpoint.crypto.key.EncodeablePublicKey;
+import com.colabriq.endpoint.crypto.AsymmetricEncryption;
+import com.colabriq.endpoint.crypto.key.EncodeablePrivateKey;
+import com.colabriq.endpoint.crypto.key.EncodeablePublicKey;
 
 public class AsymmetricEncryptionTest {
 	public static void main(String[] args) throws Exception {

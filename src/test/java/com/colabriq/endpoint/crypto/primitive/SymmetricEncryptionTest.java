@@ -1,7 +1,7 @@
-package com.goodforgoodbusiness.endpoint.crypto.primitive;
+package com.colabriq.endpoint.crypto.primitive;
 
-import com.goodforgoodbusiness.endpoint.crypto.SymmetricEncryption;
-import com.goodforgoodbusiness.endpoint.crypto.key.EncodeableSecretKey;
+import com.colabriq.endpoint.crypto.SymmetricEncryption;
+import com.colabriq.endpoint.crypto.key.EncodeableSecretKey;
 
 public class SymmetricEncryptionTest {
 	public static void main(String[] args) throws Exception {

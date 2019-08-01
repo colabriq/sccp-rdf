@@ -1,4 +1,4 @@
-package com.goodforgoodbusiness.endpoint;
+package com.colabriq.endpoint;
 
 import static org.apache.jena.graph.NodeFactory.createLiteral;
 import static org.apache.jena.graph.NodeFactory.createURI;

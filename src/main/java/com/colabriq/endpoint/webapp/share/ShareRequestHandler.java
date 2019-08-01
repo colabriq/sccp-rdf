@@ -1,4 +1,4 @@
-package com.goodforgoodbusiness.endpoint.webapp.share;
+package com.colabriq.endpoint.webapp.share;
 
 import static java.time.format.DateTimeFormatter.ISO_LOCAL_DATE_TIME;
 
@@ -10,13 +10,13 @@ import java.util.Optional;
 
 import org.apache.log4j.Logger;
 
-import com.goodforgoodbusiness.endpoint.dht.share.ShareKeyStore;
-import com.goodforgoodbusiness.endpoint.dht.share.SharePattern;
-import com.goodforgoodbusiness.endpoint.dht.share.ShareRequest;
-import com.goodforgoodbusiness.kpabe.KPABEException;
-import com.goodforgoodbusiness.shared.encode.JSON;
-import com.goodforgoodbusiness.webapp.ContentType;
-import com.goodforgoodbusiness.webapp.error.BadRequestException;
+import com.colabriq.endpoint.dht.share.ShareKeyStore;
+import com.colabriq.endpoint.dht.share.SharePattern;
+import com.colabriq.endpoint.dht.share.ShareRequest;
+import com.colabriq.kpabe.KPABEException;
+import com.colabriq.shared.encode.JSON;
+import com.colabriq.webapp.ContentType;
+import com.colabriq.webapp.error.BadRequestException;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 

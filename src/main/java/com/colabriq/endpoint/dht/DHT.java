@@ -1,4 +1,4 @@
-package com.goodforgoodbusiness.endpoint.dht;
+package com.colabriq.endpoint.dht;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -9,15 +9,15 @@ import java.util.stream.Stream;
 import org.apache.jena.graph.Triple;
 import org.apache.log4j.Logger;
 
-import com.goodforgoodbusiness.endpoint.crypto.EncryptionException;
-import com.goodforgoodbusiness.endpoint.crypto.key.EncodeableSecretKey;
-import com.goodforgoodbusiness.endpoint.dht.share.ShareKeyStore;
-import com.goodforgoodbusiness.endpoint.graph.containerized.ContainerAttributes;
-import com.goodforgoodbusiness.endpoint.graph.containerized.ContainerPatterns;
-import com.goodforgoodbusiness.endpoint.storage.TripleContext.Type;
-import com.goodforgoodbusiness.endpoint.storage.TripleContexts;
-import com.goodforgoodbusiness.model.Pointer;
-import com.goodforgoodbusiness.model.StorableContainer;
+import com.colabriq.endpoint.crypto.EncryptionException;
+import com.colabriq.endpoint.crypto.key.EncodeableSecretKey;
+import com.colabriq.endpoint.dht.share.ShareKeyStore;
+import com.colabriq.endpoint.graph.containerized.ContainerAttributes;
+import com.colabriq.endpoint.graph.containerized.ContainerPatterns;
+import com.colabriq.endpoint.storage.TripleContext.Type;
+import com.colabriq.endpoint.storage.TripleContexts;
+import com.colabriq.model.Pointer;
+import com.colabriq.model.StorableContainer;
 import com.google.inject.Inject;
 
 import io.vertx.core.CompositeFuture;

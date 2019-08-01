@@ -1,18 +1,18 @@
-package com.goodforgoodbusiness.endpoint.crypto.primitive;
+package com.colabriq.endpoint.crypto.primitive;
 
 import org.apache.jena.graph.NodeFactory;
 import org.apache.jena.graph.Triple;
 import org.apache.jena.sparql.util.NodeFactoryExtra;
 
-import com.goodforgoodbusiness.endpoint.crypto.AsymmetricEncryption;
-import com.goodforgoodbusiness.endpoint.crypto.Identity;
-import com.goodforgoodbusiness.endpoint.crypto.SymmetricEncryption;
-import com.goodforgoodbusiness.endpoint.graph.containerized.ContainerBuilder;
-import com.goodforgoodbusiness.model.Link;
-import com.goodforgoodbusiness.model.StorableContainer;
-import com.goodforgoodbusiness.model.Link.RelType;
-import com.goodforgoodbusiness.model.SubmittableContainer;
-import com.goodforgoodbusiness.shared.encode.JSON;
+import com.colabriq.endpoint.crypto.AsymmetricEncryption;
+import com.colabriq.endpoint.crypto.Identity;
+import com.colabriq.endpoint.crypto.SymmetricEncryption;
+import com.colabriq.endpoint.graph.containerized.ContainerBuilder;
+import com.colabriq.model.Link;
+import com.colabriq.model.StorableContainer;
+import com.colabriq.model.Link.RelType;
+import com.colabriq.model.SubmittableContainer;
+import com.colabriq.shared.encode.JSON;
 
 import io.vertx.core.Future;
 

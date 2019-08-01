@@ -1,6 +1,6 @@
-package com.goodforgoodbusiness.endpoint.plugin.internal.builtin;
+package com.colabriq.endpoint.plugin.internal.builtin;
 
-import static com.goodforgoodbusiness.endpoint.storage.TripleContext.Type.REASONER;
+import static com.colabriq.endpoint.storage.TripleContext.Type.REASONER;
 import static org.apache.jena.graph.NodeFactory.createURI;
 
 import java.io.StringWriter;
@@ -15,11 +15,11 @@ import org.apache.jena.query.DatasetFactory;
 import org.apache.jena.sparql.core.DatasetGraphOne;
 
 import com.github.jsonldjava.shaded.com.google.common.collect.Streams;
-import com.goodforgoodbusiness.endpoint.plugin.StorableGraphContainer;
-import com.goodforgoodbusiness.endpoint.plugin.internal.InternalPlugin;
-import com.goodforgoodbusiness.endpoint.plugin.internal.InternalPluginException;
-import com.goodforgoodbusiness.endpoint.storage.TripleContexts;
-import com.goodforgoodbusiness.model.GraphContainer;
+import com.colabriq.endpoint.plugin.StorableGraphContainer;
+import com.colabriq.endpoint.plugin.internal.InternalPlugin;
+import com.colabriq.endpoint.plugin.internal.InternalPluginException;
+import com.colabriq.endpoint.storage.TripleContexts;
+import com.colabriq.model.GraphContainer;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 

@@ -1,4 +1,4 @@
-package com.goodforgoodbusiness.endpoint.dht;
+package com.colabriq.endpoint.dht;
 //package com.goodforgoodbusiness.engine;
 //
 //import java.time.Duration;

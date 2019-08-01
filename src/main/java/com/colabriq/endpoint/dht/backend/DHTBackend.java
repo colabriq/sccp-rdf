@@ -1,4 +1,4 @@
-package com.goodforgoodbusiness.endpoint.dht.backend;
+package com.colabriq.endpoint.dht.backend;
 
 import java.util.Optional;
 import java.util.stream.Stream;

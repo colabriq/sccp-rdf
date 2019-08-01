@@ -1,4 +1,4 @@
-package com.goodforgoodbusiness.endpoint.crypto;
+package com.colabriq.endpoint.crypto;
 
 public class EncryptionException extends RuntimeException {
 	private static final long serialVersionUID = 1L;

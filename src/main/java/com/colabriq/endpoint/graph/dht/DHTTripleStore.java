@@ -1,4 +1,4 @@
-package com.goodforgoodbusiness.endpoint.graph.dht;
+package com.colabriq.endpoint.graph.dht;
 
 import static java.util.Collections.newSetFromMap;
 
@@ -15,13 +15,13 @@ import org.apache.jena.graph.impl.TripleStore;
 import org.apache.jena.util.iterator.ExtendedIterator;
 import org.apache.log4j.Logger;
 
-import com.goodforgoodbusiness.endpoint.dht.DHT;
-import com.goodforgoodbusiness.endpoint.graph.containerized.ContainerTripleStore;
-import com.goodforgoodbusiness.endpoint.graph.rocks.RocksTripleStore;
-import com.goodforgoodbusiness.endpoint.plugin.ContainerListenerManager;
-import com.goodforgoodbusiness.endpoint.storage.TripleContext.Type;
-import com.goodforgoodbusiness.endpoint.storage.TripleContexts;
-import com.goodforgoodbusiness.model.StorableContainer;
+import com.colabriq.endpoint.dht.DHT;
+import com.colabriq.endpoint.graph.containerized.ContainerTripleStore;
+import com.colabriq.endpoint.graph.rocks.RocksTripleStore;
+import com.colabriq.endpoint.plugin.ContainerListenerManager;
+import com.colabriq.endpoint.storage.TripleContext.Type;
+import com.colabriq.endpoint.storage.TripleContexts;
+import com.colabriq.model.StorableContainer;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 

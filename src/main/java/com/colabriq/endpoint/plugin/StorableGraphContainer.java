@@ -1,10 +1,10 @@
-package com.goodforgoodbusiness.endpoint.plugin;
+package com.colabriq.endpoint.plugin;
 
 import org.apache.jena.graph.Graph;
 
-import com.goodforgoodbusiness.endpoint.graph.base.BaseGraph;
-import com.goodforgoodbusiness.model.GraphContainer;
-import com.goodforgoodbusiness.model.StorableContainer;
+import com.colabriq.endpoint.graph.base.BaseGraph;
+import com.colabriq.model.GraphContainer;
+import com.colabriq.model.StorableContainer;
 
 /**
  * {@link StorableContainer} & {@link GraphContainer} wrapper

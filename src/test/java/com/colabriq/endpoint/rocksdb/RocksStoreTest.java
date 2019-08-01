@@ -1,4 +1,4 @@
-package com.goodforgoodbusiness.endpoint.rocksdb;
+package com.colabriq.endpoint.rocksdb;
 
 import org.rocksdb.Options;
 import org.rocksdb.RocksDB;

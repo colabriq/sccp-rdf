@@ -1,11 +1,11 @@
-package com.goodforgoodbusiness.endpoint.webapp;
+package com.colabriq.endpoint.webapp;
 
 import static org.apache.commons.io.FilenameUtils.getExtension;
 
 import org.apache.log4j.Logger;
 
-import com.goodforgoodbusiness.webapp.ContentType;
-import com.goodforgoodbusiness.webapp.error.BadRequestException;
+import com.colabriq.webapp.ContentType;
+import com.colabriq.webapp.error.BadRequestException;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 

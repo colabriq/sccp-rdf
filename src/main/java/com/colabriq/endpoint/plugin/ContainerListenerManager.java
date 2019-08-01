@@ -1,4 +1,4 @@
-package com.goodforgoodbusiness.endpoint.plugin;
+package com.colabriq.endpoint.plugin;
 
 import static java.util.Collections.newSetFromMap;
 
@@ -8,7 +8,7 @@ import java.util.concurrent.ExecutorService;
 
 import org.apache.log4j.Logger;
 
-import com.goodforgoodbusiness.model.StorableContainer;
+import com.colabriq.model.StorableContainer;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 

@@ -1,4 +1,4 @@
-package com.goodforgoodbusiness.endpoint.webapp;
+package com.colabriq.endpoint.webapp;
 
 import java.io.IOException;
 import java.util.Optional;
@@ -7,14 +7,14 @@ import java.util.concurrent.ExecutorService;
 import org.apache.jena.query.Dataset;
 import org.apache.log4j.Logger;
 
-import com.goodforgoodbusiness.endpoint.processor.ModelTaskResult;
-import com.goodforgoodbusiness.endpoint.processor.task.ImportStreamTask;
-import com.goodforgoodbusiness.endpoint.processor.task.Importer;
-import com.goodforgoodbusiness.endpoint.processor.task.QueryTask;
-import com.goodforgoodbusiness.endpoint.processor.task.UpdateTask;
-import com.goodforgoodbusiness.vertx.stream.InputWriteStream;
-import com.goodforgoodbusiness.webapp.ContentType;
-import com.goodforgoodbusiness.webapp.error.BadRequestException;
+import com.colabriq.endpoint.processor.ModelTaskResult;
+import com.colabriq.endpoint.processor.task.ImportStreamTask;
+import com.colabriq.endpoint.processor.task.Importer;
+import com.colabriq.endpoint.processor.task.QueryTask;
+import com.colabriq.endpoint.processor.task.UpdateTask;
+import com.colabriq.vertx.stream.InputWriteStream;
+import com.colabriq.webapp.ContentType;
+import com.colabriq.webapp.error.BadRequestException;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 

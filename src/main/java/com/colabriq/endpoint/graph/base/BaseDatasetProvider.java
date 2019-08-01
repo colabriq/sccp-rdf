@@ -1,4 +1,4 @@
-package com.goodforgoodbusiness.endpoint.graph.base;
+package com.colabriq.endpoint.graph.base;
 
 import static org.apache.jena.query.DatasetFactory.wrap;
 

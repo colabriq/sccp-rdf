@@ -1,4 +1,4 @@
-package com.goodforgoodbusiness.endpoint.graph.base.store.iterator;
+package com.colabriq.endpoint.graph.base.store.iterator;
 
 import java.util.function.Function;
 
@@ -6,8 +6,8 @@ import org.apache.jena.graph.Node;
 import org.apache.jena.graph.Triple;
 import org.apache.jena.util.iterator.ExtendedIterator;
 
-import com.goodforgoodbusiness.shared.ObservableSet;
-import com.goodforgoodbusiness.shared.ObservableSetListener;
+import com.colabriq.shared.ObservableSet;
+import com.colabriq.shared.ObservableSetListener;
 
 /**
  * Iterator based on a deque.

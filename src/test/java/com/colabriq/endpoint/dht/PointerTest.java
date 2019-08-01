@@ -1,6 +1,6 @@
-package com.goodforgoodbusiness.endpoint.dht;
+package com.colabriq.endpoint.dht;
 
-import static com.goodforgoodbusiness.shared.encode.Hash.sha512;
+import static com.colabriq.shared.encode.Hash.sha512;
 import static org.apache.jena.graph.NodeFactory.createURI;
 
 import java.util.Arrays;
@@ -9,16 +9,16 @@ import java.util.Random;
 
 import org.apache.jena.graph.Triple;
 
-import com.goodforgoodbusiness.endpoint.crypto.SymmetricEncryption;
-import com.goodforgoodbusiness.endpoint.dht.share.backend.impl.MemKeyStore;
-import com.goodforgoodbusiness.endpoint.graph.containerized.ContainerAttributes;
-import com.goodforgoodbusiness.endpoint.graph.containerized.ContainerPatterns;
-import com.goodforgoodbusiness.kpabe.KPABEEncryption;
-import com.goodforgoodbusiness.kpabe.KPABEKeyManager;
-import com.goodforgoodbusiness.model.Pointer;
-import com.goodforgoodbusiness.shared.encode.CBOR;
-import com.goodforgoodbusiness.shared.encode.Hex;
-import com.goodforgoodbusiness.shared.encode.JSON;
+import com.colabriq.endpoint.crypto.SymmetricEncryption;
+import com.colabriq.endpoint.dht.share.backend.impl.MemKeyStore;
+import com.colabriq.endpoint.graph.containerized.ContainerAttributes;
+import com.colabriq.endpoint.graph.containerized.ContainerPatterns;
+import com.colabriq.kpabe.KPABEEncryption;
+import com.colabriq.kpabe.KPABEKeyManager;
+import com.colabriq.model.Pointer;
+import com.colabriq.shared.encode.CBOR;
+import com.colabriq.shared.encode.Hex;
+import com.colabriq.shared.encode.JSON;
 
 public class PointerTest {
 	private static final Random RANDOM = new Random();

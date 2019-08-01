@@ -1,4 +1,4 @@
-package com.goodforgoodbusiness.endpoint.processor;
+package com.colabriq.endpoint.processor;
 
 import com.google.gson.JsonObject;
 

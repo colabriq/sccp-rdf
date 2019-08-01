@@ -1,4 +1,4 @@
-package com.goodforgoodbusiness.endpoint.crypto;
+package com.colabriq.endpoint.crypto;
 //package com.goodforgoodbusiness.engine.crypto;
 //
 //import static java.time.ZonedDateTime.now;

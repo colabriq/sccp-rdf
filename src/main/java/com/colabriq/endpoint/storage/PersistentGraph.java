@@ -1,8 +1,8 @@
-package com.goodforgoodbusiness.endpoint.storage;
+package com.colabriq.endpoint.storage;
 
-import com.goodforgoodbusiness.endpoint.graph.base.BaseGraph;
-import com.goodforgoodbusiness.endpoint.graph.rocks.RocksTripleStore;
-import com.goodforgoodbusiness.rocks.RocksManager;
+import com.colabriq.endpoint.graph.base.BaseGraph;
+import com.colabriq.endpoint.graph.rocks.RocksTripleStore;
+import com.colabriq.rocks.RocksManager;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 

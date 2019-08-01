@@ -1,4 +1,4 @@
-package com.goodforgoodbusiness.endpoint.webapp;
+package com.colabriq.endpoint.webapp;
 
 import java.util.List;
 import java.util.Map;
@@ -6,7 +6,7 @@ import java.util.Optional;
 
 import org.apache.jena.sparql.resultset.ResultsFormat;
 
-import com.goodforgoodbusiness.shared.MIMEParse;
+import com.colabriq.shared.MIMEParse;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 

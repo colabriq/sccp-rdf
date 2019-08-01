@@ -1,4 +1,4 @@
-package com.goodforgoodbusiness.endpoint.storage.rocks.triples;
+package com.colabriq.endpoint.storage.rocks.triples;
 
 /**
  * Build index patterns for prefix store

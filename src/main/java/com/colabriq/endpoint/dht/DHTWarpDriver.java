@@ -1,4 +1,4 @@
-package com.goodforgoodbusiness.endpoint.dht;
+package com.colabriq.endpoint.dht;
 
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
@@ -12,18 +12,18 @@ import java.util.stream.Stream;
 import org.apache.jena.graph.Triple;
 import org.apache.log4j.Logger;
 
-import com.goodforgoodbusiness.endpoint.crypto.key.EncodeableSecretKey;
-import com.goodforgoodbusiness.endpoint.crypto.key.EncodeableShareKey;
-import com.goodforgoodbusiness.endpoint.dht.backend.DHTBackend;
-import com.goodforgoodbusiness.endpoint.dht.share.ShareKeyStore;
-import com.goodforgoodbusiness.endpoint.dht.share.ShareKeyStoreException;
-import com.goodforgoodbusiness.endpoint.graph.containerized.ContainerPatterns;
-import com.goodforgoodbusiness.kpabe.KPABEDecryption;
-import com.goodforgoodbusiness.kpabe.KPABEEncryption;
-import com.goodforgoodbusiness.kpabe.KPABEException;
-import com.goodforgoodbusiness.kpabe.key.KPABEPublicKey;
-import com.goodforgoodbusiness.model.Pointer;
-import com.goodforgoodbusiness.shared.encode.JSON;
+import com.colabriq.endpoint.crypto.key.EncodeableSecretKey;
+import com.colabriq.endpoint.crypto.key.EncodeableShareKey;
+import com.colabriq.endpoint.dht.backend.DHTBackend;
+import com.colabriq.endpoint.dht.share.ShareKeyStore;
+import com.colabriq.endpoint.dht.share.ShareKeyStoreException;
+import com.colabriq.endpoint.graph.containerized.ContainerPatterns;
+import com.colabriq.kpabe.KPABEDecryption;
+import com.colabriq.kpabe.KPABEEncryption;
+import com.colabriq.kpabe.KPABEException;
+import com.colabriq.kpabe.key.KPABEPublicKey;
+import com.colabriq.model.Pointer;
+import com.colabriq.shared.encode.JSON;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 

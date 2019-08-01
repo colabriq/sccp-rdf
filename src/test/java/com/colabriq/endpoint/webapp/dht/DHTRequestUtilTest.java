@@ -1,4 +1,4 @@
-package com.goodforgoodbusiness.endpoint.webapp.dht;
+package com.colabriq.endpoint.webapp.dht;
 
 import static java.util.stream.Collectors.toList;
 

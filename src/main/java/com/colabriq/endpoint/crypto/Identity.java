@@ -1,10 +1,10 @@
-package com.goodforgoodbusiness.endpoint.crypto;
+package com.colabriq.endpoint.crypto;
 
 import java.security.PublicKey;
 
-import com.goodforgoodbusiness.endpoint.crypto.key.EncodeableKeyException;
-import com.goodforgoodbusiness.endpoint.crypto.key.EncodeablePrivateKey;
-import com.goodforgoodbusiness.endpoint.crypto.key.EncodeablePublicKey;
+import com.colabriq.endpoint.crypto.key.EncodeableKeyException;
+import com.colabriq.endpoint.crypto.key.EncodeablePrivateKey;
+import com.colabriq.endpoint.crypto.key.EncodeablePublicKey;
 import com.google.inject.Inject;
 import com.google.inject.name.Named;
 

@@ -1,6 +1,6 @@
-package com.goodforgoodbusiness.endpoint.crypto;
+package com.colabriq.endpoint.crypto;
 
-import com.goodforgoodbusiness.kpabe.KPABEKeyManager;
+import com.colabriq.kpabe.KPABEKeyManager;
 
 public class KPABETest {
 	public static void main(String[] args) throws Exception {

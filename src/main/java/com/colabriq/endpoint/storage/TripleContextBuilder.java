@@ -1,11 +1,11 @@
-package com.goodforgoodbusiness.endpoint.storage;
+package com.colabriq.endpoint.storage;
 
 import java.util.Random;
 
 import org.apache.jena.graph.Triple;
 
-import com.goodforgoodbusiness.endpoint.storage.TripleContext.Type;
-import com.goodforgoodbusiness.endpoint.storage.rocks.context.TripleContextStore;
+import com.colabriq.endpoint.storage.TripleContext.Type;
+import com.colabriq.endpoint.storage.rocks.context.TripleContextStore;
 
 /**
  * Builds a new {@link TripleContext} object.

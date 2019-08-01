@@ -1,9 +1,9 @@
-package com.goodforgoodbusiness.endpoint.rdf.store.extendediterator.functional;
+package com.colabriq.endpoint.rdf.store.extendediterator.functional;
 
 import java.util.List;
 
-import com.goodforgoodbusiness.endpoint.graph.base.store.iterator.functional.MultiExtendedIterator;
-import com.goodforgoodbusiness.endpoint.graph.base.store.iterator.functional.WrappedExtendedIterator;
+import com.colabriq.endpoint.graph.base.store.iterator.functional.MultiExtendedIterator;
+import com.colabriq.endpoint.graph.base.store.iterator.functional.WrappedExtendedIterator;
 
 public class MultiExtendedIteratorTest {
 	public static void main(String[] args) {

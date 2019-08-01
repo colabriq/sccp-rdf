@@ -1,6 +1,6 @@
-package com.goodforgoodbusiness.endpoint.storage.rocks.context;
+package com.colabriq.endpoint.storage.rocks.context;
 
-import static com.goodforgoodbusiness.shared.encode.RDFBinary.encodeTriple;
+import static com.colabriq.shared.encode.RDFBinary.encodeTriple;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -8,11 +8,11 @@ import java.util.Set;
 import org.apache.jena.graph.Triple;
 import org.rocksdb.RocksDBException;
 
-import com.goodforgoodbusiness.endpoint.storage.TripleContext;
-import com.goodforgoodbusiness.rocks.PrefixIterator;
-import com.goodforgoodbusiness.rocks.PrefixIterator.Row;
-import com.goodforgoodbusiness.rocks.RocksManager;
-import com.goodforgoodbusiness.shared.encode.JSON;
+import com.colabriq.endpoint.storage.TripleContext;
+import com.colabriq.rocks.PrefixIterator;
+import com.colabriq.rocks.PrefixIterator.Row;
+import com.colabriq.rocks.RocksManager;
+import com.colabriq.shared.encode.JSON;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 

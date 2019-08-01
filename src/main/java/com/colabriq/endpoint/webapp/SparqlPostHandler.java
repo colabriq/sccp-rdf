@@ -1,7 +1,7 @@
-package com.goodforgoodbusiness.endpoint.webapp;
+package com.colabriq.endpoint.webapp;
 
-import com.goodforgoodbusiness.webapp.ContentType;
-import com.goodforgoodbusiness.webapp.error.BadRequestException;
+import com.colabriq.webapp.ContentType;
+import com.colabriq.webapp.error.BadRequestException;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 

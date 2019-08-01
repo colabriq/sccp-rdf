@@ -1,4 +1,4 @@
-package com.goodforgoodbusiness.endpoint.graph.rocks;
+package com.colabriq.endpoint.graph.rocks;
 
 import java.util.Iterator;
 import java.util.List;
@@ -9,12 +9,12 @@ import java.util.function.Predicate;
 import org.apache.jena.graph.Triple;
 import org.apache.jena.util.iterator.ExtendedIterator;
 
-import com.goodforgoodbusiness.endpoint.graph.base.store.iterator.functional.ConcatExtendedIterator;
-import com.goodforgoodbusiness.endpoint.graph.base.store.iterator.functional.FilteredExtendedIterator;
-import com.goodforgoodbusiness.endpoint.graph.base.store.iterator.functional.MappedExtendedIterator;
-import com.goodforgoodbusiness.endpoint.graph.base.store.iterator.functional.WrappedExtendedIterator;
-import com.goodforgoodbusiness.rocks.PrefixIterator;
-import com.goodforgoodbusiness.shared.encode.RDFBinary;
+import com.colabriq.endpoint.graph.base.store.iterator.functional.ConcatExtendedIterator;
+import com.colabriq.endpoint.graph.base.store.iterator.functional.FilteredExtendedIterator;
+import com.colabriq.endpoint.graph.base.store.iterator.functional.MappedExtendedIterator;
+import com.colabriq.endpoint.graph.base.store.iterator.functional.WrappedExtendedIterator;
+import com.colabriq.rocks.PrefixIterator;
+import com.colabriq.shared.encode.RDFBinary;
 
 /**
  * Interfaces {@link ExtendedIterator} with {@link PrefixIterator}

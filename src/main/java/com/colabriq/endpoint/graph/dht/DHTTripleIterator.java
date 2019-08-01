@@ -1,6 +1,6 @@
-package com.goodforgoodbusiness.endpoint.graph.dht;
+package com.colabriq.endpoint.graph.dht;
 
-import static com.goodforgoodbusiness.shared.TripleUtil.isMatch;
+import static com.colabriq.shared.TripleUtil.isMatch;
 
 import java.util.function.Consumer;
 import java.util.stream.Stream;
@@ -8,8 +8,8 @@ import java.util.stream.Stream;
 import org.apache.jena.graph.Triple;
 import org.apache.jena.util.iterator.ExtendedIterator;
 
-import com.goodforgoodbusiness.endpoint.graph.base.store.iterator.functional.MultiExtendedIterator;
-import com.goodforgoodbusiness.endpoint.graph.base.store.iterator.functional.WrappedExtendedIterator;
+import com.colabriq.endpoint.graph.base.store.iterator.functional.MultiExtendedIterator;
+import com.colabriq.endpoint.graph.base.store.iterator.functional.WrappedExtendedIterator;
 
 /**
  * Helps us iterate over triples that have been stored, as they arrive from the DHT

@@ -1,4 +1,4 @@
-package com.goodforgoodbusiness.endpoint;
+package com.colabriq.endpoint;
 
 import static org.apache.jena.graph.NodeFactory.createURI;
 import static org.apache.jena.sparql.util.NodeFactoryExtra.createLiteralNode;
@@ -8,8 +8,8 @@ import java.util.stream.Collectors;
 import org.apache.jena.graph.Node;
 import org.apache.jena.graph.Triple;
 
-import com.goodforgoodbusiness.endpoint.graph.containerized.ContainerPatterns;
-import com.goodforgoodbusiness.kpabe.KPABEKeyManager;
+import com.colabriq.endpoint.graph.containerized.ContainerPatterns;
+import com.colabriq.kpabe.KPABEKeyManager;
 
 public class PatternMakerTest {
 	public static void main(String[] args) throws Exception {

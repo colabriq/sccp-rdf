@@ -1,6 +1,6 @@
-package com.goodforgoodbusiness.endpoint.dht;
+package com.colabriq.endpoint.dht;
 
-import com.goodforgoodbusiness.model.Pointer;
+import com.colabriq.model.Pointer;
 
 /**
  * A result of publishing to the warp.

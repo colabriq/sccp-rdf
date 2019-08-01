@@ -1,14 +1,14 @@
-package com.goodforgoodbusiness.endpoint.processor.task;
+package com.colabriq.endpoint.processor.task;
 
-import static com.goodforgoodbusiness.shared.TimingRecorder.timer;
-import static com.goodforgoodbusiness.shared.TimingRecorder.TimingCategory.RDF_UPDATING;
+import static com.colabriq.shared.TimingRecorder.timer;
+import static com.colabriq.shared.TimingRecorder.TimingCategory.RDF_UPDATING;
 
 import org.apache.jena.query.Dataset;
 import org.apache.jena.update.UpdateExecutionFactory;
 import org.apache.jena.update.UpdateFactory;
 
-import com.goodforgoodbusiness.endpoint.processor.ModelTaskResult;
-import com.goodforgoodbusiness.shared.executor.PrioritizedTask;
+import com.colabriq.endpoint.processor.ModelTaskResult;
+import com.colabriq.shared.executor.PrioritizedTask;
 
 import io.vertx.core.Future;
 

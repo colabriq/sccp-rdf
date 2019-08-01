@@ -1,6 +1,6 @@
-package com.goodforgoodbusiness.endpoint.dht.share;
+package com.colabriq.endpoint.dht.share;
 
-import com.goodforgoodbusiness.endpoint.crypto.key.EncodeableShareKey;
+import com.colabriq.endpoint.crypto.key.EncodeableShareKey;
 import com.google.common.base.Objects;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;

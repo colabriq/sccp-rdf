@@ -1,22 +1,22 @@
-package com.goodforgoodbusiness.endpoint.webapp.dht;
+package com.colabriq.endpoint.webapp.dht;
 
-import static com.goodforgoodbusiness.endpoint.webapp.dht.DHTHeaders.processCustodyChainHeader;
-import static com.goodforgoodbusiness.endpoint.webapp.dht.DHTHeaders.processSubmitModeHeader;
+import static com.colabriq.endpoint.webapp.dht.DHTHeaders.processCustodyChainHeader;
+import static com.colabriq.endpoint.webapp.dht.DHTHeaders.processSubmitModeHeader;
 
 import java.io.IOException;
 import java.util.concurrent.ExecutorService;
 
 import org.apache.jena.query.Dataset;
 
-import com.goodforgoodbusiness.endpoint.graph.containerized.ContainerCollector;
-import com.goodforgoodbusiness.endpoint.processor.task.Importer;
-import com.goodforgoodbusiness.endpoint.processor.task.dht.DHTImportTask;
-import com.goodforgoodbusiness.endpoint.processor.task.dht.DHTPublishResult;
-import com.goodforgoodbusiness.endpoint.processor.task.dht.DHTUpdateTask;
-import com.goodforgoodbusiness.endpoint.webapp.SparqlTaskLauncher;
-import com.goodforgoodbusiness.model.SubmittableContainer.SubmitMode;
-import com.goodforgoodbusiness.vertx.stream.InputWriteStream;
-import com.goodforgoodbusiness.webapp.ContentType;
+import com.colabriq.endpoint.graph.containerized.ContainerCollector;
+import com.colabriq.endpoint.processor.task.Importer;
+import com.colabriq.endpoint.processor.task.dht.DHTImportTask;
+import com.colabriq.endpoint.processor.task.dht.DHTPublishResult;
+import com.colabriq.endpoint.processor.task.dht.DHTUpdateTask;
+import com.colabriq.endpoint.webapp.SparqlTaskLauncher;
+import com.colabriq.model.SubmittableContainer.SubmitMode;
+import com.colabriq.vertx.stream.InputWriteStream;
+import com.colabriq.webapp.ContentType;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 

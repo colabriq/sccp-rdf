@@ -1,4 +1,4 @@
-package com.goodforgoodbusiness.endpoint.processor.task;
+package com.colabriq.endpoint.processor.task;
 
 import java.io.InputStream;
 
@@ -6,9 +6,9 @@ import org.apache.jena.query.Dataset;
 import org.apache.jena.rdf.model.Model;
 import org.apache.log4j.Logger;
 
-import com.goodforgoodbusiness.endpoint.storage.TripleContext.Type;
-import com.goodforgoodbusiness.endpoint.storage.TripleContexts;
-import com.goodforgoodbusiness.shared.Skolemizer;
+import com.colabriq.endpoint.storage.TripleContext.Type;
+import com.colabriq.endpoint.storage.TripleContexts;
+import com.colabriq.shared.Skolemizer;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 

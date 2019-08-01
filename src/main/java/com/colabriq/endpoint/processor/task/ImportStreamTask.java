@@ -1,11 +1,11 @@
-package com.goodforgoodbusiness.endpoint.processor.task;
+package com.colabriq.endpoint.processor.task;
 
 import java.io.InputStream;
 
 import org.apache.log4j.Logger;
 
-import com.goodforgoodbusiness.endpoint.processor.ModelTaskResult;
-import com.goodforgoodbusiness.shared.executor.PrioritizedTask;
+import com.colabriq.endpoint.processor.ModelTaskResult;
+import com.colabriq.shared.executor.PrioritizedTask;
 
 import io.vertx.core.Future;
 

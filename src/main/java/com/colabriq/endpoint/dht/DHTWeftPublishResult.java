@@ -1,7 +1,7 @@
-package com.goodforgoodbusiness.endpoint.dht;
+package com.colabriq.endpoint.dht;
 
-import com.goodforgoodbusiness.endpoint.crypto.key.EncodeableSecretKey;
-import com.goodforgoodbusiness.model.EncryptedContainer;
+import com.colabriq.endpoint.crypto.key.EncodeableSecretKey;
+import com.colabriq.model.EncryptedContainer;
 
 /**
  * Result of Weft publish.

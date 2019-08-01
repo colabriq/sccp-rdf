@@ -1,4 +1,4 @@
-package com.goodforgoodbusiness.endpoint.graph.dht;
+package com.colabriq.endpoint.graph.dht;
 
 import org.apache.jena.graph.Graph;
 import org.apache.jena.graph.Node;

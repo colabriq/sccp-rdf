@@ -1,8 +1,8 @@
-package com.goodforgoodbusiness.endpoint.crypto.primitive.key;
+package com.colabriq.endpoint.crypto.primitive.key;
 
-import com.goodforgoodbusiness.endpoint.crypto.SymmetricEncryption;
-import com.goodforgoodbusiness.endpoint.crypto.key.EncodeableSecretKey;
-import com.goodforgoodbusiness.shared.encode.JSON;
+import com.colabriq.endpoint.crypto.SymmetricEncryption;
+import com.colabriq.endpoint.crypto.key.EncodeableSecretKey;
+import com.colabriq.shared.encode.JSON;
 
 public class EncodeableKeyTest {
 	public static void main(String[] args) {

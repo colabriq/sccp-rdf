@@ -1,4 +1,4 @@
-package com.goodforgoodbusiness.endpoint.crypto.key;
+package com.colabriq.endpoint.crypto.key;
 
 import java.io.UnsupportedEncodingException;
 import java.util.Base64;

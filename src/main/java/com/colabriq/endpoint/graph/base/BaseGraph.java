@@ -1,11 +1,11 @@
-package com.goodforgoodbusiness.endpoint.graph.base;
+package com.colabriq.endpoint.graph.base;
 
 import org.apache.jena.graph.Triple;
 import org.apache.jena.graph.impl.GraphBase;
 import org.apache.jena.graph.impl.TripleStore;
 import org.apache.jena.util.iterator.ExtendedIterator;
 
-import com.goodforgoodbusiness.endpoint.graph.base.store.AdvanceMapTripleStore;
+import com.colabriq.endpoint.graph.base.store.AdvanceMapTripleStore;
 
 /**
  * A basic graph backed by our triple store.

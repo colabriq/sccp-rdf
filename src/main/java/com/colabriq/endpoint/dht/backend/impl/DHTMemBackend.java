@@ -1,4 +1,4 @@
-package com.goodforgoodbusiness.endpoint.dht.backend.impl;
+package com.colabriq.endpoint.dht.backend.impl;
 
 import java.util.HashMap;
 import java.util.HashSet;
@@ -10,7 +10,7 @@ import java.util.stream.Stream;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.apache.log4j.Logger;
 
-import com.goodforgoodbusiness.endpoint.dht.backend.DHTBackend;
+import com.colabriq.endpoint.dht.backend.DHTBackend;
 import com.google.inject.Singleton;
 
 import io.vertx.core.Future;

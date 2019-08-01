@@ -1,9 +1,9 @@
-package com.goodforgoodbusiness.endpoint.crypto.primitive.key;
+package com.colabriq.endpoint.crypto.primitive.key;
 
-import com.goodforgoodbusiness.endpoint.crypto.key.EncodeableShareKey;
-import com.goodforgoodbusiness.kpabe.KPABEEncryption;
-import com.goodforgoodbusiness.kpabe.KPABEKeyManager;
-import com.goodforgoodbusiness.shared.encode.JSON;
+import com.colabriq.endpoint.crypto.key.EncodeableShareKey;
+import com.colabriq.kpabe.KPABEEncryption;
+import com.colabriq.kpabe.KPABEKeyManager;
+import com.colabriq.shared.encode.JSON;
 
 public class EncodeableShareKeyTest {
 	public static void main(String[] args) throws Exception {

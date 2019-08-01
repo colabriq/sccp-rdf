@@ -1,4 +1,4 @@
-package com.goodforgoodbusiness.endpoint.dht;
+package com.colabriq.endpoint.dht;
 
 import java.util.Optional;
 
@@ -6,17 +6,17 @@ import javax.crypto.SecretKey;
 
 import org.apache.log4j.Logger;
 
-import com.goodforgoodbusiness.endpoint.crypto.EncryptionException;
-import com.goodforgoodbusiness.endpoint.crypto.SymmetricEncryption;
-import com.goodforgoodbusiness.endpoint.dht.backend.DHTBackend;
-import com.goodforgoodbusiness.model.Contents;
-import com.goodforgoodbusiness.model.EncryptedContainer;
-import com.goodforgoodbusiness.model.EncryptedEnvelope;
-import com.goodforgoodbusiness.model.Envelope;
-import com.goodforgoodbusiness.model.StorableContainer;
-import com.goodforgoodbusiness.shared.TimingRecorder;
-import com.goodforgoodbusiness.shared.TimingRecorder.TimingCategory;
-import com.goodforgoodbusiness.shared.encode.JSON;
+import com.colabriq.endpoint.crypto.EncryptionException;
+import com.colabriq.endpoint.crypto.SymmetricEncryption;
+import com.colabriq.endpoint.dht.backend.DHTBackend;
+import com.colabriq.model.Contents;
+import com.colabriq.model.EncryptedContainer;
+import com.colabriq.model.EncryptedEnvelope;
+import com.colabriq.model.Envelope;
+import com.colabriq.model.StorableContainer;
+import com.colabriq.shared.TimingRecorder;
+import com.colabriq.shared.TimingRecorder.TimingCategory;
+import com.colabriq.shared.encode.JSON;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 

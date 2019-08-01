@@ -1,10 +1,10 @@
-package com.goodforgoodbusiness.endpoint.processor.task.dht;
+package com.colabriq.endpoint.processor.task.dht;
 
 import static java.util.stream.Collectors.counting;
 
-import com.goodforgoodbusiness.endpoint.processor.ModelTaskResult;
-import com.goodforgoodbusiness.model.StorableContainer;
-import com.goodforgoodbusiness.shared.encode.JSON;
+import com.colabriq.endpoint.processor.ModelTaskResult;
+import com.colabriq.model.StorableContainer;
+import com.colabriq.shared.encode.JSON;
 
 /**
  * Result of a DHT backed task includes the container it built

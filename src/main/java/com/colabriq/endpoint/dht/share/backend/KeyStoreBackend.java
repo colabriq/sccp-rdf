@@ -1,13 +1,13 @@
-package com.goodforgoodbusiness.endpoint.dht.share.backend;
+package com.colabriq.endpoint.dht.share.backend;
 
 import java.util.stream.Stream;
 
 import org.apache.jena.graph.Triple;
 
-import com.goodforgoodbusiness.endpoint.crypto.key.EncodeableShareKey;
-import com.goodforgoodbusiness.endpoint.dht.share.ShareKeyStoreException;
-import com.goodforgoodbusiness.endpoint.dht.share.SharePattern;
-import com.goodforgoodbusiness.kpabe.key.KPABEPublicKey;
+import com.colabriq.endpoint.crypto.key.EncodeableShareKey;
+import com.colabriq.endpoint.dht.share.ShareKeyStoreException;
+import com.colabriq.endpoint.dht.share.SharePattern;
+import com.colabriq.kpabe.key.KPABEPublicKey;
 
 public interface KeyStoreBackend {
 	/**

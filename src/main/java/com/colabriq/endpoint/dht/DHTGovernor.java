@@ -1,6 +1,6 @@
-package com.goodforgoodbusiness.endpoint.dht;
+package com.colabriq.endpoint.dht;
 
-import static com.goodforgoodbusiness.shared.TripleUtil.widerCombinations;
+import static com.colabriq.shared.TripleUtil.widerCombinations;
 
 import java.time.Duration;
 import java.util.Optional;

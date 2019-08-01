@@ -1,12 +1,12 @@
-package com.goodforgoodbusiness.endpoint.processor.task.dht;
+package com.colabriq.endpoint.processor.task.dht;
 
 import org.apache.log4j.Logger;
 
-import com.goodforgoodbusiness.endpoint.crypto.EncryptionException;
-import com.goodforgoodbusiness.endpoint.dht.DHT;
-import com.goodforgoodbusiness.model.StorableContainer;
-import com.goodforgoodbusiness.model.SubmittableContainer.SubmitMode;
-import com.goodforgoodbusiness.shared.executor.PrioritizedTask;
+import com.colabriq.endpoint.crypto.EncryptionException;
+import com.colabriq.endpoint.dht.DHT;
+import com.colabriq.model.StorableContainer;
+import com.colabriq.model.SubmittableContainer.SubmitMode;
+import com.colabriq.shared.executor.PrioritizedTask;
 
 import io.vertx.core.Future;
 

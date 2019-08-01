@@ -1,9 +1,9 @@
-package com.goodforgoodbusiness.endpoint.graph.rocks;
+package com.colabriq.endpoint.graph.rocks;
 
-import static com.goodforgoodbusiness.endpoint.storage.rocks.triples.PrefixPattern.makePrefix;
-import static com.goodforgoodbusiness.shared.TripleUtil.isAny;
-import static com.goodforgoodbusiness.shared.encode.RDFBinary.encodeNode;
-import static com.goodforgoodbusiness.shared.encode.RDFBinary.encodeTriple;
+import static com.colabriq.endpoint.storage.rocks.triples.PrefixPattern.makePrefix;
+import static com.colabriq.shared.TripleUtil.isAny;
+import static com.colabriq.shared.encode.RDFBinary.encodeNode;
+import static com.colabriq.shared.encode.RDFBinary.encodeTriple;
 import static org.apache.jena.graph.Node.ANY;
 
 import org.apache.jena.graph.Node;
@@ -12,8 +12,8 @@ import org.apache.jena.graph.impl.TripleStore;
 import org.apache.jena.util.iterator.ExtendedIterator;
 import org.rocksdb.RocksDBException;
 
-import com.goodforgoodbusiness.rocks.PrefixIterator;
-import com.goodforgoodbusiness.rocks.RocksManager;
+import com.colabriq.rocks.PrefixIterator;
+import com.colabriq.rocks.RocksManager;
 
 /**
  * A triple store backed by RocksDB

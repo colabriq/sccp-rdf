@@ -1,4 +1,4 @@
-package com.goodforgoodbusiness.endpoint;
+package com.colabriq.endpoint;
 //package com.goodforgoodbusiness.engine;
 //
 //import org.apache.jena.graph.NodeFactory;

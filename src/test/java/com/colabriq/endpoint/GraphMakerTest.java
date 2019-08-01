@@ -1,4 +1,4 @@
-package com.goodforgoodbusiness.endpoint;
+package com.colabriq.endpoint;
 
 import static org.apache.jena.graph.NodeFactory.createURI;
 
@@ -13,8 +13,8 @@ import org.apache.jena.query.ResultSetFormatter;
 import org.apache.jena.sparql.core.DatasetGraphFactory.GraphMaker;
 import org.apache.jena.sparql.resultset.ResultsFormat;
 
-import com.goodforgoodbusiness.endpoint.graph.base.BaseDatasetGraph;
-import com.goodforgoodbusiness.endpoint.graph.base.BaseGraph;
+import com.colabriq.endpoint.graph.base.BaseDatasetGraph;
+import com.colabriq.endpoint.graph.base.BaseGraph;
 
 public class GraphMakerTest {
 	public static void main(String[] args) {

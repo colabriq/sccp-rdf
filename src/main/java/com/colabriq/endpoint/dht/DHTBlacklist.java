@@ -1,6 +1,6 @@
-package com.goodforgoodbusiness.endpoint.dht;
+package com.colabriq.endpoint.dht;
 
-import static com.goodforgoodbusiness.shared.TripleUtil.isAny;
+import static com.colabriq.shared.TripleUtil.isAny;
 
 import java.util.List;
 import java.util.function.Function;

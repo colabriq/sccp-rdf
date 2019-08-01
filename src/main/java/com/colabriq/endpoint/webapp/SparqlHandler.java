@@ -1,4 +1,4 @@
-package com.goodforgoodbusiness.endpoint.webapp;
+package com.colabriq.endpoint.webapp;
 //package com.goodforgoodbusiness.endpoint.webapp.handler;
 //
 //import java.util.Optional;

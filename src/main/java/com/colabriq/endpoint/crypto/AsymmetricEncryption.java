@@ -1,4 +1,4 @@
-package com.goodforgoodbusiness.endpoint.crypto;
+package com.colabriq.endpoint.crypto;
 
 import java.io.UnsupportedEncodingException;
 import java.security.InvalidKeyException;
@@ -10,10 +10,10 @@ import java.security.SecureRandom;
 import java.security.Signature;
 import java.security.SignatureException;
 
-import com.goodforgoodbusiness.endpoint.crypto.key.EncodeableKeyPair;
-import com.goodforgoodbusiness.endpoint.crypto.key.EncodeablePrivateKey;
-import com.goodforgoodbusiness.endpoint.crypto.key.EncodeablePublicKey;
-import com.goodforgoodbusiness.shared.encode.Hex;
+import com.colabriq.endpoint.crypto.key.EncodeableKeyPair;
+import com.colabriq.endpoint.crypto.key.EncodeablePrivateKey;
+import com.colabriq.endpoint.crypto.key.EncodeablePublicKey;
+import com.colabriq.shared.encode.Hex;
 
 public class AsymmetricEncryption {
 	public static final String KEY_ALGORITHM = "EC";

@@ -1,6 +1,6 @@
-package com.goodforgoodbusiness.endpoint.plugin;
+package com.colabriq.endpoint.plugin;
 
-import com.goodforgoodbusiness.shared.executor.PrioritizedTask;
+import com.colabriq.shared.executor.PrioritizedTask;
 
 /**
  * Task that runs a particular graph listener against a container

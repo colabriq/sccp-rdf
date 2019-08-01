@@ -1,10 +1,10 @@
-package com.goodforgoodbusiness.endpoint.store;
+package com.colabriq.endpoint.store;
 
 import org.apache.jena.graph.Node;
 import org.apache.jena.graph.NodeFactory;
 import org.apache.jena.graph.Triple;
 
-import com.goodforgoodbusiness.endpoint.graph.base.store.AdvanceMapTripleStore;
+import com.colabriq.endpoint.graph.base.store.AdvanceMapTripleStore;
 
 public class AdvanceMappingStoreTest {
 	public static void main(String[] args) {

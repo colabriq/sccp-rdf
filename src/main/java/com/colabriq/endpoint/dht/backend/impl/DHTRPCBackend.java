@@ -1,4 +1,4 @@
-package com.goodforgoodbusiness.endpoint.dht.backend.impl;
+package com.colabriq.endpoint.dht.backend.impl;
 
 import java.net.URI;
 import java.net.URISyntaxException;
@@ -10,23 +10,23 @@ import java.util.stream.Stream;
 
 import org.apache.log4j.Logger;
 
-import com.goodforgoodbusiness.endpoint.dht.backend.DHTBackend;
-import com.goodforgoodbusiness.proto.DHTProto.ContainerFetchRequest;
-import com.goodforgoodbusiness.proto.DHTProto.ContainerFetchResponse;
-import com.goodforgoodbusiness.proto.DHTProto.ContainerPublishRequest;
-import com.goodforgoodbusiness.proto.DHTProto.ContainerPublishResponse;
-import com.goodforgoodbusiness.proto.DHTProto.ContainerSearchRequest;
-import com.goodforgoodbusiness.proto.DHTProto.ContainerSearchResponse;
-import com.goodforgoodbusiness.proto.DHTProto.PointerPublishRequest;
-import com.goodforgoodbusiness.proto.DHTProto.PointerPublishResponse;
-import com.goodforgoodbusiness.proto.DHTProto.PointerSearchRequest;
-import com.goodforgoodbusiness.proto.DHTProto.PointerSearchResponse;
-import com.goodforgoodbusiness.rpclib.client.RPCClient;
-import com.goodforgoodbusiness.rpclib.client.RPCClientException;
-import com.goodforgoodbusiness.rpclib.client.response.RPCResponse;
-import com.goodforgoodbusiness.rpclib.client.response.RPCSingleResponseHandler;
-import com.goodforgoodbusiness.rpclib.client.response.RPCStreamResponseHandler;
-import com.goodforgoodbusiness.shared.URIModifier;
+import com.colabriq.endpoint.dht.backend.DHTBackend;
+import com.colabriq.proto.DHTProto.ContainerFetchRequest;
+import com.colabriq.proto.DHTProto.ContainerFetchResponse;
+import com.colabriq.proto.DHTProto.ContainerPublishRequest;
+import com.colabriq.proto.DHTProto.ContainerPublishResponse;
+import com.colabriq.proto.DHTProto.ContainerSearchRequest;
+import com.colabriq.proto.DHTProto.ContainerSearchResponse;
+import com.colabriq.proto.DHTProto.PointerPublishRequest;
+import com.colabriq.proto.DHTProto.PointerPublishResponse;
+import com.colabriq.proto.DHTProto.PointerSearchRequest;
+import com.colabriq.proto.DHTProto.PointerSearchResponse;
+import com.colabriq.rpclib.client.RPCClient;
+import com.colabriq.rpclib.client.RPCClientException;
+import com.colabriq.rpclib.client.response.RPCResponse;
+import com.colabriq.rpclib.client.response.RPCSingleResponseHandler;
+import com.colabriq.rpclib.client.response.RPCStreamResponseHandler;
+import com.colabriq.shared.URIModifier;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import com.google.inject.name.Named;

@@ -1,4 +1,4 @@
-package com.goodforgoodbusiness.endpoint.dht.keys.impl;
+package com.colabriq.endpoint.dht.keys.impl;
 
 import static java.util.stream.Collectors.toList;
 import static org.apache.jena.graph.NodeFactory.createURI;
@@ -7,12 +7,12 @@ import static org.apache.jena.sparql.util.NodeFactoryExtra.createLiteralNode;
 import org.apache.jena.graph.Node;
 import org.apache.jena.graph.Triple;
 
-import com.goodforgoodbusiness.endpoint.crypto.key.EncodeableShareKey;
-import com.goodforgoodbusiness.endpoint.dht.share.SharePattern;
-import com.goodforgoodbusiness.endpoint.dht.share.backend.impl.RocksKeyStore;
-import com.goodforgoodbusiness.kpabe.KPABEEncryption;
-import com.goodforgoodbusiness.kpabe.KPABEKeyManager;
-import com.goodforgoodbusiness.rocks.RocksManager;
+import com.colabriq.endpoint.crypto.key.EncodeableShareKey;
+import com.colabriq.endpoint.dht.share.SharePattern;
+import com.colabriq.endpoint.dht.share.backend.impl.RocksKeyStore;
+import com.colabriq.kpabe.KPABEEncryption;
+import com.colabriq.kpabe.KPABEKeyManager;
+import com.colabriq.rocks.RocksManager;
 
 public class RocksKeyStoreTest {
 	public static void main(String[] args) throws Exception {

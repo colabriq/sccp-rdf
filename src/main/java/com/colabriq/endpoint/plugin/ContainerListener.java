@@ -1,4 +1,4 @@
-package com.goodforgoodbusiness.endpoint.plugin;
+package com.colabriq.endpoint.plugin;
 
 /**
  * Listen for new containers being added in to the system.

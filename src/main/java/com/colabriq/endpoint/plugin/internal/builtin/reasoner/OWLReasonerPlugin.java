@@ -1,4 +1,4 @@
-package com.goodforgoodbusiness.endpoint.plugin.internal.builtin.reasoner;
+package com.colabriq.endpoint.plugin.internal.builtin.reasoner;
 
 import static java.util.Arrays.asList;
 
@@ -25,9 +25,9 @@ import org.semanticweb.owlapi.util.InferredSubClassAxiomGenerator;
 import org.semanticweb.owlapi.util.InferredSubDataPropertyAxiomGenerator;
 import org.semanticweb.owlapi.util.InferredSubObjectPropertyAxiomGenerator;
 
-import com.goodforgoodbusiness.endpoint.plugin.StorableGraphContainer;
-import com.goodforgoodbusiness.endpoint.plugin.internal.InternalPlugin;
-import com.goodforgoodbusiness.endpoint.plugin.internal.InternalPluginException;
+import com.colabriq.endpoint.plugin.StorableGraphContainer;
+import com.colabriq.endpoint.plugin.internal.InternalPlugin;
+import com.colabriq.endpoint.plugin.internal.InternalPluginException;
 
 import javassist.util.proxy.MethodHandler;
 import javassist.util.proxy.ProxyFactory;

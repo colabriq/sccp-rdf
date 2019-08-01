@@ -1,4 +1,4 @@
-package com.goodforgoodbusiness.endpoint.dht.share;
+package com.colabriq.endpoint.dht.share;
 
 public class ShareKeyStoreException extends Exception {
 	public ShareKeyStoreException(Throwable cause) {

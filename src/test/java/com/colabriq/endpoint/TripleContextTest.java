@@ -1,13 +1,13 @@
-package com.goodforgoodbusiness.endpoint;
+package com.colabriq.endpoint;
 
 import static org.apache.jena.graph.NodeFactory.createLiteral;
 
 import org.apache.jena.graph.Triple;
 
-import com.goodforgoodbusiness.endpoint.storage.TripleContext.Type;
-import com.goodforgoodbusiness.endpoint.storage.TripleContexts;
-import com.goodforgoodbusiness.endpoint.storage.rocks.context.TripleContextStore;
-import com.goodforgoodbusiness.rocks.RocksManager;
+import com.colabriq.endpoint.storage.TripleContext.Type;
+import com.colabriq.endpoint.storage.TripleContexts;
+import com.colabriq.endpoint.storage.rocks.context.TripleContextStore;
+import com.colabriq.rocks.RocksManager;
 
 public class TripleContextTest {
 	public static void main(String[] args) throws Exception {

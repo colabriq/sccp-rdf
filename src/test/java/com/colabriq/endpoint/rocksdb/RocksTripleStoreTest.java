@@ -1,4 +1,4 @@
-package com.goodforgoodbusiness.endpoint.rocksdb;
+package com.colabriq.endpoint.rocksdb;
 
 import static org.apache.jena.graph.NodeFactory.createLiteral;
 
@@ -6,9 +6,9 @@ import org.apache.jena.graph.Node;
 import org.apache.jena.graph.Triple;
 import org.apache.jena.graph.impl.TripleStore;
 
-import com.goodforgoodbusiness.endpoint.graph.rocks.RocksTripleStore;
-import com.goodforgoodbusiness.rocks.RocksManager;
-import com.goodforgoodbusiness.shared.LogConfigurer;
+import com.colabriq.endpoint.graph.rocks.RocksTripleStore;
+import com.colabriq.rocks.RocksManager;
+import com.colabriq.shared.LogConfigurer;
 
 public class RocksTripleStoreTest {
 	public static void main(String[] args) throws Exception {

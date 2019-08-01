@@ -1,7 +1,7 @@
-package com.goodforgoodbusiness.endpoint.rocksdb;
+package com.colabriq.endpoint.rocksdb;
 
-import static com.goodforgoodbusiness.endpoint.webapp.MIMEMappings.FILE_TYPES;
-import static com.goodforgoodbusiness.shared.FileLoader.scan;
+import static com.colabriq.endpoint.webapp.MIMEMappings.FILE_TYPES;
+import static com.colabriq.shared.FileLoader.scan;
 import static org.apache.commons.io.FilenameUtils.getExtension;
 
 import java.io.File;
@@ -20,9 +20,9 @@ import org.apache.jena.sparql.core.DatasetGraphOne;
 import org.apache.jena.sparql.resultset.ResultsFormat;
 import org.apache.log4j.Logger;
 
-import com.goodforgoodbusiness.endpoint.graph.rocks.RocksTripleStore;
-import com.goodforgoodbusiness.rocks.RocksManager;
-import com.goodforgoodbusiness.shared.Skolemizer;
+import com.colabriq.endpoint.graph.rocks.RocksTripleStore;
+import com.colabriq.rocks.RocksManager;
+import com.colabriq.shared.Skolemizer;
 
 public class RocksGraphTest {
 	private static Logger log = Logger.getLogger(RocksGraphTest.class);

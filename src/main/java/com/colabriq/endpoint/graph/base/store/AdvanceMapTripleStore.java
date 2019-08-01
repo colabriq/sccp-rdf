@@ -1,6 +1,6 @@
-package com.goodforgoodbusiness.endpoint.graph.base.store;
+package com.colabriq.endpoint.graph.base.store;
 
-import static com.goodforgoodbusiness.shared.TripleUtil.ANY_ANY_ANY;
+import static com.colabriq.shared.TripleUtil.ANY_ANY_ANY;
 import static org.apache.jena.graph.Node.ANY;
 
 import java.util.HashMap;
@@ -14,9 +14,9 @@ import org.apache.jena.graph.impl.TripleStore;
 import org.apache.jena.util.iterator.ExtendedIterator;
 import org.apache.log4j.Logger;
 
-import com.goodforgoodbusiness.endpoint.graph.base.store.iterator.NodeIterator;
-import com.goodforgoodbusiness.endpoint.graph.base.store.iterator.TripleIterator;
-import com.goodforgoodbusiness.shared.ObservableSet;
+import com.colabriq.endpoint.graph.base.store.iterator.NodeIterator;
+import com.colabriq.endpoint.graph.base.store.iterator.TripleIterator;
+import com.colabriq.shared.ObservableSet;
 
 /**
  * A TripleStore that computes combinations in advance.

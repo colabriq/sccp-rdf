@@ -1,4 +1,4 @@
-package com.goodforgoodbusiness.endpoint.crypto.key;
+package com.colabriq.endpoint.crypto.key;
 
 import java.io.UnsupportedEncodingException;
 import java.security.KeyFactory;
@@ -11,7 +11,7 @@ import java.security.spec.InvalidKeySpecException;
 import java.security.spec.X509EncodedKeySpec;
 import java.util.Base64;
 
-import com.goodforgoodbusiness.endpoint.crypto.AsymmetricEncryption;
+import com.colabriq.endpoint.crypto.AsymmetricEncryption;
 import com.google.gson.annotations.JsonAdapter;
 
 @JsonAdapter(EncodeableKey.Serializer.class)

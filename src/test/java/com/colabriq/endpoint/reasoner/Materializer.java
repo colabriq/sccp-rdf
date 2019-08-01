@@ -1,4 +1,4 @@
-package com.goodforgoodbusiness.endpoint.reasoner;
+package com.colabriq.endpoint.reasoner;
 
 import java.util.Arrays;
 import java.util.Collections;

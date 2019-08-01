@@ -1,4 +1,4 @@
-package com.goodforgoodbusiness.endpoint.dht.share;
+package com.colabriq.endpoint.dht.share;
 
 import java.time.ZonedDateTime;
 import java.util.Optional;

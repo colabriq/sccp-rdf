@@ -1,4 +1,4 @@
-package com.goodforgoodbusiness.endpoint.graph.containerized;
+package com.colabriq.endpoint.graph.containerized;
 
 import static java.time.ZonedDateTime.now;
 import static java.util.stream.Collectors.toList;
@@ -11,13 +11,13 @@ import org.apache.commons.lang.StringUtils;
 import org.apache.jena.graph.Triple;
 import org.apache.log4j.Logger;
 
-import com.goodforgoodbusiness.endpoint.dht.share.ShareRequest;
-import com.goodforgoodbusiness.kpabe.key.KPABEPublicKey;
-import com.goodforgoodbusiness.shared.Rounds;
-import com.goodforgoodbusiness.shared.TripleUtil;
-import com.goodforgoodbusiness.shared.encode.CBOR;
-import com.goodforgoodbusiness.shared.encode.Hash;
-import com.goodforgoodbusiness.shared.encode.Hex;
+import com.colabriq.endpoint.dht.share.ShareRequest;
+import com.colabriq.kpabe.key.KPABEPublicKey;
+import com.colabriq.shared.Rounds;
+import com.colabriq.shared.TripleUtil;
+import com.colabriq.shared.encode.CBOR;
+import com.colabriq.shared.encode.Hash;
+import com.colabriq.shared.encode.Hex;
 import com.google.inject.Singleton;
 
 /**

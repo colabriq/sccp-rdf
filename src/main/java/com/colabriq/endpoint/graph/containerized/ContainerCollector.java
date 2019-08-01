@@ -1,17 +1,17 @@
-package com.goodforgoodbusiness.endpoint.graph.containerized;
+package com.colabriq.endpoint.graph.containerized;
 
 import java.util.Optional;
 import java.util.concurrent.ExecutorService;
 
 import org.apache.jena.graph.Triple;
 
-import com.goodforgoodbusiness.endpoint.dht.DHT;
-import com.goodforgoodbusiness.endpoint.plugin.ContainerListenerManager;
-import com.goodforgoodbusiness.endpoint.processor.task.dht.DHTPublishTask;
-import com.goodforgoodbusiness.model.Link;
-import com.goodforgoodbusiness.model.StorableContainer;
-import com.goodforgoodbusiness.model.SubmittableContainer;
-import com.goodforgoodbusiness.model.SubmittableContainer.SubmitMode;
+import com.colabriq.endpoint.dht.DHT;
+import com.colabriq.endpoint.plugin.ContainerListenerManager;
+import com.colabriq.endpoint.processor.task.dht.DHTPublishTask;
+import com.colabriq.model.Link;
+import com.colabriq.model.StorableContainer;
+import com.colabriq.model.SubmittableContainer;
+import com.colabriq.model.SubmittableContainer.SubmitMode;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 
