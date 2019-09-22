@@ -91,6 +91,6 @@ public class TripleContextStore {
 	 * Remove context for a Triple
 	 */
 	public void removeContext(Triple triple, TripleContext context) {
-		
+		// XXX todo
 	}
 }

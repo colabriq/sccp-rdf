@@ -7,6 +7,7 @@ import java.util.Set;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ExecutionException;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import org.apache.jena.graph.Node;
@@ -21,7 +22,9 @@ import com.colabriq.endpoint.graph.rocks.RocksTripleStore;
 import com.colabriq.endpoint.plugin.ContainerListenerManager;
 import com.colabriq.endpoint.storage.TripleContext.Type;
 import com.colabriq.endpoint.storage.TripleContexts;
+import com.colabriq.endpoint.storage.rocks.context.ContainerTrackerStore;
 import com.colabriq.model.StorableContainer;
+import com.colabriq.shared.treesort.TreeSort;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 
@@ -36,6 +39,7 @@ public class DHTTripleStore implements TripleStore {
 	private static final Logger log = Logger.getLogger(DHTTripleStore.class);
 	
 	private final DHT dht;
+	private final ContainerTrackerStore tracker;
 	private final TripleContexts contexts;
 	private final ContainerListenerManager listenerManager;
 	private final ContainerTripleStore<RocksTripleStore> baseStore;
@@ -43,11 +47,12 @@ public class DHTTripleStore implements TripleStore {
 	private final Set<DHTTripleIterator> openIterators = newSetFromMap(new ConcurrentHashMap<>());
 	
 	@Inject
-	public DHTTripleStore(DHT dht, TripleContexts contexts,
+	public DHTTripleStore(DHT dht, TripleContexts contexts, ContainerTrackerStore tracker,
 		ContainerListenerManager listenerManager, ContainerTripleStore<RocksTripleStore> baseStore) {
 		
 		this.dht = dht;
 		this.contexts = contexts;
+		this.tracker = tracker;
 		this.listenerManager = listenerManager;
 		this.baseStore = baseStore;
 	}
@@ -94,14 +99,26 @@ public class DHTTripleStore implements TripleStore {
 	}
 	
 	private void processResults(Stream<StorableContainer> containers) {
+		// XXX might try and stream process here but need to collect and TreeSort for the moment
+		var sorted = TreeSort.sort(containers.collect(Collectors.toSet()));
+		
 		var newTriplesDeleted = new HashSet<Triple>();
 		var newTriplesAdded = new HashSet<Triple>();
 		
 		// 2 add to local stores
 		// record any genuinely new triples
-		containers.forEach(container -> {
+		sorted.forEach(container -> {
 			if (log.isDebugEnabled()) {
 				log.debug("Matching container " + container.getId());
+			}
+			
+			// check if container has been previously applied
+			if (tracker.hasSeen(container)) {
+				log.debug("Already seen container " + container.getId());
+				return; // skip
+			}
+			else {
+				tracker.markSeen(container);
 			}
 			
 			container.getRemoved()

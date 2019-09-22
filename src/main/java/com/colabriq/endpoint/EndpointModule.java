@@ -48,6 +48,7 @@ import com.colabriq.endpoint.processor.task.ImportPathTask;
 import com.colabriq.endpoint.processor.task.Importer;
 import com.colabriq.endpoint.storage.PersistentGraph;
 import com.colabriq.endpoint.storage.TripleContexts;
+import com.colabriq.endpoint.storage.rocks.context.ContainerTrackerStore;
 import com.colabriq.endpoint.storage.rocks.context.TripleContextStore;
 import com.colabriq.endpoint.webapp.SparqlGetHandler;
 import com.colabriq.endpoint.webapp.SparqlPostHandler;
@@ -125,6 +126,7 @@ public class EndpointModule extends AbstractModule {
 			
 			// dht helpers
 			bind(ContainerCollector.class);
+			bind(ContainerTrackerStore.class);
 			
 			bind(Identity.class);
 			bind(ContainerBuilder.class);

@@ -86,7 +86,7 @@ public class DHT {
 					
 					patterns.forEach(pattern -> {
 						var wpf = Future.<DHTWarpPublishResult>future();
-						warp.publish(container.getId(), pattern, attributes, key, wpf);
+						warp.publish(3, weftPublishResult.result().getPublishedLocation(), pattern, attributes, key, wpf);
 						wpfs.add(wpf);
 					});
 					
@@ -133,7 +133,7 @@ public class DHT {
 								var fetchFuture = Future.<Optional<StorableContainer>>future();
 								
 								weft.fetch(
-									ptr.getContainerId(),
+									ptr.getContainerLocation(),
 									new EncodeableSecretKey(ptr.getContainerKey()),
 									fetchFuture
 								);

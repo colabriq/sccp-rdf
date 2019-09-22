@@ -50,7 +50,7 @@ public class SparqlTaskLauncher {
 		
 		var responseContentType = MIMEMappings.getContentType(Optional.ofNullable(acceptHeader));
 		if (responseContentType.isPresent()) {
-			log.info("Query accept = " + acceptHeader + ", reply =" + responseContentType.get());
+			log.info("Query accept = " + acceptHeader + ", reply= " + responseContentType.get());
 			
 			ctx.response().setStatusCode(200);
 			ctx.response().putHeader(HttpHeaders.CONTENT_TYPE, responseContentType.get());

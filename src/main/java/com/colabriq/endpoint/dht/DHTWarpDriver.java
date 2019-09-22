@@ -63,19 +63,17 @@ public class DHTWarpDriver {
 	 * Publish data against a new pattern to the Warp
 	 * Data is already on the weft, provide the ID
 	 */
-	public void publish(String id, String pattern, String policy, EncodeableSecretKey key, Future<DHTWarpPublishResult> future) {
+	public void publish(int x, String location, String pattern, String policy, EncodeableSecretKey key, Future<DHTWarpPublishResult> future) {
 		log.debug("Publishing warp pattern: " + pattern);
 			
 		try {
-			var pointer = new Pointer(
-				id,
-				key.toEncodedString(),
-				RANDOM.nextLong()
-			);
-			
+			var pointer = new Pointer(key.toEncodedString(), location, RANDOM.nextLong());
 			var data = encrypt(pointer, policy);
+			
 			backend.publishPointer(pattern, data, Future.<Void>future().setHandler(
 				result -> {
+					log.debug("Published warp pattern: " + pattern);
+					
 					if (result.succeeded()) {
 						future.complete(new DHTWarpPublishResult(pointer, data));
 					}

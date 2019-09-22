@@ -43,14 +43,11 @@ import io.vertx.ext.web.client.WebClient;
 @Singleton
 public class DHTRPCBackend implements DHTBackend {
 	private static final Logger log = Logger.getLogger(DHTRPCBackend.class);
-	
-	private final Vertx vertx;
 	private final RPCClient client;
 	
 	@Inject
 	public DHTRPCBackend(Vertx vertx, WebClient client, @Named("dht.uri") String dhtURI) throws URISyntaxException {
-		this.vertx = vertx;
-		this.client = new RPCClient(vertx, client, URIModifier.from(new URI(dhtURI)).appendPath("/rpc").build());
+		this.client = new RPCClient(URIModifier.from(new URI(dhtURI)).appendPath("/rpc").build());
 	}
 	
 	@Override
@@ -64,7 +61,6 @@ public class DHTRPCBackend implements DHTBackend {
 				.build()
 			,
 			new RPCSingleResponseHandler<>(
-				vertx,
 				PointerPublishResponse.class,
 				Future.<RPCResponse<PointerPublishResponse>>future().setHandler(result -> blocker.complete(result))
 			)
@@ -89,7 +85,6 @@ public class DHTRPCBackend implements DHTBackend {
 				.build()
 			,
 			new RPCStreamResponseHandler<>(
-				vertx,
 				PointerSearchResponse.class,
 				Future.<Stream<RPCResponse<PointerSearchResponse>>>future().setHandler(result -> blocker.complete(result))
 			)
@@ -128,7 +123,6 @@ public class DHTRPCBackend implements DHTBackend {
 				.build()
 			,
 			new RPCSingleResponseHandler<>(
-				vertx,
 				ContainerPublishResponse.class,
 				Future.<RPCResponse<ContainerPublishResponse>>future().setHandler(result -> blocker.complete(result))
 			)
@@ -158,7 +152,6 @@ public class DHTRPCBackend implements DHTBackend {
 				.build()
 			,
 			new RPCStreamResponseHandler<>(
-				vertx,
 				ContainerSearchResponse.class,
 				Future.<Stream<RPCResponse<ContainerSearchResponse>>>future().setHandler(result -> blocker.complete(result))
 			)
@@ -196,7 +189,6 @@ public class DHTRPCBackend implements DHTBackend {
 				.build()
 			,
 			new RPCSingleResponseHandler<>(
-				vertx,
 				ContainerFetchResponse.class,
 				Future.<RPCResponse<ContainerFetchResponse>>future().setHandler(result -> blocker.complete(result))
 			)
